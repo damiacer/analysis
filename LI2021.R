@@ -311,3 +311,6 @@ ROC_lr <- roc(test$Class, lr_prediction)
 ROC_rf_auc <- auc(ROC_rf)
 ROC_lr_auc <- auc(ROC_lr)
 
+#see also
+# http://appliedpredictivemodeling.com/blog/2014/2/1/lw6har9oewknvus176q4o41alqw2ow
+# and https://github.com/topepo/useR2016
