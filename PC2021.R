@@ -2,8 +2,10 @@
 
 getwd()
 setwd("P:/CONSULTATION/Pinot_Clemence") # On PC
+setwd("/Users/damianocerasuolo/Desktop/UBRC/2021_CONSULT/Pinot_Clemence") # On Mac
 
 # PACKAGES
+install.packages("readxl")
 library("readxl")
 
 install.packages("tableone")
@@ -55,11 +57,11 @@ dput(names(cp))
 
 # VECTORS OF VARIABLES TO SUMMARIZE
 # ALL VARIABLES
-myVars <- 	c("redac", "connaissancediagn", "structuresuivi", 
+myVars <- 	c("redacteur", "connaissancediagn", "structuresuivi", 
              "structures_suivi1", "accord_fiche", "hosp_noprogrambinaire") 
 
 # ONLY CATEGORIAL VARIABLES THAT NEED TRANSFORMATION
-catVars <- c("redca", "connaissancediagn", "structuresuivi", 
+catVars <- c("redacteur", "connaissancediagn", "structuresuivi", 
              "structures_suivi1", "accord_fiche", "hosp_noprogrambinaire") 
 
 # CREATE A TABLEONE OBJECT
@@ -75,10 +77,46 @@ catVars <- c("redca", "connaissancediagn", "structuresuivi",
   print(tab2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
 # CHI SQUARE TESTS
-cp$redac <- as.factor(as.character(cp$redac))
-cp$accord_fiche <- as.factor(as.character(cp$accord_fiche))
+# REDACTEUR
+chisq.test(cp$redac,cp$accord_fiche, correct = FALSE, simulate.p.value = TRUE)
 
-tab1 <- table(cp$redac,cp$accord_fiche)
-fisher.test(cp$redac,cp$accord_fiche)
+# CONNAISSANCE DU DIAGNOSTIC
+chisq.test(cp$connaissancediagn,cp$accord_fiche, correct = FALSE, simulate.p.value = TRUE)
+
+# NOMBRE DE STRUCTURES DE SUIVI 
+chisq.test(cp$structuresuivi,cp$accord_fiche, correct = FALSE, simulate.p.value = TRUE)
+
+# PREMIER STRUCTURE LISTEE DANS LE SUIVI 
+chisq.test(cp$structures_suivi1,cp$accord_fiche, correct = FALSE, simulate.p.value = TRUE)
+
+# HOSPTIALISATION
+chisq.test(cp$hosp_noprogrambinaire,cp$accord_fiche, correct = FALSE, simulate.p.value = TRUE)
 
 #----------------------------------------------------------------
+
+# CREATE A TABLE BY STRATIFICATION
+# ADD A TEST (FALSE TO AVOID TESTING) 
+# ADD STRATA TO CREATE A UNIVARIATE ANALYSIS
+  tab3 <- CreateTableOne(vars = myVars, data = cp, factorVars = catVars, test = TRUE, strata = "hosp-noprogrambianire")
+# SHOW ALL LEVELS BY STRATA
+  print(tab3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+  
+  
+# CHI SQUARE TESTS
+# REDACTEUR
+chisq.test(cp$redac,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
+  
+# CONNAISSANCE DU DIAGNOSTIC
+chisq.test(cp$connaissancediagn,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
+  
+# NOMBRE DE STRUCTURES DE SUIVI 
+chisq.test(cp$structuresuivi,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
+  
+# PREMIER STRUCTURE LISTEE DANS LE SUIVI 
+chisq.test(cp$structures_suivi1,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
+  
+# HOSPTIALISATION
+chisq.test(cp$accord_fiche,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
+  
+# LIEU DE VIE
+chisq.test(cp$lieudevie,cp$hosp_noprogrambinaire, correct = FALSE, simulate.p.value = TRUE)
