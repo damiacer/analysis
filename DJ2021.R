@@ -1,8 +1,8 @@
 # FOLDER
 
 getwd()
-setwd("P:/CONSULTATION/Dekeyser_Jérémie") # On PC
-setwd("/Users/damianocerasuolo/Desktop/UBRC/2021_CONSULT/Dekeyser_Jérémie") # On Mac
+setwd("P:/CONSULTATION/Dekeyser_JÃ©rÃ©mie") # On PC
+setwd("/Users/damianocerasuolo/Desktop/UBRC/2021_CONSULT/Dekeyser_JÃ©rÃ©mie") # On Mac
 
 # PACKAGES
 install.packages("readxl")
