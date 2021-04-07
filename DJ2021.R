@@ -18,3 +18,17 @@ library("desctable")
 dj <- read_excel("DEKEYSER_data.xlsx", na=".")
 
 names(dj)
+
+is.na(dj$IntMU_M0)
+table(dj$IntMU_M0)
+
+install.packages("tidyr")
+library("tidyr")
+dj2 <- tibble(dj)
+dj2 %>% replace_na(dj)
+
+dj %>% 
+  mutate_at(vars(IntMU_M0, IntMU_M3, IntMU_M6, IntMU_M9), replace_na, 4)
+
+install.packages("dplyr")
+library("dplyr")
