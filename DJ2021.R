@@ -128,9 +128,14 @@ djmix$age = as.numeric(as.character(djmix$age))
 formula = OCTgl ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
   cote_dx0sn1 + (Mesure|ID)
 model1 = lmer(formula, REML = TRUE, data = djmix)
+coef(summary(model1)) # coef for fixed parameter estimates
 summary(model1)
 anova(model1)
 
-exp(cbind(coef(model1), confint(model1)))  
+# exp(cbind(coef(model1), confint(model1)))  
+# exp(coef(model1))
 
-exp(coef(model1))
+install.packages("DAAG")
+library("DAAG")
+mod1_mcmc = mcmcsamp(model1, n=1000)
+?mcmcsamp
