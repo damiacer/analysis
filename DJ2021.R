@@ -109,18 +109,24 @@ table(djmix$IntMU)
 # install.packages("lme4")
 library("lme4")
 
-# reference: https://stackoverflow.com/questions/37090722/lme4lmer-reports-fixed-effect-model-matrix-is-rank-deficient-do-i-need-a-fi
-fix.formula <- OCTgl ~ age + diabete + ovcr0_crsc1 + type_fc0df1 + 
-  sexe + cote_dx0sn1
-X <- model.matrix (fix.formula, djmix)
-X
+#-------------------------------------------------------------------------------
+# MODEL 1
 
-dj1 = lmer(OCTgl ~ age + diabete + ovcr0_crsc1 + type_fc0df1 + 
-             sexe + cote_dx0sn1 + (ID|#THERE IS NO CLUSTER THERE
-             ),
-           data = djmix)
+# reference: https://stackoverflow.com/questions/37090722/lme4lmer-reports-fixed-effect-model-matrix-is-rank-deficient-do-i-need-a-fi
+# fix.formula <- OCTgl ~ age + diabete + ovcr0_crsc1 + type_fc0df1 + 
+#             sexe + cote_dx0sn1
+# X <- model.matrix (fix.formula, djmix)
+# X
+
+# dj1 = lmer(OCTgl ~ age + diabete + ovcr0_crsc1 + type_fc0df1 + 
+#              sexe + cote_dx0sn1 + (ID|#THERE IS NO CLUSTER THERE
+#              ),
+#            data = djmix)
 
 # reference : https://stats.stackexchange.com/questions/492735/is-a-mixed-model-appropriate-for-repeated-measures-of-multiple-covariates
+
+#-------------------------------------------------------------------------------
+# MODEL 2
 
 djmix$OCTgl = as.numeric(as.character(djmix$OCTgl))
 djmix$age = as.numeric(as.character(djmix$age))
@@ -135,7 +141,35 @@ anova(model1)
 # exp(cbind(coef(model1), confint(model1)))  
 # exp(coef(model1))
 
-install.packages("DAAG")
-library("DAAG")
-mod1_mcmc = mcmcsamp(model1, n=1000)
-?mcmcsamp
+# install.packages("DAAG")
+# library("DAAG")
+# mod1_mcmc = mcmcsamp(model1, n=1000)
+# ?mcmcsamp
+
+#-------------------------------------------------------------------------------
+
+# COEFFICIENTS
+
+# USING NORMAL DISTRIBUTION TO APPROXIMATE P-VALUES
+coefs <- data.frame(coef(summary(model1)))
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+coefs
+
+# USING lmerTest
+install.packages("lmerTest")
+library("lmerTest")
+
+coefs$df.Satt <- coef(summary(model1))[, 3]
+coefs$p.Satt <- coef(summary(model1))[, 3]
+coefs
+
+# USING THE KENWARD-ROGER APPROXIMATION TO GET APPROXIMATE DEGREES OF FREEDOM
+# NOT WORKING ON PC
+install.packages("pbkrtest")
+library("pbkrtest")
+
+df.KR <- get_ddf_Lb(model1, fixef(model1))
+# get p-values from the t-distribution using the t-values and approximated
+# degrees of freedom
+coefs$p.KR <- 2 * (1 - pt(abs(coefs$t.value), df.KR))
+coefs
