@@ -24,6 +24,15 @@ library("readxl")
 #library("desctable")
 #install.packages("dpylr")
 #library("dplyr")
+# install.packages("lme4")
+library("lme4")
+install.packages("effects")
+library("effects")
+install.packages("sjPlot")
+library("sjPlot")
+install.packages("ggplot2")
+library("ggplot2")
+require("ggplot2")
 
 # DATA
 dj <- read_excel("DEKEYSER_data.xlsx", na="NA")
@@ -89,7 +98,7 @@ table(dj$IntMU_M9_m)
 # MIXED MODEL ANALYSIS 
 
 # DATA COMPLETE
-djmix = read_excel("DEKEYSER_mixeddata.xlsx", na="NA")
+djmix = read_excel("DEKEYSER_mixeddata.xlsx", na=".")
 names(djmix)
 table(djmix$IntMU)
 is.na(djmix$IntMU)
@@ -116,9 +125,6 @@ table(djmix$IntMU)
 djmix2 = djmix[!(djmix$cote_dx0sn1=="."),]
 # More on this code: https://www.datasciencemadesimple.com/delete-or-drop-rows-in-r-with-conditions-2/
 
-# install.packages("lme4")
-library("lme4")
-
 #-------------------------------------------------------------------------------
 
 # MODEL 1
@@ -142,7 +148,9 @@ library("lme4")
 
 formula = OCTgl ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
   cote_dx0sn1 + (Mesure|ID)
+
 model1 = lmer(formula, REML = TRUE, data = djmix)
+
 model2 = lmer(formula, REML = TRUE, data = djmix2)
 coef(summary(model1)) # coef for fixed parameter estimates
 coef(summary(model2))
@@ -150,14 +158,15 @@ summary(model1)
 summary(model2)
 anova(model1)
 
-# MODEL 2: OCTfc_M0
+# MODEL 3: OCTfc_M0
 
-formula2 = OCTfc_M0 ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
+formula3 = OCTfc_M0 ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
   cote_dx0sn1 + (Mesure|ID)
-model3 = lmer(formula2, REML = TRUE, data = djmix2)
+
+model3 = lmer(formula3, REML = TRUE, data = djmix)
 coef(summary(model3))
-summary(model2)
-anova(model1)
+summary(model3)
+anova(model3)
 
 # exp(cbind(coef(model1), confint(model1)))  
 # exp(coef(model1))
@@ -172,13 +181,13 @@ anova(model1)
 # COEFFICIENTS
 
 # USING NORMAL DISTRIBUTION TO APPROXIMATE P-VALUES
-coefs2 <- data.frame(coef(summary(model2)))
-coefs2$p.z <- 2 * (1 - pnorm(abs(coefs2$t.value)))
-coefs2
+coefs1 <- data.frame(coef(summary(model1)))
+coefs1$p.z <- 2 * (1 - pnorm(abs(coefs1$t.value)))
+coefs1
 
-coefs2 <- data.frame(coef(summary(model2)))
-coefs$p.z2 <- 2 * (1 - pnorm(abs(coefs$t.value)))
-coefs
+coefs3 <- data.frame(coef(summary(model3)))
+coefs3$p.z3 <- 2 * (1 - pnorm(abs(coefs3$t.value)))
+coefs3
 
 #-------------------------------------------------------------------------------
 
@@ -219,7 +228,7 @@ library("sjPlot")
 # More: https://lmudge13.github.io/sample_code/mixed_effects.html
 sjPlot::plot_model(model1)
 
-sjPlot::plot_model(model2, 
+sjPlot::plot_model(model1, 
                    axis.labels=c("Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN"),
                    show.values=TRUE, show.p=TRUE,
                    title="Modèle mixte OTC Global")
@@ -232,7 +241,7 @@ plot_model(model3,
 #-------------------------------------------------------------------------------
 
 tab_model(model1) # OR
-tab_model(model2, 
+tab_model(model1, 
           show.re.var= TRUE, 
           pred.labels =c("(Intercept)", "Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN"),
           dv.labels= "Modèle mixte OTC Global")
@@ -245,25 +254,39 @@ tab_model(model3,
 #-------------------------------------------------------------------------------
 
 # SAVING THE EFFECT SIZE INTO ESTIMATES
-install.packages("effects")
-library("effects")
-install.packages("ggplot2")
-library("ggplot2")
-require("ggplot2")
 
-effects_type <- effects::effect(term= "type_fc0df1", mod=model2)
+# FORMULA: OCTgl/ OCTfc_M0 ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
+#  cote_dx0sn1 + (Mesure|ID)
+
+library("effects")
+effects_type <- effects::effect(term= "type_fc0df1", mod=model1)
 summary(effects_type) 
 
 x_type <- as.data.frame(effects_type)
 
 # PLOT THE ESTIMATES
 type_plot <- ggplot() + 
-  geom_point(data=djmix2,
+  geom_point(data=djmix,
                #subset(me_data, LAI_nonzero==1), 
-               aes(type_fc0df1, log(OCTgl))) + 
+               aes(diabete, log(OCTfc_M0))) + 
   geom_point(data=x_type, aes(x=type_fc0df1, y=fit), color="blue") +
   geom_line(data=x_type, aes(x=type_fc0df1, y=fit), color="blue") +
   geom_ribbon(data= x_type, aes(x=type_fc0df1, ymin=lower, ymax=upper), alpha= 0.3, fill="blue") +
-  labs(x="Type focal/diffus", y="OCT epaisseur gl")
+  labs(x="type_fc0df1", y="OCT epaisseur fc")
 
-urchin_plot
+type_plot
+
+#-------------------------------------------------------------------------------
+
+install.packages("stargazer")
+library("stargazer")
+
+stargazer(model1, type = "text",
+          digits = 3,
+          star.cutoffs = c(0.05, 0.01, 0.001),
+          digit.separator = "")
+
+stargazer(model3, type = "text",
+          digits = 3,
+          star.cutoffs = c(0.05, 0.01, 0.001),
+          digit.separator = "")
