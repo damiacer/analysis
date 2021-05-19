@@ -103,6 +103,9 @@ names(djmix)
 table(djmix$IntMU)
 is.na(djmix$IntMU)
 
+str(djmix$IntMU01)
+djmix$IntMU01 <- as.factor(as.character(djmix$IntMU01))
+
 djmix$OCTgl = as.numeric(as.character(djmix$OCTgl))
 djmix$age = as.numeric(as.character(djmix$age))
 djmix$OCTfc_M0 = as.numeric(as.character(djmix$OCTfc_M0))
@@ -147,7 +150,7 @@ djmix2 = djmix[!(djmix$cote_dx0sn1=="."),]
 # MODEL 2: OCTgl
 
 formula = OCTgl ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
-  cote_dx0sn1 + (Mesure|ID)
+  cote_dx0sn1 + IntMU01 +(Mesure|ID)
 
 model1 = lmer(formula, REML = TRUE, data = djmix)
 
@@ -161,7 +164,7 @@ anova(model1)
 # MODEL 3: OCTfc_M0
 
 formula3 = OCTfc_M0 ~ age + sexe + diabete + ovcr0_crsc1 + type_fc0df1 + 
-  cote_dx0sn1 + (Mesure|ID)
+  cote_dx0sn1 + IntMU01 + (Mesure|ID) 
 
 model3 = lmer(formula3, REML = TRUE, data = djmix)
 coef(summary(model3))
@@ -243,12 +246,14 @@ plot_model(model3,
 tab_model(model1) # OR
 tab_model(model1, 
           show.re.var= TRUE, 
-          pred.labels =c("(Intercept)", "Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN"),
+          pred.labels =c("(Intercept)", "Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN", 
+                         "Injection1", "Injection2", "Injection3", "Injection4"),
           dv.labels= "Modèle mixte OTC Global")
 
 tab_model(model3, 
           show.re.var= TRUE, 
-          pred.labels =c("(Intercept)", "Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN"),
+          pred.labels =c("(Intercept)", "Age", "Sexe", "Diabete", "OVCR/CRSC", "Type focal/diffus", "Cote DX-SN", 
+                         "Injection1", "Injection2", "Injection3", "Injection4"),
           dv.labels= "Modèle mixte OTC Focal")
 
 #-------------------------------------------------------------------------------
