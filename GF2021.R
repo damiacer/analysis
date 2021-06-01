@@ -177,3 +177,15 @@ model1
 
 summary(model1)
 exp(cbind(coef(model1), confint(model1)))  
+
+#------------------------------------------------------------------------------#
+
+model2 <- lm(LDL_2016 ~ age + cancer_2016 + cardiopathisch_2016 + aomi_2016 + 
+                avc_2016 + tabac_2016 + HTAdefcompl_2016 + diabdefcompl_2016 + 
+                tttdyslipid_2016 + #prevsecondaire_2016 +
+                nbttt_2016 + SCORE_2016 + risquecardiovasc_2016 +
+                LDLcible_2016, data=fg3)
+
+model2
+summary(model2)
+exp(cbind(coef(model2), confint(model2)))  
