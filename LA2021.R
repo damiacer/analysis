@@ -43,7 +43,7 @@ la = apply_labels(la,
                     seancesDV = "Nb séances DV total",
                     seancesDV_avantinclusion01 = "Séances de DV avant l'inclusion",
                     seancesDV_avantinclusion = "Si DV avant l'inclusion Nbr de séances",
-                    etiologieSDRApulmonaire = "Etiologie SDRA pulmunaire"
+                    etiologieSDRApulmonaire = "Etiologie SDRA pulmunaire",
                     covid01 = "Covid 19+",
                     delai_covidsympt_inclusion = "Délai Sympt. COVID/Inclusion",
                     delai_COVID_Inclusion = "Délai Df COVID/Inclusion",
@@ -79,7 +79,7 @@ la = apply_labels(la,
                     rocuronium01 = "Rocuronium",
                     rocuronium_mgh = "Posologie (mg/h)",
                     NAD01 = "NAD",
-                    NAD_??gkgmin = "Posologie (??g/kg/min)",
+                    NAD_microgkgmin = "Posologie (??g/kg/min)",
                     NAD_sup02 = "Poso NAD > 0,2 ??g/kg/min",
                     NAD_sup05 = "Poso NAD > 0,5 ??g/kg/min",
                     dobutamine01 = "Dobutamine",
@@ -99,7 +99,6 @@ la = apply_labels(la,
                     T0_Pplat_inf20cmH2O = "T0 Pplat < 20 cmH2O",
                     T0_Pplat_20_24cmH2O = "T0 Pplat [20-24] cmH2O",
                     T0_Pplat_25_30_cmH2O = "T0 Pplat [25-30] cmH2O",
-                    T0_Pplat_25-30_cmH2O = "T0 Pplat [25-30] cmH2O",
                     T0_Pplat_sup30cmH2O = "T0 Pplat > 30 cmH2O",
                     T0_PEEP_cmH2O = "T0 PEEP (cmH2O)",
                     T0_PEEP_5_9_cmH2O = "T0 PEEP [5-9] cmH2O",
@@ -198,7 +197,7 @@ la = apply_labels(la,
                     T0_apresMERPplusMRA_Pplat_20_25_cmH2O = "T0 après MERP+MRA Pplat [20-25] cmH2O",
                     T0_apresMERPplusMRA_Pplat_25_30_cmH2O = "T0 après MERP+MRA Pplat [25-30] cmH2O",
                     T0_apresMERPplusMRA_Pplatsup30cmH2O = "T0 après MERP+MRA Pplat >30 cmH2O",
-                    T0 après MERP+MRA\r\nPEEP (cmH2O) = "T0 après MERP+MRA PEEP (cmH2O)",
+                    T0_apresMERPplusMRA_PEEP_cmH2O = "T0 après MERP+MRA PEEP (cmH2O)",
                     T0_apresMERPplusMRA_PEEP_5_10_cmH2O = "T0 après MERP+MRA PEEP [5-10] cmH2O",
                     T0_apresMERPplusMRA_PEEP_10_15cmH2O = "T0 après MERP+MRA PEEP [10-15] cmH2O",
                     T0_apresMERPplusMRA_PEEPsup15cmH2O = "T0 après MERP+MRA PEEP > 15 cmH2O",
@@ -263,8 +262,10 @@ la = apply_labels(la,
                     jourssousNO = "Nbr jours sous NO",
                     necessiteAlmitrine = "Nécessité Almitrine",
                     necessiteECMO = "Nécessité ECMO",
-                    jourssousECM0 = "Nbr jours sous ECM0",
+                    jourssousECM0 = "Nbr jours sous ECM0"
                     )
+
+var_lab(la[12])
 
 ################################################################################
 
@@ -294,6 +295,10 @@ table(la$MRA_PEEP_10_Pmotrice)
 # colonisation_num == x (classe reelle)
 # pcr_cy			== predictor 
 
+# variable binaire = Delta_P_F_sup20
+# variable qualitative = Vrec_VteaPEEP15
+
+str(la$Delta_P_F_sup20)
 
 #chargement des packages
 library("ggplot2")
