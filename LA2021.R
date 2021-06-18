@@ -22,7 +22,10 @@ table(la$Vrec_VteaPEEP15)
 
 ################################################################################
 
-library(tidyverse)
+install.packages("tidyverse")
+library("tidyverse")
+install.packages("dplyr")
+library("dplyr")
 
 # ADD LABELS TO VARIABLES
 la = apply_labels(la,
@@ -295,27 +298,87 @@ table(la$MRA_PEEP_10_Pmotrice)
 # colonisation_num == x (classe reelle)
 # pcr_cy			== predictor 
 
-# variable binaire = Delta_P_F_sup20
-# variable qualitative = Vrec_VteaPEEP15
+# variable binaire = Delta_P_F_sup20 (y)  
+# variable qualitative = Vrec_VteaPEEP15 (x)
 
 str(la$Delta_P_F_sup20)
+la$Delta_P_F_sup20 = as.factor(la$Delta_P_F_sup20)
+str(la$Vrec_VteaPEEP15)
+la$Vrec_VteaPEEP15 = as.numeric(as.character(la$Vrec_VteaPEEP15))
 
 #chargement des packages
 library("ggplot2")
 library("pROC")
 
+y = la$Delta_P_F_sup20
+x = la$Vrec_VteaPEEP15
+
+roc.sup20 <- roc(la$Delta_P_F_sup20, la$Vrec_VteaPEEP15)
+
 #courbe roc
 par(xaxs = "i", yaxs = "i", xpd = TRUE, cex.axis = 1.5, cex.lab = 1.5)
-plot.roc(x = col, predictor = pcr_cy, legacy.axes = TRUE, identity = FALSE, col = "orange", lwd = 2, 
+plot.roc(roc.sup20 , legacy.axes = TRUE, identity = FALSE, col = "orange", lwd = 2, 
          print.thres = "all", print.thres.pattern = "", print.thres.cex = 1.5, print.thres.col = "brown")
 par(xpd = TRUE)
 segments(1, 0, 0, 1)
 
-coords(roc(response = col, predictor = pcr_cy), x="best", best.method="youden")
-#	threshold specificity sensitivity 
-#	30.6550000   0.9324324   0.4513274 
+coords(roc.sup20, x="best", best.method="youden")
 
 #-------------------------------------------------------------------------------
+
+roc.sup20 <- roc(la$Delta_P_F_sup20, la$Vrec_VteaPEEP15)
+plot(roc.sup20)
+
+plot(smooth(roc.sup20), add=TRUE, col="blue")
+legend("bottomright", legend=c("Empirical", "Smoothed"),
+       col=c(par("fg"), "blue"), lwd=2)
+
+plot(roc.sup20, print.auc=TRUE, auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), max.auc.polygon=TRUE,
+     auc.polygon.col="lightblue", print.thres=TRUE)
+
+has.partial.auc(roc.sup20)
+
+# To plot a different partial AUC, we need to ignore the existing value with reuse.auc=FALSE
+plot(roc.sup20, print.auc=TRUE, auc.polygon=TRUE, partial.auc=c(1, 0.8),
+     partial.auc.focus="se", grid=c(0.1, 0.2), grid.col=c("green", "red"),
+     max.auc.polygon=TRUE, auc.polygon.col="lightblue",
+     print.thres=TRUE, print.thres.adj = c(1, -1),
+     reuse.auc=FALSE)
+
+plot(roc.sup20, print.thres="best", print.thres.best.method="youden")
+
+plot(roc.sup20, print.thres="best", print.thres.best.method="youden",
+     print.thres.best.weights=c(50, 0.2),
+     print.thres.adj = c(1.1, 1.25),add = TRUE)
+
+#-------------------------------------------------------------------------------
+
+# Start a ROC plotrocobj <- plot.roc(aSAH$outcome, aSAH$s100b)
+plot(roc.sup20)
+# Thresholds
+ci.thresolds.obj <- ci.thresholds(roc.sup20)
+plot(ci.thresolds.obj)
+
+# Specificities
+plot(roc.sup20) 
+ci.sp.obj <- ci.sp(roc.sup20, boot.n=500)
+plot(ci.sp.obj)
+
+# Sensitivities
+plot(roc.sup20) 
+ci.se.obj <- ci(roc.sup20, of="se", boot.n=500)
+plot(ci.se.obj)
+
+# plotting a shape
+ci.sp.obj <- ci.sp(roc.sup20, sensitivities=seq(0, 1, .01), boot.n=1000)
+plot(roc.sup20)
+plot(ci.sp.obj, type="shape", col="blue")
+
+# Direct syntax (response, predictor)
+# plot.roc(la$Delta_P_F_sup20, la$Vrec_VteaPEEP15,ci=TRUE, of="thresholds")
+
+################################################################################
 
 ### AUC
 # Reference code: https://statinfer.com/203-4-3-roc-and-auc/
@@ -331,3 +394,74 @@ roccurve <- roc(logitfit_auc$y, predicted_prob)
 plot(roccurve)
 auc(roccurve)
 auc(logitfit_auc$y, predicted_prob)
+
+################################################################################
+
+library(tableone)
+dput(names(la))
+
+# TRANSFORM VARIABLES
+la$IMC = as.numeric(as.character(la$IMC))
+la$seancesDV = as.numeric(as.character(la$seancesDV))
+la$IGSII = as.numeric(as.character(la$IGSII))
+la$hypnovel_mgh = as.numeric(as.character(la$hypnovel_mgh))
+la$propofol_mgh = as.numeric(as.character(la$propofol_mgh))
+la$sufenta_migrogh = as.numeric(as.character(la$sufenta_migrogh))
+la$cisatracurium_mgh = as.numeric(as.character(la$cisatracurium_mgh))
+la$atracurium_mgh = as.numeric(as.character(la$atracurium_mgh))
+la$NAD_microgkgmin = as.numeric(as.character(la$NAD_microgkgmin))
+la$T0_Vt_mlkg = as.numeric(as.character(la$T0_Vt_mlkg))
+la$T0_TpsInpsi_sec = as.numeric(as.character(la$T0_TpsInpsi_sec))
+la$T0_Pmax_cmH2O = as.numeric(as.character(la$T0_Pmax_cmH2O))
+la$T0_Compliance_mlcmH2O = as.numeric(as.character(la$T0_Compliance_mlcmH2O))
+la$T0_Ventmin_Lmin = as.numeric(as.character(la$T0_Ventmin_Lmin))
+la$T0_pH = as.numeric(as.character(la$T0_pH))
+la$T0_PaCO2 = as.numeric(as.character(la$T0_PaCO2))
+la$T0_PaO2 = as.numeric(as.character(la$T0_PaO2))
+la$T0_P_F = as.numeric(as.character(la$T0_P_F))
+la$T0_HCO3minus = as.numeric(as.character(la$T0_HCO3minus))
+la$T0_Lactate = as.numeric(as.character(la$T0_Lactate))
+la$dureeMERPplusMRA_min = as.numeric(as.character(la$dureeMERPplusMRA_min))
+la$T15_pH = as.numeric(as.character(la$T15_pH))
+la$T15_PaO2 = as.numeric(as.character(la$T15_PaO2))
+la$T15_P_F = as.numeric(as.character(la$T15_P_F))
+la$T15_HCO3minus = as.numeric(as.character(la$T15_HCO3minus))
+la$T15_Lactate = as.numeric(as.character(la$T15_Lactate))
+la$Delta_P_F = as.numeric(as.character(la$Delta_P_F))
+la$T0_apresMERPplusMRA_Vt_mlkg = as.numeric(as.character(la$T0_apresMERPplusMRA_Vt_mlkg))
+
+# CREATE THE TABLEONE OBJECT
+CreateTableOne(data = la) 
+
+variables = c("URGn", "KTTINIn", "EPOINIn", 
+              "nephgp", "METHOn", "techn", "MODALn", "VAVn", 
+              "traitement", "PDS", "TAIL", "IRCn", "O2n", "ICn", "ICOROn", 
+              "IDMn", "RYTHMn", "ANEVn", "AMIn", "AVCAITn", "KCn", "VHBn", 
+              "VHCn", "CIRHn", "VIHn", "SIDAn", "HANDn", "AMPn", "PLEGn", "CECITEn", 
+              "COMPORTn", "TYPDIABn", "STADICn", "STDAMIn", "STDCIRHn", "TABACn", 
+              "bmi", "tabac2", "iresp", "sero", "coro", "foie", "comCV", "comcvcl", 
+              "comcvcl2", "sex", "age", "ETAT_DERNOUV2019", "delai_IRT", "delai_DC", 
+              "delai_TX", "delai_SVR", "delai_PDV", "delai_DERNOUV2019", "groupes6", 
+              "categories18", "groupes6_CA1", "categories18_CA1", "groupes6_CA2", 
+              "categories18_CA2", "MOTIF_An", "CPKMEDn", "REFUSn", "SOR_ANN", "grouping01")
+
+categorical = c("URGn", "KTTINIn", "EPOINIn", 
+                "nephgp", "METHOn", "techn", "MODALn", "VAVn", 
+                "traitement", "IRCn", "O2n", "ICn", "ICOROn", 
+                "IDMn", "RYTHMn", "ANEVn", "AMIn", "AVCAITn", "KCn", "VHBn", 
+                "VHCn", "CIRHn", "VIHn", "SIDAn", "HANDn", "AMPn", "PLEGn", "CECITEn", 
+                "COMPORTn", "TYPDIABn", "STADICn", "STDAMIn", "STDCIRHn", "TABACn", 
+                "tabac2", "iresp", "sero", "coro", "foie", "comCV", "comcvcl", 
+                "comcvcl2", "sex", "groupes6", 
+                "categories18", "groupes6_CA1", "categories18_CA1", "groupes6_CA2", 
+                "categories18_CA2", "MOTIF_An", "CPKMEDn", "REFUSn", "SOR_ANN", "grouping01")
+
+
+# CREATE THE DESCRIPTIVE TABLE
+tab1 = CreateTableOne(vars = variables, data = apkd, factorVars = categorical)
+print(tab1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+# CREATE THE UNIVARIATE TABLE 
+tab2 = CreateTableOne(vars = variables, data = apkd, factorVars = categorical, test = TRUE,
+                      strata = "grouping01")
+print(tab2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
