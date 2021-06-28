@@ -401,6 +401,19 @@ library(tableone)
 dput(names(la))
 
 # TRANSFORM VARIABLES
+la$Age = as.numeric(as.character(la$Age))
+la$Taille = as.numeric(as.character(la$Taille))
+la$Poids = as.numeric(as.character(la$Poids))
+la$dela_reainclusion = as.numeric(as.character(la$dela_reainclusion ))
+la$IOT = as.numeric(as.character(la$IOT))
+la$delai_IOTinclusion = as.numeric(as.character(la$delai_IOTinclusion))
+la$delai_SDRAinclusion = as.numeric(as.character(la$delai_SDRAinclusion))
+la$delai_covidsympt_inclusion = as.numeric(as.character(la$delai_covidsympt_inclusion))
+la$delai_COVID_Inclusion = as.numeric(as.character(la$delai_COVID_Inclusion))
+la$delai_COVID_Inclusion14j = as.numeric(as.character(la$delai_COVID_Inclusion14j))
+la$delai_COVID_Inclusion7j14j = as.numeric(as.character(la$delai_COVID_Inclusion7j14j))
+la$SOFA = as.numeric(as.character(la$SOFA))
+la$charlsonscore = as.numeric(as.character(la$charlsonscore))
 la$IMC = as.numeric(as.character(la$IMC))
 la$seancesDV = as.numeric(as.character(la$seancesDV))
 la$IGSII = as.numeric(as.character(la$IGSII))
@@ -429,6 +442,80 @@ la$T15_HCO3minus = as.numeric(as.character(la$T15_HCO3minus))
 la$T15_Lactate = as.numeric(as.character(la$T15_Lactate))
 la$Delta_P_F = as.numeric(as.character(la$Delta_P_F))
 la$T0_apresMERPplusMRA_Vt_mlkg = as.numeric(as.character(la$T0_apresMERPplusMRA_Vt_mlkg))
+la$rocuronium_mgh = as.numeric(as.character(la$rocuronium_mgh))
+la$T0_FR_cpm = as.numeric(as.character(la$T0_FR_cpm))
+la$T0_Vt_ml  = as.numeric(as.character(la$T0_Vt_ml))
+la$T0_debit_Lmin = as.numeric(as.character(la$T0_debit_Lmin))
+la$T0_Pplat_cmH2O = as.numeric(as.character(la$T0_Pplat_cmH2O)) 
+la$T0_PEEP_cmH2O = as.numeric(as.character(la$T0_PEEP_cmH2O))
+la$T0_Pmotrice_cmH2O = as.numeric(as.character(la$T0_Pmotrice_cmH2O))
+la$FC = as.numeric(as.character(la$FC))
+la$PAS = as.numeric(as.character(la$PAS))
+la$PAD = as.numeric(as.character(la$PAD))
+la$PAM = as.numeric(as.character(la$PAM))
+la$SpO2 = as.numeric(as.character(la$SpO2))
+la$TAPSE_mm = as.numeric(as.character(la$TAPSE_mm))
+la$MERP_PEEP_15_Pplat = as.numeric(as.character(la$MERP_PEEP_15_Pplat))
+la$VteCo = as.numeric(as.character(la$VteCo))
+la$MERP_PEEP_5_Vte = as.numeric(as.character(la$MERP_PEEP_5_Vte))
+la$MERP_PEEP_5_Pplat = as.numeric(as.character(la$MERP_PEEP_5_Pplat))
+la$MRA_PEEP_20_Pplat = as.numeric(as.character(la$MRA_PEEP_20_Pplat))
+la$MRA_PEEP_20_Pmotrice = as.numeric(as.character(la$MRA_PEEP_20_Pmotrice))
+la$MRA_PEEP_18_Pplat = as.numeric(as.character(la$MRA_PEEP_18_Pplat))
+la$MRA_PEEP_18_Pmotrice = as.numeric(as.character(la$MRA_PEEP_18_Pmotrice))
+la$MRA_PEEP_16_Pplat = as.numeric(as.character(la$MRA_PEEP_16_Pplat))
+la$MRA_PEEP_16_Pmotrice = as.numeric(as.character(la$MRA_PEEP_16_Pmotrice))
+la$MRA_PEEP_14_Pplat = as.numeric(as.character(la$MRA_PEEP_14_Pplat))
+la$MRA_PEEP_14_Pmotrice = as.numeric(as.character(la$MRA_PEEP_14_Pmotrice))
+la$MRA_PEEP_12_Pplat = as.numeric(as.character(la$MRA_PEEP_12_Pplat))
+la$MRA_PEEP_12_Pmotrice = as.numeric(as.character(la$MRA_PEEP_12_Pmotrice))
+la$MRA_PEEP_10_Pplat = as.numeric(as.character(la$MRA_PEEP_10_Pplat))
+la$MRA_PEEP_10_Pmotrice = as.numeric(as.character(la$MRA_PEEP_10_Pmotrice))
+la$T15_PaCO2 = as.numeric(as.character(la$T15_PaCO2)) 
+la$T15_A_FiO2 = as.numeric(as.character(la$T15_A_FiO2))
+la$Vrec_VteaPEEP15 = as.numeric(as.character(la$Vrec_VteaPEEP15))
+la$T0_apresMERPplusMRA_Vt_ml = as.numeric(as.character(la$T0_apresMERPplusMRA_Vt_ml))
+la$T0_apresMERPplusMRA_FRcpm = as.numeric(as.character(la$T0_apresMERPplusMRA_FRcpm))
+la$T0_apresMERPplusMRA_CompliancemlcmH2O = as.numeric(as.character(la$T0_apresMERPplusMRA_CompliancemlcmH2O))
+la$T0_apresMERPplusMRA_FiO2 = as.numeric(as.character(la$T0_apresMERPplusMRA_FiO2))
+la$T0_apresMERPplusMRA_Ventmin_Lmin = as.numeric(as.character(la$T0_apresMERPplusMRA_Ventmin_Lmin))
+la$T0_apresMERPplusMRA_debit_Lmin = as.numeric(as.character(la$T0_apresMERPplusMRA_debit_Lmin))
+la$T0_apresMERPplusMRA_TpsInpsi_sec = as.numeric(as.character(la$T0_apresMERPplusMRA_TpsInpsi_sec))
+la$T0_apresMERPplusMRA_I_E = as.numeric(as.character(la$T0_apresMERPplusMRA_I_E))
+la$T0_apresMERPplusMRA_Pplat_cmH2O = as.numeric(as.character(la$T0_apresMERPplusMRA_Pplat_cmH2O))
+la$T0_apresMERPplusMRA_PEEP_cmH2O = as.numeric(as.character(la$T0_apresMERPplusMRA_PEEP_cmH2O))
+la$T0_apresMERPplusMRA_PmotricecmH2O = as.numeric(as.character(la$T0_apresMERPplusMRA_PmotricecmH2O))
+la$apresGdS15_postMRA_Vt_mlkg = as.numeric(as.character(la$apresGdS15_postMRA_Vt_mlkg))
+la$apresGdS15_postMRA_SoitVt_ml = as.numeric(as.character(la$apresGdS15_postMRA_SoitVt_ml))
+la$apresGdS15_postMRA_FR_cpm = as.numeric(as.character(la$apresGdS15_postMRA_FR_cpm))
+la$apresGdS15_postMRA_Compliance_mlcmH2O = as.numeric(as.character(la$apresGdS15_postMRA_Compliance_mlcmH2O))
+
+la$apresGdS15_postMRA_FiO2 = as.numeric(as.character(la$apresGdS15_postMRA_FiO2))
+la$apresGdS15_postMRA_Ventmin_Lmin = as.numeric(as.character(la$apresGdS15_postMRA_Ventmin_Lmin))
+la$apresGdS15_postMRA_debit_Lmin = as.numeric(as.character(la$apresGdS15_postMRA_debit_Lmin))
+la$apresGdS15_postMRA_TpsInpsi_sec = as.numeric(as.character(la$apresGdS15_postMRA_TpsInpsi_sec))
+la$apresGdS15_postMRA_I_E = as.numeric(as.character(la$apresGdS15_postMRA_I_E))
+la$apresGdS15_postMRA_PplatcmH2O = as.numeric(as.character(la$apresGdS15_postMRA_PplatcmH2O))
+la$apresGdS15_postMRA_PEEP_cmH2O = as.numeric(as.character(la$apresGdS15_postMRA_PEEP_cmH2O))
+la$apresGdS15_postMRA_PmotricecmH2O = as.numeric(as.character(la$apresGdS15_postMRA_PmotricecmH2O))
+
+la$dureeUSI_j = as.numeric(as.character(la$dureeUSI_j))
+la$sejourpostrea_j = as.numeric(as.character(la$sejourpostrea_j))
+la$sejourtotal_j = as.numeric(as.character(la$sejourtotal_j)) 
+la$dureeVM_j = as.numeric(as.character(la$dureeVM_j))
+la$jourssansVM_sur28j = as.numeric(as.character(la$jourssansVM_sur28j)) 
+la$dureeP_F_inf200j = as.numeric(as.character(la$dureeP_F_inf200j)) 
+la$jourscurarises = as.numeric(as.character(la$jourscurarises)) 
+la$jourssousNO = as.numeric(as.character(la$jourssousNO)) 
+la$jourssousECM0 = as.numeric(as.character(la$jourssousECM0)) 
+la$dureeUSI_j = as.numeric(as.character(la$dureeUSI_j))
+la$sejourpostrea_j = as.numeric(as.character(la$sejourpostrea_j))
+la$sejourtotal_j = as.numeric(as.character(la$sejourtotal_j))
+la$dureeVM_j = as.numeric(as.character(la$dureeVM_j))
+la$jourssansVM_sur28j = as.numeric(as.character(la$jourssansVM_sur28j))
+la$jourscurarises = as.numeric(as.character(la$jourscurarises)) 
+
+ 
 
 # CREATE THE TABLEONE OBJECT
 CreateTableOne(data = la) 
@@ -503,95 +590,79 @@ variables6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postMRA
               "apresGdS15_postMRA_PEEP_sup15cmH2O", "apresGdS15_postMRA_PmotricecmH2O", 
               "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O")
 
-variables7 = c("apresGdS15_postMRA_Pmotrice_sup15cmH2O", "arretMERP", "arretMRA", 
+variables7 = c("arretMERP", "arretMRA", 
               "PEEPMAX", "Bradycardie", "Fcminimale", "Tachycardie", "Fcmaximale", 
               "troublerythme", "ACR", "hypotension_arterielle", "PASminimale", 
               "PADminimales", "PAMminimales", "SpO2_inf85p100", "SpO2minimale", 
               "Pneumothorax", "Autres", "sortieUSI_vivant", "dureeUSI_j", "sortiehosp_vivant01", 
               "sejourpostrea_j", "sejourtotal_j", "vivant_j28", "dureeVM_j", 
               "jourssansVM_sur28j", "dureeP_F_inf200j", "jourscurarises", "curarisation_infegal48h", 
-              "necessiteNO", "jourssousNO", "necessiteAlmitrine", "necessiteECMO", 
-              "jourssousECM0")
+              "necessiteNO", "jourssousNO", "necessiteAlmitrine")
 
-categorical = c("IEP", "Age", "Homme", "Taille", "Poids", "entreerea", 
-                "diagSDRA", "IOT", "inclusion", "dela_reainclusion", "delai_IOTinclusion", 
-                "delai_SDRAinclusion", "seancesDV", "seancesDV_avantinclusion01", 
+categorical = c("IEP", "Homme", "entreerea", 
+                "diagSDRA", "inclusion",  
+                "seancesDV", "seancesDV_avantinclusion01", 
                 "seancesDV_avantinclusion", "etiologieSDRApulmonaire", "covid01", 
-                "delai_covidsympt_inclusion", "delai_COVID_Inclusion", "delai_COVID_Inclusion7j", 
-                "delai_COVID_Inclusion7j14j", "delai_COVID_Inclusion14j", "FDR_SDRA_pneumopathie", 
+                "delai_COVID_Inclusion7j14j", "FDR_SDRA_pneumopathie", 
                 "FDR_SDRA_sepsis", "FDR_SDRA_choc", "FDR_SDRA_contusionspulm", 
                 "FDR_SDRA_inhalation", "FDR_SDRA_pancréatiteaigue", "FDR_SDRA_péritonite", 
                 "FDR_SDRA_ischémiedigestive", "FDR_SDRA_traumatisegrave", "FDR_SDRA_transfusionmassive", 
-                "FDR_SDRA_postCEC", "FDR_SDRA_autres", "FDR_SDRA_siautre", "SOFA", 
-                "charlsonscore", "hypnovel01", "propofol01")
+                "FDR_SDRA_postCEC", "FDR_SDRA_autres", "FDR_SDRA_siautre",  
+                "hypnovel01", "propofol01")
 
 categorical2 = c("sufenta01", "cisatracurium01", 
-                "atracurium01", "atracurium_mgh", "rocuronium01", 
-                "rocuronium_mgh", "NAD01", "NAD_sup02", "NAD_sup05", 
+                "atracurium01", "rocuronium01", 
+                "NAD01", "NAD_sup02", "NAD_sup05", 
                 "dobutamine01", "NO01", "NO_ppm", "NOinf5", "NO_5_10", "NO_sup10", 
-                "T0_Vt_ml", "T0_FR_cpm", "T0_debit_Lmin",  
-                "T0_I_E", "T0_Pplat_cmH2O", "T0_Pplat_inf20cmH2O", 
+                "T0_I_E", "T0_Pplat_inf20cmH2O", 
                 "T0_Pplat_20_24cmH2O", "T0_Pplat_25_30_cmH2O", "T0_Pplat_sup30cmH2O", 
-                "T0_PEEP_cmH2O", "T0_PEEP_5_9_cmH2O", "T0_PEEP_10_15_cmH2O", 
-                "T0_Pmotrice_cmH2O", "T0_Pmotrice_inf10cmH2O", "T0_Pmotrice_10_15cmH2O", 
+                "T0_PEEP_5_9_cmH2O", "T0_PEEP_10_15_cmH2O", 
+                "T0_Pmotrice_inf10cmH2O", "T0_Pmotrice_10_15cmH2O", 
                 "T0_Pmotrice_sup15cmH2O", "T0_Compliance_inf20mlcmH2O", 
                 "T0_Compliance_20_40_mlcmH2O", "T0_Compliance_sup40mlcmH2O")
 
-categorical3 = c("T0_FiO2", "FC", "PAS", "PAD", "PAM", "SpO2", 
+categorical3 = c("T0_FiO2",  
                 "SpO2_sup96p100", "SpO2_92_96", "SpO2_inf92", "ETT_faite", "FEVG_pourc", 
                 "FEVG_sup50", "FEVG_30_50", "FEVG_inf30", "PRVG_elevees", "PRVG_basses", 
-                "PRVG_zonegrise", "dysfonction_VD", "TAPSE_mm", "TAPSE_inf12mm", 
+                "PRVG_zonegrise", "dysfonction_VD", "TAPSE_inf12mm", 
                 "PAPS_mmHg", "PAPS_inf40mmHg", "PAPS_sup40mmHg",  
                 "T0_A_FiO2")
 
-categorical3bis = c("dureeMERPplusMRA_min", "dureeMERPplusMRA_inf10min", "dureeMERPplusMRA_10_15min", 
-                "dureeMERPplusMRA_plus15min", "MERP_PEEP_15Vte", "MERP_PEEP_15_Pplat", 
-                "VteCo", "MERP_PEEP_5_Vte", "MERP_PEEP_5_Pplat", "MRA_PEEP_20_Pplat", 
-                "MRA_PEEP_20_Pmotrice", "MRA_PEEP_18_Pplat", "MRA_PEEP_18_Pmotrice", 
-                "MRA_PEEP_16_Pplat", "MRA_PEEP_16_Pmotrice", "MRA_PEEP_14_Pplat", 
-                "MRA_PEEP_14_Pmotrice", "MRA_PEEP_12_Pplat", "MRA_PEEP_12_Pmotrice")
+categorical3bis = c("dureeMERPplusMRA_inf10min", "dureeMERPplusMRA_10_15min", 
+                "dureeMERPplusMRA_plus15min")
 
-categorical4 = c("MRA_PEEP_10_Pplat", "MRA_PEEP_10_Pmotrice", "T15_PaCO2", 
-                "T15_A_FiO2", 
-                "Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_VteaPEEP15", "Vrec_inf50ml", 
+categorical4 = c("Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_inf50ml", 
                 "Vrec_50_99ml", "Vrec_100_150ml", "Vrecsup150ml",  
                 "Delta_P_F_sup20", "Delta_P_F_neg")
 
-categorical4bis = c("T0_apresMERPplusMRA_Vt_ml", "T0_apresMERPplusMRA_FRcpm", "T0_apresMERPplusMRA_CompliancemlcmH2O", 
-                "T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
-                "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O", "T0_apresMERPplusMRA_FiO2", 
-                "T0_apresMERPplusMRA_Ventmin_Lmin", "T0_apresMERPplusMRA_debit_Lmin", 
-                "T0_apresMERPplusMRA_TpsInpsi_sec", "T0_apresMERPplusMRA_I_E")
+categorical4bis = c("T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
+                "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O")
 
-categorical5 = c("T0_apresMERPplusMRA_Pplat_cmH2O", "T0_apresMERPplusMRA_Pplat_inf20cmH2O", 
+categorical5 = c("T0_apresMERPplusMRA_Pplat_inf20cmH2O", 
                 "T0_apresMERPplusMRA_Pplat_20_25_cmH2O", "T0_apresMERPplusMRA_Pplat_25_30_cmH2O", 
-                "T0_apresMERPplusMRA_Pplatsup30cmH2O", "T0_apresMERPplusMRA_PEEP_cmH2O", 
+                "T0_apresMERPplusMRA_Pplatsup30cmH2O", 
                 "T0_apresMERPplusMRA_PEEP_5_10_cmH2O", "T0_apresMERPplusMRA_PEEP_10_15cmH2O", 
-                "T0_apresMERPplusMRA_PEEPsup15cmH2O", "T0_apresMERPplusMRA_PmotricecmH2O", 
+                "T0_apresMERPplusMRA_PEEPsup15cmH2O",
                 "T0_apresMERPplusMRA_Pmotrice_inf10cmH2O", "T0_apresMERPplusMRA_Pmotrice_10_15cmH2O", 
-                "T0_apresMERPplusMRA_Pmotrice_sup15cmH2O", "apresGdS15_postMRA_Vt_mlkg", 
-                "apresGdS15_postMRA_SoitVt_ml", "apresGdS15_postMRA_FR_cpm", 
-                "apresGdS15_postMRA_Compliance_mlcmH2O", "apresGdS15_postMRA_Compliance_inf20mlcmH2O")
+                "T0_apresMERPplusMRA_Pmotrice_sup15cmH2O", 
+                "apresGdS15_postMRA_Compliance_inf20mlcmH2O")
 
 categorical6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postMRA_Compliance_sup40mlcmH2O", 
-                "apresGdS15_postMRA_FiO2", "apresGdS15_postMRA_Ventmin_Lmin", 
-                "apresGdS15_postMRA_debit_Lmin", "apresGdS15_postMRA_TpsInpsi_sec", 
-                "apresGdS15_postMRA_I_E", "apresGdS15_postMRA_PplatcmH2O", "apresGdS15_postMRA_Pplat_inf20cmH2O", 
+                "apresGdS15_postMRA_Pplat_inf20cmH2O", 
                 "apresGdS15_postMRA_Pplat_20_25cmH2O", "apresGdS15_postMRA_Pplat_25_30cmH2O", 
-                "apresGdS15_postMRA_Pplat_sup30cmH2O", "apresGdS15_postMRA_PEEP_cmH2O", 
+                "apresGdS15_postMRA_Pplat_sup30cmH2O",  
                 "apresGdS15_postMRA_PEEP_5_10cmH2O", "apresGdS15_postMRA_PEEP_10_15cmH2O", 
-                "apresGdS15_postMRA_PEEP_sup15cmH2O", "apresGdS15_postMRA_PmotricecmH2O", 
+                "apresGdS15_postMRA_PEEP_sup15cmH2O", 
                 "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O")
 
-categorical7 = c("apresGdS15_postMRA_Pmotrice_sup15cmH2O", "arretMERP", "arretMRA", 
+categorical7 = c("arretMERP", "arretMRA", 
                 "PEEPMAX", "Bradycardie", "Fcminimale", "Tachycardie", "Fcmaximale", 
                 "troublerythme", "ACR", "hypotension_arterielle", "PASminimale", 
                 "PADminimales", "PAMminimales", "SpO2_inf85p100", "SpO2minimale", 
-                "Pneumothorax", "Autres", "sortieUSI_vivant", "dureeUSI_j", "sortiehosp_vivant01", 
-                "sejourpostrea_j", "sejourtotal_j", "vivant_j28", "dureeVM_j", 
-                "jourssansVM_sur28j", "dureeP_F_inf200j", "jourscurarises", "curarisation_infegal48h", 
-                "necessiteNO", "jourssousNO", "necessiteAlmitrine", "necessiteECMO", 
-                "jourssousECM0")
+                "Pneumothorax", "Autres", "sortieUSI_vivant", "sortiehosp_vivant01", 
+                 "vivant_j28",  
+                  "curarisation_infegal48h", 
+                "necessiteAlmitrine", "necessiteECMO")
 
 
 # CREATE THE DESCRIPTIVE TABLE
