@@ -530,7 +530,7 @@ variables = c("IEP", "Age", "Homme", "Taille", "Poids", "IMC", "entreerea",
               "FDR_SDRA_inhalation", "FDR_SDRA_pancréatiteaigue", "FDR_SDRA_péritonite", 
               "FDR_SDRA_ischémiedigestive", "FDR_SDRA_traumatisegrave", "FDR_SDRA_transfusionmassive", 
               "FDR_SDRA_postCEC", "FDR_SDRA_autres", "FDR_SDRA_siautre", "SOFA", 
-              "IGSII", "charlsonscore", "hypnovel01", "hypnovel_mgh", "propofol01")
+              "IGSII", "charlsonscore", "hypnovel01", "hypnovel_mgh", "propofol01", "Delta_P_F_sup20")
               
 variables2 = c("propofol_mgh", "sufenta01", "sufenta_migrogh", "cisatracurium01", 
               "cisatracurium_mgh", "atracurium01", "atracurium_mgh", "rocuronium01", 
@@ -542,33 +542,33 @@ variables2 = c("propofol_mgh", "sufenta01", "sufenta_migrogh", "cisatracurium01"
               "T0_PEEP_cmH2O", "T0_PEEP_5_9_cmH2O", "T0_PEEP_10_15_cmH2O", 
               "T0_Pmotrice_cmH2O", "T0_Pmotrice_inf10cmH2O", "T0_Pmotrice_10_15cmH2O", 
               "T0_Pmotrice_sup15cmH2O", "T0_Compliance_mlcmH2O", "T0_Compliance_inf20mlcmH2O", 
-              "T0_Compliance_20_40_mlcmH2O", "T0_Compliance_sup40mlcmH2O")
+              "T0_Compliance_20_40_mlcmH2O", "T0_Compliance_sup40mlcmH2O", "Delta_P_F_sup20")
 
 variables3 = c("T0_Ventmin_Lmin", "T0_FiO2", "FC", "PAS", "PAD", "PAM", "SpO2", 
               "SpO2_sup96p100", "SpO2_92_96", "SpO2_inf92", "ETT_faite", "FEVG_pourc", 
               "FEVG_sup50", "FEVG_30_50", "FEVG_inf30", "PRVG_elevees", "PRVG_basses", 
               "PRVG_zonegrise", "dysfonction_VD", "TAPSE_mm", "TAPSE_inf12mm", 
               "PAPS_mmHg", "PAPS_inf40mmHg", "PAPS_sup40mmHg", "T0_pH", "T0_PaCO2", 
-              "T0_PaO2", "T0_P_F", "T0_A_FiO2", "T0_HCO3minus", "T0_Lactate")
+              "T0_PaO2", "T0_P_F", "T0_A_FiO2", "T0_HCO3minus", "T0_Lactate", "Delta_P_F_sup20")
 
 variables3bis = c("dureeMERPplusMRA_min", "dureeMERPplusMRA_inf10min", "dureeMERPplusMRA_10_15min", 
               "dureeMERPplusMRA_plus15min", "MERP_PEEP_15Vte", "MERP_PEEP_15_Pplat", 
               "VteCo", "MERP_PEEP_5_Vte", "MERP_PEEP_5_Pplat", "MRA_PEEP_20_Pplat", 
               "MRA_PEEP_20_Pmotrice", "MRA_PEEP_18_Pplat", "MRA_PEEP_18_Pmotrice", 
               "MRA_PEEP_16_Pplat", "MRA_PEEP_16_Pmotrice", "MRA_PEEP_14_Pplat", 
-              "MRA_PEEP_14_Pmotrice", "MRA_PEEP_12_Pplat", "MRA_PEEP_12_Pmotrice")
+              "MRA_PEEP_14_Pmotrice", "MRA_PEEP_12_Pplat", "MRA_PEEP_12_Pmotrice", "Delta_P_F_sup20")
 
 variables4 = c("MRA_PEEP_10_Pplat", "MRA_PEEP_10_Pmotrice", "T15_pH", "T15_PaCO2", 
               "T15_PaO2", "T15_P_F", "T15_A_FiO2", "T15_HCO3minus", "T15_Lactate", 
               "Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_VteaPEEP15", "Vrec_inf50ml", 
               "Vrec_50_99ml", "Vrec_100_150ml", "Vrecsup150ml", "Delta_P_F", 
-              "Delta_P_F_sup20", "Delta_P_F_neg", "T0_apresMERPplusMRA_Vt_mlkg")
+              "Delta_P_F_sup20", "Delta_P_F_neg", "T0_apresMERPplusMRA_Vt_mlkg", "Delta_P_F_sup20")
 
 variables4bis = c("T0_apresMERPplusMRA_Vt_ml", "T0_apresMERPplusMRA_FRcpm", "T0_apresMERPplusMRA_CompliancemlcmH2O", 
               "T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
               "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O", "T0_apresMERPplusMRA_FiO2", 
               "T0_apresMERPplusMRA_Ventmin_Lmin", "T0_apresMERPplusMRA_debit_Lmin", 
-              "T0_apresMERPplusMRA_TpsInpsi_sec", "T0_apresMERPplusMRA_I_E")
+              "T0_apresMERPplusMRA_TpsInpsi_sec", "T0_apresMERPplusMRA_I_E", "Delta_P_F_sup20")
               
 variables5 = c("T0_apresMERPplusMRA_Pplat_cmH2O", "T0_apresMERPplusMRA_Pplat_inf20cmH2O", 
               "T0_apresMERPplusMRA_Pplat_20_25_cmH2O", "T0_apresMERPplusMRA_Pplat_25_30_cmH2O", 
@@ -578,7 +578,7 @@ variables5 = c("T0_apresMERPplusMRA_Pplat_cmH2O", "T0_apresMERPplusMRA_Pplat_inf
               "T0_apresMERPplusMRA_Pmotrice_inf10cmH2O", "T0_apresMERPplusMRA_Pmotrice_10_15cmH2O", 
               "T0_apresMERPplusMRA_Pmotrice_sup15cmH2O", "apresGdS15_postMRA_Vt_mlkg", 
               "apresGdS15_postMRA_SoitVt_ml", "apresGdS15_postMRA_FR_cpm", 
-              "apresGdS15_postMRA_Compliance_mlcmH2O", "apresGdS15_postMRA_Compliance_inf20mlcmH2O")
+              "apresGdS15_postMRA_Compliance_mlcmH2O", "apresGdS15_postMRA_Compliance_inf20mlcmH2O", "Delta_P_F_sup20")
 
 variables6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postMRA_Compliance_sup40mlcmH2O", 
               "apresGdS15_postMRA_FiO2", "apresGdS15_postMRA_Ventmin_Lmin", 
@@ -588,7 +588,7 @@ variables6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postMRA
               "apresGdS15_postMRA_Pplat_sup30cmH2O", "apresGdS15_postMRA_PEEP_cmH2O", 
               "apresGdS15_postMRA_PEEP_5_10cmH2O", "apresGdS15_postMRA_PEEP_10_15cmH2O", 
               "apresGdS15_postMRA_PEEP_sup15cmH2O", "apresGdS15_postMRA_PmotricecmH2O", 
-              "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O")
+              "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O", "Delta_P_F_sup20")
 
 variables7 = c("arretMERP", "arretMRA", 
               "PEEPMAX", "Bradycardie", "Fcminimale", "Tachycardie", "Fcmaximale", 
@@ -597,7 +597,7 @@ variables7 = c("arretMERP", "arretMRA",
               "Pneumothorax", "Autres", "sortieUSI_vivant", "dureeUSI_j", "sortiehosp_vivant01", 
               "sejourpostrea_j", "sejourtotal_j", "vivant_j28", "dureeVM_j", 
               "jourssansVM_sur28j", "dureeP_F_inf200j", "jourscurarises", "curarisation_infegal48h", 
-              "necessiteNO", "jourssousNO", "necessiteAlmitrine")
+              "necessiteNO", "jourssousNO", "necessiteAlmitrine", "Delta_P_F_sup20")
 
 categorical = c("IEP", "Homme", "entreerea", 
                 "diagSDRA", "inclusion",  
@@ -608,7 +608,7 @@ categorical = c("IEP", "Homme", "entreerea",
                 "FDR_SDRA_inhalation", "FDR_SDRA_pancréatiteaigue", "FDR_SDRA_péritonite", 
                 "FDR_SDRA_ischémiedigestive", "FDR_SDRA_traumatisegrave", "FDR_SDRA_transfusionmassive", 
                 "FDR_SDRA_postCEC", "FDR_SDRA_autres", "FDR_SDRA_siautre",  
-                "hypnovel01", "propofol01")
+                "hypnovel01", "propofol01", "Delta_P_F_sup20")
 
 categorical2 = c("sufenta01", "cisatracurium01", 
                 "atracurium01", "rocuronium01", 
@@ -619,24 +619,24 @@ categorical2 = c("sufenta01", "cisatracurium01",
                 "T0_PEEP_5_9_cmH2O", "T0_PEEP_10_15_cmH2O", 
                 "T0_Pmotrice_inf10cmH2O", "T0_Pmotrice_10_15cmH2O", 
                 "T0_Pmotrice_sup15cmH2O", "T0_Compliance_inf20mlcmH2O", 
-                "T0_Compliance_20_40_mlcmH2O", "T0_Compliance_sup40mlcmH2O")
+                "T0_Compliance_20_40_mlcmH2O", "T0_Compliance_sup40mlcmH2O", "Delta_P_F_sup20")
 
 categorical3 = c("T0_FiO2",  
                 "SpO2_sup96p100", "SpO2_92_96", "SpO2_inf92", "ETT_faite", "FEVG_pourc", 
                 "FEVG_sup50", "FEVG_30_50", "FEVG_inf30", "PRVG_elevees", "PRVG_basses", 
                 "PRVG_zonegrise", "dysfonction_VD", "TAPSE_inf12mm", 
                 "PAPS_mmHg", "PAPS_inf40mmHg", "PAPS_sup40mmHg",  
-                "T0_A_FiO2")
+                "T0_A_FiO2", "Delta_P_F_sup20")
 
 categorical3bis = c("dureeMERPplusMRA_inf10min", "dureeMERPplusMRA_10_15min", 
-                "dureeMERPplusMRA_plus15min")
+                "dureeMERPplusMRA_plus15min", "Delta_P_F_sup20")
 
 categorical4 = c("Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_inf50ml", 
                 "Vrec_50_99ml", "Vrec_100_150ml", "Vrecsup150ml",  
-                "Delta_P_F_sup20", "Delta_P_F_neg")
+                "Delta_P_F_sup20", "Delta_P_F_neg", "Delta_P_F_sup20")
 
 categorical4bis = c("T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
-                "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O")
+                "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O", "Delta_P_F_sup20")
 
 categorical5 = c("T0_apresMERPplusMRA_Pplat_inf20cmH2O", 
                 "T0_apresMERPplusMRA_Pplat_20_25_cmH2O", "T0_apresMERPplusMRA_Pplat_25_30_cmH2O", 
@@ -645,7 +645,7 @@ categorical5 = c("T0_apresMERPplusMRA_Pplat_inf20cmH2O",
                 "T0_apresMERPplusMRA_PEEPsup15cmH2O",
                 "T0_apresMERPplusMRA_Pmotrice_inf10cmH2O", "T0_apresMERPplusMRA_Pmotrice_10_15cmH2O", 
                 "T0_apresMERPplusMRA_Pmotrice_sup15cmH2O", 
-                "apresGdS15_postMRA_Compliance_inf20mlcmH2O")
+                "apresGdS15_postMRA_Compliance_inf20mlcmH2O", "Delta_P_F_sup20")
 
 categorical6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postMRA_Compliance_sup40mlcmH2O", 
                 "apresGdS15_postMRA_Pplat_inf20cmH2O", 
@@ -653,7 +653,8 @@ categorical6 = c("apresGdS15_postMRA_Compliance_20_40mlcmH2O", "apresGdS15_postM
                 "apresGdS15_postMRA_Pplat_sup30cmH2O",  
                 "apresGdS15_postMRA_PEEP_5_10cmH2O", "apresGdS15_postMRA_PEEP_10_15cmH2O", 
                 "apresGdS15_postMRA_PEEP_sup15cmH2O", 
-                "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O")
+                "apresGdS15_postMRA_Pmotrice_inf10cmH2O", "apresGdS15_postMRA_Pmotrice_10_15cmH2O",
+                "Delta_P_F_sup20")
 
 categorical7 = c("arretMERP", "arretMRA", 
                 "PEEPMAX", "Bradycardie", "Fcminimale", "Tachycardie", "Fcmaximale", 
@@ -662,7 +663,7 @@ categorical7 = c("arretMERP", "arretMRA",
                 "Pneumothorax", "Autres", "sortieUSI_vivant", "sortiehosp_vivant01", 
                  "vivant_j28",  
                   "curarisation_infegal48h", 
-                "necessiteAlmitrine", "necessiteECMO")
+                "necessiteAlmitrine", "necessiteECMO", "Delta_P_F_sup20")
 
 
 # CREATE THE DESCRIPTIVE TABLE
@@ -696,6 +697,38 @@ print(tab7, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
 
 # CREATE THE UNIVARIATE TABLE 
-tab2 = CreateTableOne(vars = variables, data = la, factorVars = categorical, test = TRUE,
-                      strata = "grouping01")
-print(tab2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+tab1bv = CreateTableOne(vars = variables, data = la, factorVars = categorical, test = TRUE,
+                      strata = "Delta_P_F_sup20")
+print(tab1bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+tab2bv = CreateTableOne(vars = variables2, data = la, factorVars = categorical2, test = TRUE,
+                        strata = "Delta_P_F_sup20")
+print(tab2bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+tab3bv = CreateTableOne(vars = variables3, data = la, factorVars = categorical3, test = TRUE,
+                        strata = "Delta_P_F_sup20")
+print(tab3bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+        tab3bvbis = CreateTableOne(vars = variables3bis, data = la, factorVars = categorical3bis, test = TRUE,
+                                strata = "Delta_P_F_sup20")
+        print(tab3bvbis, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+        
+tab4bv = CreateTableOne(vars = variables4, data = la, factorVars = categorical4, test = TRUE,
+                                strata = "Delta_P_F_sup20")
+print(tab4bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+        tab4bvbis = CreateTableOne(vars = variables4bis, data = la, factorVars = categorical4bis, test = TRUE,
+                                strata = "Delta_P_F_sup20")
+        print(tab4bvbis, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+        
+tab5bv = CreateTableOne(vars = variables5, data = la, factorVars = categorical5, test = TRUE,
+                                strata = "Delta_P_F_sup20")
+print(tab5bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+tab6bv = CreateTableOne(vars = variables6, data = la, factorVars = categorical6, test = TRUE,
+                        strata = "Delta_P_F_sup20")
+print(tab6bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+tab7bv = CreateTableOne(vars = variables7, data = la, factorVars = categorical7, test = TRUE,
+                        strata = "Delta_P_F_sup20")
+print(tab7bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
