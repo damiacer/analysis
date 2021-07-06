@@ -11,7 +11,7 @@ library("readxl")
 
 la <- read_excel("la.xlsx", na="NA")
 
-View(la)
+# View(la)
 names(la)
 
 str(la$Vrec_VteaPEEP15)
@@ -265,7 +265,7 @@ la = apply_labels(la,
                     jourssousNO = "Nbr jours sous NO",
                     necessiteAlmitrine = "Nécessité Almitrine",
                     necessiteECMO = "Nécessité ECMO",
-                    jourssousECM0 = "Nbr jours sous ECM0"
+                    jourssousECMO = "Nbr jours sous ECMO"
                     )
 
 var_lab(la[12])
@@ -322,7 +322,19 @@ plot.roc(roc.sup20 , legacy.axes = TRUE, identity = FALSE, col = "orange", lwd =
 par(xpd = TRUE)
 segments(1, 0, 0, 1)
 
-coords(roc.sup20, x="best", best.method="youden")
+coords(roc.sup20, x="best", best.method="youden", transpose = TRUE)
+
+#-------------------------------------------------------------------------------
+
+# SENS AND SPE
+
+mycoords <- coords(roc.sup20, "all", transpose = TRUE)
+plot(mycoords["threshold",], mycoords["specificity",], type="l", 
+     col="red", xlab="Cutoff", ylab="Performance")
+lines(mycoords["threshold",], mycoords["sensitivity",], type="l", 
+      col="blue")
+legend(100, 0.4, c("Specificity", "Sensitivity"), 
+       col=c("red", "blue"), lty=1)
 
 #-------------------------------------------------------------------------------
 
@@ -520,8 +532,8 @@ la$jourscurarises = as.numeric(as.character(la$jourscurarises))
 # CREATE THE TABLEONE OBJECT
 CreateTableOne(data = la) 
 
-variables = c("IEP", "Age", "Homme", "Taille", "Poids", "IMC", "entreerea", 
-              "diagSDRA", "IOT", "inclusion", "dela_reainclusion", "delai_IOTinclusion", 
+variables = c("Age", "Homme", "Taille", "Poids", "IMC",  
+               "dela_reainclusion", "delai_IOTinclusion", 
               "delai_SDRAinclusion", "seancesDV", "seancesDV_avantinclusion01", 
               "seancesDV_avantinclusion", "etiologieSDRApulmonaire", "covid01", 
               "delai_covidsympt_inclusion", "delai_COVID_Inclusion", "delai_COVID_Inclusion7j", 
@@ -562,7 +574,7 @@ variables4 = c("MRA_PEEP_10_Pplat", "MRA_PEEP_10_Pmotrice", "T15_pH", "T15_PaCO2
               "T15_PaO2", "T15_P_F", "T15_A_FiO2", "T15_HCO3minus", "T15_Lactate", 
               "Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_VteaPEEP15", "Vrec_inf50ml", 
               "Vrec_50_99ml", "Vrec_100_150ml", "Vrecsup150ml", "Delta_P_F", 
-              "Delta_P_F_sup20", "Delta_P_F_neg", "T0_apresMERPplusMRA_Vt_mlkg", "Delta_P_F_sup20")
+              "Delta_P_F_sup20", "Delta_P_F_neg", "T0_apresMERPplusMRA_Vt_mlkg")
 
 variables4bis = c("T0_apresMERPplusMRA_Vt_ml", "T0_apresMERPplusMRA_FRcpm", "T0_apresMERPplusMRA_CompliancemlcmH2O", 
               "T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
@@ -597,10 +609,9 @@ variables7 = c("arretMERP", "arretMRA",
               "Pneumothorax", "Autres", "sortieUSI_vivant", "dureeUSI_j", "sortiehosp_vivant01", 
               "sejourpostrea_j", "sejourtotal_j", "vivant_j28", "dureeVM_j", 
               "jourssansVM_sur28j", "dureeP_F_inf200j", "jourscurarises", "curarisation_infegal48h", 
-              "necessiteNO", "jourssousNO", "necessiteAlmitrine", "Delta_P_F_sup20")
+              "necessiteNO", "jourssousNO", "necessiteAlmitrine", "Delta_P_F_sup20", "necessiteECMO")
 
-categorical = c("IEP", "Homme", "entreerea", 
-                "diagSDRA", "inclusion",  
+categorical = c( "Homme",
                 "seancesDV", "seancesDV_avantinclusion01", 
                 "seancesDV_avantinclusion", "etiologieSDRApulmonaire", "covid01", 
                 "delai_COVID_Inclusion7j14j", "FDR_SDRA_pneumopathie", 
@@ -633,7 +644,7 @@ categorical3bis = c("dureeMERPplusMRA_inf10min", "dureeMERPplusMRA_10_15min",
 
 categorical4 = c("Best_PEEP", "BestPEEP_soitPmotrice", "Vrec_inf50ml", 
                 "Vrec_50_99ml", "Vrec_100_150ml", "Vrecsup150ml",  
-                "Delta_P_F_sup20", "Delta_P_F_neg", "Delta_P_F_sup20")
+                "Delta_P_F_sup20", "Delta_P_F_neg")
 
 categorical4bis = c("T0_apresMERPplusMRA_Compliance_inf20mlcmH2O", "T0_apresMERPplusMRA_Compliance_20_40mlcmH2O", 
                 "T0_apresMERPplusMRA_Compliance_sup40mlcmH2O", "Delta_P_F_sup20")
@@ -694,7 +705,7 @@ print(tab6, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 tab7 = CreateTableOne(vars = variables7, data = la, factorVars = categorical7)
 print(tab7, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
-
+la$Delta_P_F_sup20 <- as.factor(la$Delta_P_F_sup20)
 
 # CREATE THE UNIVARIATE TABLE 
 tab1bv = CreateTableOne(vars = variables, data = la, factorVars = categorical, test = TRUE,
