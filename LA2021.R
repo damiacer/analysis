@@ -743,3 +743,60 @@ print(tab6bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 tab7bv = CreateTableOne(vars = variables7, data = la, factorVars = categorical7, test = TRUE,
                         strata = "Delta_P_F_sup20")
 print(tab7bv, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+####################
+
+
+# BEST PEEP
+ la$Best_PEEP = as.numeric(as.character(la$Best_PEEP))
+ aggregate(la$Best_PEEP, list(la$Delta_P_F_sup20), FUN=mean) 
+ aggregate(la$Best_PEEP, list(la$Delta_P_F_sup20), FUN=sd) 
+ t.test(la$Best_PEEP, la$Delta_P_F_sup20, conf.level = 0.95)
+
+ # (T0_PEEP_cmH2O) - (apresGdS15_postMRA_PEEP_cmH2O)
+la$dcmh2o = as.numeric(as.character(la$T0_PEEP_cmH2O)) -  as.numeric(as.character(la$apresGdS15_postMRA_PEEP_cmH2O))
+aggregate(la$dcmh2o, list(la$Delta_P_F_sup20), FUN=mean) 
+aggregate(la$dcmh2o, list(la$Delta_P_F_sup20), FUN=sd) 
+t.test(la$dcmh2o, la$Delta_P_F_sup20, conf.level = 0.95)
+
+ # (T0_Pplat_cmH2O) - (apresGdS15_postMRA_PplatcmH2O)
+ la$dpplat = as.numeric(as.character(la$T0_Pplat_cmH2O)) - as.numeric(as.character(la$apresGdS15_postMRA_PplatcmH2O))
+aggregate(la$dpplat, list(la$Delta_P_F_sup20), FUN=mean) 
+aggregate(la$dpplat, list(la$Delta_P_F_sup20), FUN=sd) 
+t.test(la$dpplat, la$Delta_P_F_sup20, conf.level = 0.95)
+
+# (T0_Pmotrice_cmH2O) - (apresGdS15_postMRA_PmotricecmH2O)
+ la$motrice = as.numeric(as.character(la$T0_Pmotrice_cmH2O)) - as.numeric(as.character(la$apresGdS15_postMRA_PmotricecmH2O))
+aggregate(la$motrice, list(la$Delta_P_F_sup20), FUN=mean) 
+ aggregate(la$motrice, list(la$Delta_P_F_sup20), FUN=sd) 
+ t.test(la$motrice, la$Delta_P_F_sup20, conf.level = 0.95)
+
+# (T0_Compliance_mlcmH2O) - (apresGdS15_postMRA_Compliance_mlcmH2O)
+la$compliance = as.numeric(as.character(la$T0_Compliance_mlcmH2O)) - as.numeric(as.character(la$apresGdS15_postMRA_Compliance_mlcmH2O))      
+aggregate(la$compliance, list(la$Delta_P_F_sup20), FUN=mean) 
+aggregate(la$compliance, list(la$Delta_P_F_sup20), FUN=sd) 
+t.test(la$compliance, la$Delta_P_F_sup20, conf.level = 0.95)
+
+# QUALI :
+str(la$Delta_P_F_sup20)
+la$Delta_P_F_sup20 = as.factor(la$Delta_P_F_sup20)
+
+ # Plat decreased
+ la$dpplat_change[la$T0_Pplat_cmH2O < la$apresGdS15_postMRA_PplatcmH2O] = "incr"
+ la$dpplat_change[la$T0_Pplat_cmH2O >  la$apresGdS15_postMRA_PplatcmH2O] = "decr"
+ table(la$dpplat_change)
+ chisq.test(la$dpplat_change, la$Delta_P_F_sup20, correct = FALSE)
+ fisher.test(la$dpplat_change, la$Delta_P_F_sup20)
+
+ # Pmotrice
+la$motrice_change[la$T0_Pmotrice_cmH2O < la$apresGdS15_postMRA_PmotricecmH2O] = "incr"
+la$motrice_change[la$T0_Pmotrice_cmH2O  > la$apresGdS15_postMRA_PmotricecmH2O] = "decr"
+table(la$motrice_change)
+fisher.test(la$motrice_change, la$Delta_P_F_sup20)
+
+# Compliance
+la$compl_change[la$T0_Compliance_mlcmH2O < la$apresGdS15_postMRA_Compliance_mlcmH2O] = "incr"
+la$compl_change[la$T0_Compliance_mlcmH2O >  la$apresGdS15_postMRA_Compliance_mlcmH2O] = "decr"
+str(la$compl_change)
+table(la$compl_change)
+fisher.test(la$compl_change, la$Delta_P_F_sup20)
