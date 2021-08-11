@@ -15,25 +15,26 @@ library("tidyverse")
 
 # DATA
 
-fus <- read_excel("FUSION CaenNantesVannesAngersRennes final 020721.xlsx", na="NA")
+fus <- read_excel("FUSION CaenNantesVannesAngersRennes final 020721.xlsx", na="")
 
 names(fus)
 
 fus <- as_tibble(fus)
 fus <- fus %>% rename(
   # new name = old name,
-  "age" = "âge",
+  "age" = "Ã¢ge",
   "inclusion" = "Date diagnostic...5",
   "taillelesion_m" = "TAILLE LESION (mm)",
   "dategeste" = "DATE.GESTE...17",
   "Primitifpoumon" = "Primitif poumon",
   "Factfavor" = "Fact favor",
-  "lesionarterepulm" = "Lésion artère pulm",
+  "lesionarterepulm" = "LÃ©sion artÃ¨re pulm",
   "prox_distal" = "prox/distal",
-  "bronchique_ETpump" = "bronchique même temps", # embolisation des artères bronchiques et pulmunaires
+  "bronchique_ETpump" = "bronchique mÃªme temps", # embolisation des artÃ¨res bronchiques et pulmunaires
   "TECHembolPULM1" = "TECH EMBOL PULM1", # voir en fonction de la variable prox_distal
-  "datedeces" = "date décès",
-  "daterecidive" = "Date RECIDIVE j"
+  "datedeces" = "date dÃ©cÃ¨s",
+  "daterecidive" = "Date RECIDIVE j",
+  "recidive"= "RÃ©cidive oui/non"
   )
 
 ################################################################################
@@ -41,16 +42,16 @@ fus <- fus %>% rename(
 # CCOVARIATES
 
 # age + SEXE + Primitifpoumon + ETIOLOGIE + 
-# HEMOPTYSIE.VOLUME = en trois modalités
-# HEMOPTYSIE.IMPORTANTE = variable volume en deux catégories
+# HEMOPTYSIE.VOLUME = en trois modalitÃ©s
+# HEMOPTYSIE.IMPORTANTE = variable volume en deux catÃ©gories
 # Hemodynamique + Factfavor + IMAGERIE.EXCAVE + LESION.NECROTIQUE
 # lesionarterepulm + taillelesion_m + prox_distal + bronchique_ETpump
 # TECHembolPULM1
 
 # OUTCOMES
-# Arrêt immediat hemoptysie
-# Récidive oui/non = Date RECIDIVE j < 30 jours
-# DATE.DERN.NOUV = date des dernières nouvlles
+# ArrÃªt immediat hemoptysie
+# RÃ©cidive oui/non = Date RECIDIVE j < 30 jours
+# DATE.DERN.NOUV = date des derniÃ¨res nouvlles
 # DECES
 # DATE.GESTE
 
@@ -83,16 +84,27 @@ a = as.Date(fus$DATE.DERN.NOUV) - as.Date(fus$dategeste)
 b = as.Date(fus$datedeces) - as.Date(fus$dategeste)
 fus$fup = ifelse(fus$DECES01 == "1", b, a)
 table(fus$fup)
+
+# NEW DATABASE WITH ONLY COMPLETE DATA
+# more on drop: https://blog.rstudio.com/2016/08/15/tidyr-0-6-0/
+fusna <- fus %>% drop_na(fup)
+count(fusna)
+
 mean(fus$fup, na.rm = TRUE)
 is.na(fus$fup)
 is.na(a)
 is.na(b)
 
-fus$fupna[fus$fup=="NA"] = "1"
-fus$fupna[fus$fup!=""] = "0"
-fus$fupna
+################################################################################
 
-# NEW DATABASE WITH ONLY COMPLETE DATA
-apkd<-rein_mone[!(rein_mone$apkd01=="0"),]
-cofus = fus[!fus$fupna=="1"]
-### FUP 
+# RECIDIVE
+
+str(fus$recidive)
+fus$recidive[fus$recidive=="non"] = "0"
+fus$recidive[fus$recidive=="oui"] = "1"
+fus$recidive[fus$recidive=="ND"] = "."
+fus$recidive
+
+# age + sexe + Primitifpoumon + ETIOLOGIE + HEMOPTYSIE.VOLUME + HEMOPTYSIE.IMPORTANTE + 
+# Hemodynamique + Factfavor + IMAGERIE.EXCAVE + LESION.NECROTIQUE + lesionarterepulm +
+# taillelesion_m + prox_distal + TECHembolPULM1 + 
