@@ -105,6 +105,29 @@ sd(durmed, na.rm = T)
 
 # NEW VARIABLES 
 # ha$CD_56_dim_M6_mm3 - ha$CD_56_dim_M0_mm3
+# ha$CD_56_dim_M0_mm3
+ha$CD_56_dim_M0_mm3 = as.numeric(as.character(ha$CD_56_dim_M0_mm3))
+mean(ha$CD_56_dim_M0_mm3, na.rm = TRUE)
+sd(ha$CD_56_dim_M0_mm3, na.rm = TRUE)
+
+library(dplyr)
+ha %>%
+  group_by(recidive01) %>%
+  summarise_at(vars("CD_56_dim_M0_mm3"), funs(mean, sd), na.rm = TRUE)
+t.test(ha$CD_56_dim_M0_mm3, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+
+
+# ha$CD_56_dim_M6_mm3
+ha$CD_56_dim_M6_mm3 = as.numeric(as.character(ha$CD_56_dim_M6_mm3))
+mean(ha$CD_56_dim_M6_mm3, na.rm = TRUE)
+sd(ha$CD_56_dim_M6_mm3, na.rm = TRUE)
+
+ha %>%
+  group_by(recidive01) %>%
+  summarise_at(vars("CD_56_dim_M6_mm3"), funs(mean, sd), na.rm = TRUE)
+t.test(ha$CD_56_dim_M6_mm3, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+
+
 ha$CD_56_dim_M6_mm3[ha$CD_56_dim_M6_mm3 == "NR"] = ""
 ha$CD_56_dim_M6_mm3[ha$CD_56_dim_M6_mm3 != "NR"] = ha$CD_56_dim_M6_mm3
 str(ha$CD_56_dim_M6_mm3)
@@ -135,6 +158,27 @@ shapiro.test(ha$cd56dim_diff) # 0.2857 on ne rejette pas l'H0 de normalite de la
 t.test(ha$cd56dim_diff, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
 
 # ha$CD56_bright_M6_mm3 - ha$CD56_bright_M0_mm3
+# ha$CD56_bright_M6_mm3
+ha$CD56_bright_M6_mm3 = as.numeric(as.character(ha$CD56_bright_M6_mm3))
+mean(ha$CD56_bright_M6_mm3, na.rm = T)
+sd(ha$CD56_bright_M6_mm3, na.rm = T)
+
+ha %>%
+  group_by(recidive01) %>%
+  summarise_at(vars("CD56_bright_M6_mm3"), funs(mean, sd), na.rm = TRUE)
+t.test(ha$CD56_bright_M6_mm3, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+
+#ha$CD56_bright_M0_mm3
+ha$CD56_bright_M0_mm3 = as.numeric(as.character(ha$CD56_bright_M0_mm3))
+mean(ha$CD56_bright_M0_mm3, na.rm = TRUE)
+sd(ha$CD56_bright_M0_mm3, na.rm = TRUE)
+
+ha %>%
+  group_by(recidive01) %>%
+  summarise_at(vars("CD56_bright_M0_mm3"), funs(mean, sd), na.rm = TRUE)
+
+t.test(ha$CD56_bright_M0_mm3, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+
 ha$CD56_bright_M6_mm3[ha$CD56_bright_M6_mm3 == "NR"] = ""
 ha$CD56_bright_M6_mm3[ha$CD56_bright_M6_mm3 != "NR"] = ha$CD56_bright_M6_mm3
 str(ha$CD56_bright_M6_mm3)
