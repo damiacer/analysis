@@ -33,6 +33,19 @@ ha$delai_arret_perte  = as.numeric(as.character(ha$delai_arret_perte))
 ha$suividepuisarret   = as.numeric(as.character(ha$suividepuisarret))
 # ha$Ly_NK_M6_mm3     = as.numeric(as.character(ha$Ly_NK_M6_mm3)) #ONLY IN "kiwisdb.xlsx" DATA
 
+# Sokal_au_diagnostic
+table(ha$Sokal_au_diagnostic)
+ha$Sokal_au_diagnostic[ha$Sokal_au_diagnostic == "Faible risque"] <- "Faible risque"
+ha$Sokal_au_diagnostic[ha$Sokal_au_diagnostic == "haut risque"] <- "haut risque"
+ha$Sokal_au_diagnostic[ha$Sokal_au_diagnostic == "Haut risque"] <- "haut risque"
+ha$Sokal_au_diagnostic[ha$Sokal_au_diagnostic == "Risque intermédiaire"] <- "Risque intermédiaire"
+
+tabsok = table(ha$Sokal_au_diagnostic)
+prop.table(tabsok, margin = 2)
+tabsokr = table(ha$Sokal_au_diagnostic, ha$recidive01)
+prop.table(tabsokr, margin = 2)
+chisq.test(ha$Sokal_au_diagnostic, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
 variables = c("AGE", "SEXE", "Sokal_au_diagnostic", "Phase_LMC_a_l_inclusion", 
               "BCRABL_variant", "ITK_a_larret", "ATCD_darret_des_ITK", "premierITK",
               "PHENO_LNK_M0_mm3", #"Ly_NK_M6_mm3", 
@@ -75,7 +88,7 @@ wilcox.test(ha$PHENO_LNK_M0_mm3~ha$recidive01, paired = FALSE, exact = FALSE, co
 shapiro.test(ha$suividepuisarret)
 t.test(ha$suividepuisarret, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
 
-# 2.	Dur�e m�diane depuis le premier ITK prescrit 
+# 2.	Durée médiane depuis le premier ITK prescrit 
 
 library("lubridate")
 lubridate::dmy(ha$Date_du_premier_ITK_prescrit)
@@ -219,3 +232,70 @@ had %>%
 
 had$ITKdiag_yn = as.numeric(as.character(had$ITKdiag_y))
 t.test(had$ITKdiag_yn, had$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+
+####################################################
+
+# RELAPSE
+had <- read_excel("kiwisdates.xlsx", na="") 
+
+# VARS
+ha$status = ha$PERTE_RMM
+had$Date_perte_RMM
+ha$Date_dinclusion
+ha$dernier_bcrabldose
+
+a = as.Date(had$dernier_bcrabldose) - as.Date(had$Date_dinclusion)
+b = as.Date(had$Date_perte_RMM) - as.Date(had$Date_dinclusion)
+ha$fup = ifelse(had$recidive01 == "1", b, a)
+table(ha$fup)
+ha$time = ha$fup / 31
+ha$time = as.numeric(as.character(ha$Time))
+
+km <- survfit(Surv(time, status) ~ 1, data = ha)
+plot(km)
+plot(km, main='Courbes de survie', lwd=2, ylab='Survie', xlab='temps (mois)', xlim = c(0,6))
+
+####################################################
+
+variablesk = c("Nbre_de_ligands_KIR", "KIR2DL5", "KIR2DS1", "KIR2DS4exp", "KIR3DS1", "KIR2DL1plus_C2plus",
+			"KIR3DL1plus_A_et_B_Bw4plus", "KIR2DS2plus_C1", "Genotype_AA",
+			"Genotype_AB", "Genotype_BB", "CenAA", "CenAB", "CenBB", "TelAA",
+			"TelAB", "TelBB")
+
+categoricalk = c("KIR2DL5", "KIR2DS1", "KIR2DS4exp", "KIR3DS1", "KIR2DL1plus_C2plus",
+			"KIR3DL1plus_A_et_B_Bw4plus", "KIR2DS2plus_C1", "Genotype_AA",
+			"Genotype_AB", "Genotype_BB", "CenAA", "CenAB", "CenBB", "TelAA",
+			"TelAB", "TelBB")
+
+require(tableone)
+
+# CREATE THE DESCRIPTIVE TABLE TABLE 
+tab1k = CreateTableOne(vars = variablesk, data = ha, factorVars = categoricalk)
+print(tab1k, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+# CREATE THE UNIVARIATE TABLE 
+tab2k = CreateTableOne(vars = variablesk, data = ha, factorVars = categoricalk, test = TRUE, includeNA = FALSE, 
+                      strata = "recidive01")
+print(tab2k, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+t.test(ha$Nbre_de_ligands_KIR, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
+chisq.test(ha$KIR2DL5, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$KIR2DS1, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$KIR2DS4exp, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$KIR3DS1, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
+chisq.test(ha$KIR2DL1plus_C2plus, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$KIR3DL1plus_A_et_B_Bw4plus, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$KIR2DS2plus_C1, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
+chisq.test(ha$Genotype_AA, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$Genotype_AB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$Genotype_BB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
+chisq.test(ha$CenAA, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$CenAB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
+chisq.test(ha$CenBB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$TelAA, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$TelAB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+chisq.test(ha$TelBB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
