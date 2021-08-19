@@ -26,23 +26,29 @@ names(fus)
 fus <- as_tibble(fus)
 fus <- fus %>% rename(
   # new name = old name,
-  "age" = "âge",
+  "age" = "Ã¢ge",
   "inclusion" = "Date diagnostic...5",
   "taillelesion_m" = "TAILLE LESION (mm)",
   "dategeste" = "DATE.GESTE...17",
   "Primitifpoumon" = "Primitif poumon",
   "Factfavor" = "Fact favor",
-  "lesionarterepulm" = "Lésion artère pulm",
+  "lesionarterepulm" = "LÃ©sion artÃ¨re pulm",
   "prox_distal" = "prox/distal",
-  "bronchique_ETpump" = "bronchique même temps", # embolisation des artères bronchiques et pulmunaires
+  "bronchique_ETpump" = "bronchique mÃªme temps", # embolisation des artÃ¨res bronchiques et pulmunaires
   "TECHembolPULM1" = "TECH EMBOL PULM1", # voir en fonction de la variable prox_distal
-  "datedeces" = "date décès",
+  "datedeces" = "date dÃ©cÃ¨s",
   "daterecidive" = "Date RECIDIVE j",
-  "recidive"= "Récidive oui/non",
+  "recidive"= "RÃ©cidive oui/non",
   "delaissurvgeste" = "DELAI.SURVIE.GESTE jours",
   "premiererecidive" = "1er/recidive",
-  "tailleparticules" = "Taille particules"
+  "tailleparticules" = "Taille particules",
+  "arrethem" = "ArrÃªt immediat hemoptysie"
   )
+
+fusna <- as_tibble(fusna)
+fusna <- fusna %>% rename(
+  "arrethem" = "ArrÃªt immediat hemoptysie"
+)
 
 ################################################################################
 
@@ -128,10 +134,10 @@ fus$Factfavor2[fus$Factfavor != "Aucun" ] <- "1"
 
 # LESION
 table(fus$lesionarterepulm)
-fus$lesionarterepulm_class[fus$lesionarterepulm == "Irrégularité"] <- "1"
+fus$lesionarterepulm_class[fus$lesionarterepulm == "IrrÃ©gularitÃ©"] <- "1"
 fus$lesionarterepulm_class[fus$lesionarterepulm == "normale"] <- "0"
 fus$lesionarterepulm_class[fus$lesionarterepulm == "occlusion"] <- "2"
-fus$lesionarterepulm_class[fus$lesionarterepulm == "Pseudoanévrisme"] <- "3"
+fus$lesionarterepulm_class[fus$lesionarterepulm == "PseudoanÃ©vrisme"] <- "3"
 fus$lesionarterepulm_class[fus$lesionarterepulm == ""] <- "."
 fus$lesionarterepulm_class = as.numeric(as.character(fus$lesionarterepulm_class))
 fus$lesionarterepulm_class = as.factor(fus$lesionarterepulm_class)
@@ -148,7 +154,7 @@ fus$relapse = as.numeric(as.character(fus$recidive))
 table(fus$TECHembolPULM1)
 fus$TECHembolPULM2[fus$TECHembolPULM1 == "Coils"] <- "1"
 fus$TECHembolPULM2[fus$TECHembolPULM1 == "Colle"] <- "2"
-fus$TECHembolPULM2[fus$TECHembolPULM1 == "Gélatine"] <- "3"
+fus$TECHembolPULM2[fus$TECHembolPULM1 == "GÃ©latine"] <- "3"
 fus$TECHembolPULM2[fus$TECHembolPULM1 == "Plug"] <- "4"
 fus$TECHembolPULM2[fus$TECHembolPULM1 == "Stent couvert"] <- "5"
 fus$TECHembolPULM2[fus$TECHembolPULM1 == ""] <- "."
@@ -231,6 +237,13 @@ tab3 = CreateTableOne(vars = variables, data = fus, factorVars = categorical, te
                       includeNA = FALSE, strata = "relapsec")
 print(tab3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
+#-------------------------------------------------------------------------------
+
+tabarr = table(fus$arrethem)
+prop.table(tabarr)
+0.08695652*100
+0.91304348*100
+
 ################################################################################
 
 # TEST FOR UNIVARIATE ANALYSIS: RELAPSE ANALYSIS
@@ -294,6 +307,15 @@ wilcox.test(fus$delaissurvgeste~fus$relapse, paired = FALSE, exact = FALSE, corr
 # DECES01
 chisq.test(fus$DECES01, fus$relapse, correct = FALSE, simulate.p.value = TRUE)
 
+# arrethem
+hemrel = table(fus$arrethem, fus$relapse)
+prop.table(hemrel, margin = 2)
+0.11363636*100
+0.07894737*100
+0.88636364*100
+0.92105263*100
+chisq.test(fus$arrethem, fus$relapse, correct = FALSE, simulate.p.value = TRUE)
+
 #-------------------------------------------------------------------------------
 
 fus$DECES01 = as.numeric(as.character(fus$DECES01))
@@ -351,21 +373,30 @@ wilcox.test(fus$delaissurvgeste~fus$relapse, paired = FALSE, exact = FALSE, corr
 # DECES01
 chisq.test(fus$DECES01, fus$relapse, correct = FALSE, simulate.p.value = TRUE)
 
+# arrethem
+hemdec = table(fus$arrethem, fus$DECES01)
+prop.table(hemdec, margin = 2)
+0.0000000*100
+0.1025641*100
+1.0000000*100
+0.8974359*100
+chisq.test(fus$arrethem, fus$DECES01, correct = FALSE, simulate.p.value = TRUE)
+
 ################################################################################
 
 # CCOVARIATES
 
 # age + SEXE + Primitifpoumon + ETIOLOGIE + 
-# HEMOPTYSIE.VOLUME = en trois modalités
-# HEMOPTYSIE.IMPORTANTE = variable volume en deux catégories
+# HEMOPTYSIE.VOLUME = en trois modalitÃ©s
+# HEMOPTYSIE.IMPORTANTE = variable volume en deux catÃ©gories
 # Hemodynamique + Factfavor + IMAGERIE.EXCAVE + LESION.NECROTIQUE
 # lesionarterepulm + taillelesion_m + prox_distal + bronchique_ETpump
 # TECHembolPULM1
 
 # OUTCOMES
-# Arrêt immediat hemoptysie
-# Récidive oui/non = Date RECIDIVE j < 30 jours
-# DATE.DERN.NOUV = date des dernières nouvlles
+# ArrÃªt immediat hemoptysie
+# RÃ©cidive oui/non = Date RECIDIVE j < 30 jours
+# DATE.DERN.NOUV = date des derniÃ¨res nouvlles
 # DECES
 # DATE.GESTE
 
