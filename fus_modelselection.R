@@ -42,7 +42,7 @@ str(fusna$HEMOPTYSIE.IMPORTANTE)
   
 # Hemodynamique
 str(fusna$Hemodynamique)
-  fusna$Hemodynamique2[fusna$Hemodynamique == "défaillance"] <- "1"
+  fusna$Hemodynamique2[fusna$Hemodynamique == "dÃ©faillance"] <- "1"
   fusna$Hemodynamique2[fusna$Hemodynamique == "stable"] <- "2"
   fusna$Hemodynamique2 = as.numeric(as.character(fusna$Hemodynamique2))
 
@@ -60,10 +60,10 @@ str(fusna$LESION.NECROTIQUE_class)
 
 # lesionarterepulm
 str(fusna$lesionarterepulm)
-  fusna$lesionarterepulm2[fusna$lesionarterepulm == "Irrégularité"] <- "1"
+  fusna$lesionarterepulm2[fusna$lesionarterepulm == "IrrÃ©gularitÃ©"] <- "1"
   fusna$lesionarterepulm2[fusna$lesionarterepulm == "normale"] <- "0"
   fusna$lesionarterepulm2[fusna$lesionarterepulm == "occlusion"] <- "2"
-  fusna$lesionarterepulm2[fusna$lesionarterepulm == "Pseudoanévrisme"] <- "3"
+  fusna$lesionarterepulm2[fusna$lesionarterepulm == "PseudoanÃ©vrisme"] <- "3"
   fusna$lesionarterepulm2[fusna$lesionarterepulm == ""] <- "."
   fusna$lesionarterepulm2 = as.numeric(as.character(fusna$lesionarterepulm2))
 
@@ -78,7 +78,7 @@ str(fusna$prox_distal_class)
 str(fusna$TECHembolPULM1)
   fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "Coils"] <- "1"
   fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "Colle"] <- "2"
-  fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "Gélatine"] <- "3"
+  fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "GÃ©latine"] <- "3"
   fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "Plug"] <- "4"
   fusna$TECHembolPULM12[fusna$TECHembolPULM1 == "Stent couvert"] <- "5"
   fusna$TECHembolPULM12[fusna$TECHembolPULM1 == ""] <- "."
@@ -145,3 +145,109 @@ age +
   SEXE2 + ETIOLOGIE2f + HEMOPTYSIE.VOLUME2 + Hemodynamique2
 + Factfavor2 + IMAGERIE.EXCAVE_class + LESION.NECROTIQUE_class
 + lesionarterepulm + taillelesion_m
+
+################################################################################
+################################################################################
+################################################################################
+
+
+# SEXE
+fusna$SEXE2 = as.factor(fusna$SEXE2)
+
+# Primitifpoumon
+fusna$Primitifpoumon2 = as.factor(fusna$Primitifpoumon2)
+
+# ETIOLOGIE2
+fusna$ETIOLOGIE2f = as.factor(fusna$ETIOLOGIE2f)
+
+# HEMOPTYSIE.VOLUME
+fusna$HEMOPTYSIE.VOLUME2 = as.factor(fusna$HEMOPTYSIE.VOLUME2)
+
+# HEMOPTYSIE.IMPORTANTE
+fusna$HEMOPTYSIE.IMPORTANTE2 = as.factor(fusna$HEMOPTYSIE.IMPORTANTE2)
+
+# Hemodynamique
+fusna$Hemodynamique2 = as.factor(fusna$Hemodynamique2)
+
+# Factfavor2
+fusna$Factfavor2 = as.factor(fusna$Factfavor2)
+
+# IMAGERIE.EXCAVE_class
+fusna$IMAGERIE.EXCAVE_class = as.factor(fusna$IMAGERIE.EXCAVE_class)
+
+# LESION.NECROTIQUE_class
+fusna$LESION.NECROTIQUE_class = as.factor(fusna$LESION.NECROTIQUE_class)
+
+# lesionarterepulm
+fusna$lesionarterepulm2 = as.factor(fusna$lesionarterepulm2)
+
+# taillelesion_m
+fusna$taillelesion_m = fusna$taillelesion_m
+
+# prox_distal_class
+fusna$prox_distal_class = as.factor(fusna$prox_distal_class)
+
+# TECHembolPULM1
+fusna$TECHembolPULM12 = as.factor(fusna$TECHembolPULM12)
+
+# fusna$delaissurvgeste
+
+# COX MODELS
+coxfusna = coxph(formula = Surv(time, status) ~ age, data = fusna)
+AIC(coxfusna)
+
+coxfusna = coxph(formula = Surv(time, status) ~ age + SEXE2 + Primitifpoumon + ETIOLOGIE2 + HEMOPTYSIE.VOLUME2
+                 + HEMOPTYSIE.IMPORTANTE + Hemodynamique2 + Factfavor2 + IMAGERIE.EXCAVE_class
+                 + LESION.NECROTIQUE_class + LESION.NECROTIQUE_class
+                 + lesionarterepulm2 + taillelesion_m + TECHembolPULM12, data = fusna)
+
+summary(coxfusna)
+confint(coxfusna)  #coefficient CIs
+exp(confint(coxfusna))  #Also HR CIs
+AIC(coxfusna)
+BIC(coxfusna)
+
+res.zph1 <- cox.zph(coxfusna)
+plot(res.zph1)
+
+# Check Karnofsky performance score (only 6 discrete values)
+# http://rstudio-pubs-static.s3.amazonaws.com/5896_8f0fed2ccbbd42489276e554a05af87e.html
+table(fusna$ph.karno)
+
+################################################################################
+
+status2 = fusna$DECES01
+
+coxfusna = coxph(formula = Surv(time, status) ~ age + SEXE2 + Primitifpoumon + ETIOLOGIE2 + HEMOPTYSIE.VOLUME2
+                 + HEMOPTYSIE.IMPORTANTE + Hemodynamique2 + Factfavor2 + IMAGERIE.EXCAVE_class
+                 + LESION.NECROTIQUE_class + LESION.NECROTIQUE_class
+                 + lesionarterepulm2 + taillelesion_m + TECHembolPULM12 + arrethem, data = fusna)
+
+summary(coxfusna)
+confint(coxfusna)  #coefficient CIs
+exp(confint(coxfusna))  #Also HR CIs
+AIC(coxfusna)
+BIC(coxfusna)
+
+################################################################################
+
+# SURVPLOT
+
+relapsekm = survfit(Surv(time, status) ~ arrethem, data = fusna)
+
+install.packages("survminer")
+library("survminer")
+
+ggsurvplot(
+  relapsekm,
+  data = fusna,
+  size = 1,
+  palette = c("#E7B800", "#2E9FDF"),
+  conf.int = TRUE,
+  pval = TRUE,
+  risk.table = TRUE,
+  risk.table.col = "strata",
+  legend.labs = c("pas arret imm", "arret imm"),
+  risk.table.height = 0.25,
+  ggtheme = theme_bw()
+)
