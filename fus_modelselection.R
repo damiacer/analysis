@@ -265,16 +265,16 @@ library('prodlim')
 install.packages("survcomp")
 library("survcomp")
 
-km.coxph.plot(formula.s = Surv(time, status) ~ 1, data = fusna, 
-              weight.s = ddweights, 
-              x.label = "Time (years)", 
-              y.label = "Probability of survival",
-              main.title = "",
-              show.n.risk = TRUE, 
-              n.risk.step = 2, 
-              n.risk.cex = 0.85, 
-              verbose = FALSE
-              )
+#km.coxph.plot(formula.s = Surv(time, status) ~ 1, data = fusna, 
+#              weight.s = ddweights, 
+#              x.label = "Time (years)", 
+#              y.label = "Probability of survival",
+#              main.title = "",
+#              show.n.risk = TRUE, 
+#              n.risk.step = 2, 
+#              n.risk.cex = 0.85, 
+#              verbose = FALSE
+#)
 
 require("survminer")
 ggsurvplot(fusfit, conf.int = TRUE)
@@ -284,9 +284,9 @@ str(fusna$time)
 fusna$timem = fusna$time / (365.25/12)
 
 fusfitm = survfit(Surv(timem, status) ~ 1, data = fusna)
-ggsurvplot(fusfitm, data = fusna,
-           #conf.int = TRUE, 
-           risk.table = TRUE)
+ggsurvplot(fusfitm, data = fusna, conf.int = TRUE
+           #, risk.table = TRUE
+           )
 
 autoplot(fusfitm, surv.linetype = "dashed", surv.colour = "orange", 
          censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
@@ -314,6 +314,28 @@ confint(coxfusna)  #coefficient CIs
 exp(confint(coxfusna))  #Also HR CIs
 AIC(coxfusnad)
 BIC(coxfusnad)
+
+#-------------------------------------------------------------------------------
+
+require("survival")
+require("survminer")
+require("Rcpp")
+require("ggfortify")
+
+# RECODING TIME TO ELIMINATE NEGATIVE VALUES 
+fusnad$fupdnum = as.numeric(as.character(fusna$fupd))
+fusnad$fupdnum[fusnad$fupdnum < 0 ] <- "."
+table(fusna$fupdnum)
+time3 = as.numeric(as.character(fusnad$fupdnum))
+time4 = time3/(365.25/12)
+
+# SURVFIT
+fusfitdm = survfit(Surv(time4, status2) ~ 1, data = fusnad)
+print(fusfitd)
+summary(fusfitd)$table
+
+autoplot(fusfitdm, surv.linetype = "dashed", surv.colour = "orange", 
+         censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
 
 ################################################################################
 
