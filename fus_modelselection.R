@@ -150,6 +150,9 @@ age +
 ################################################################################
 ################################################################################
 
+#################################################################
+# GET THE COX MODEL BY USING FACTOR VARIABLES WHERE APPROPRIATE #
+#################################################################
 
 # SEXE
 fusna$SEXE2 = as.factor(fusna$SEXE2)
@@ -192,12 +195,21 @@ fusna$TECHembolPULM12 = as.factor(fusna$TECHembolPULM12)
 
 # fusna$delaissurvgeste
 
-# COX MODELS
-coxfusna = coxph(formula = Surv(time, status) ~ age, data = fusna)
-AIC(coxfusna)
+###################
+# TIME AND STATUS #
+###################
 
 fusna$status = fusna$relapse
 fusna$time = fusna$fup
+
+###################
+#    COX MODELS   #
+###################
+
+coxfusna = coxph(formula = Surv(time, status) ~ age, data = fusna)
+AIC(coxfusna)
+
+require("survival")
 
 coxfusna = coxph(formula = Surv(time, status) ~ age + SEXE2 + Primitifpoumon + ETIOLOGIE2 + HEMOPTYSIE.VOLUME2
                  + HEMOPTYSIE.IMPORTANTE + Hemodynamique2 + Factfavor2 + IMAGERIE.EXCAVE_class
@@ -220,32 +232,82 @@ plot(res.zph1)
 require("survival")
 require("survminer")
 require("Rcpp")
+require("ggfortify")
 
-fusfit = survfit(Surv(time, status) ~ SEXE2, data = fusna)
+fusfit = survfit(Surv(time, status) ~ 1, data = fusna)
 print(fusfit)
 summary(fusfit)$table
 
-ggsurvplot(fusfit,
-           pval = TRUE, conf.int = TRUE,
-           risk.table = TRUE, # Add risk table
-           risk.table.col = "strata", # Change risk table color by groups
-           linetype = "strata", # Change line type by groups
-           surv.median.line = "hv", # Specify median survival
-           ggtheme = theme_bw(), # Change ggplot2 theme
-           palette = c("#E7B800", "#2E9FDF"))
+#ggsurvplot(fusfit,
+#           pval = TRUE, conf.int = TRUE,
+#           risk.table = TRUE, # Add risk table
+#           risk.table.col = "strata", # Change risk table color by groups
+#           linetype = "strata", # Change line type by groups
+#           surv.median.line = "hv", # Specify median survival
+#           ggtheme = theme_bw(), # Change ggplot2 theme
+#           palette = c("#E7B800", "#2E9FDF"))
+
+autoplot(fusfit, surv.linetype = "dashed", surv.colour = "orange", 
+         censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
+
+require("rms")
+require("survival")
+require("survminer")
+
+SurvObj = with(fusna, Surv(time, status))
+km.as.one = survfit(SurvObj ~ SEXE2, data = fusna, conf.type = "log-log")
+
+survplot(km.as.one, conf = none)
+
+require("prodlim")
+install.packages("prodlim")
+library('prodlim')
+install.packages("survcomp")
+library("survcomp")
+
+km.coxph.plot(formula.s = Surv(time, status) ~ 1, data = fusna, 
+              weight.s = ddweights, 
+              x.label = "Time (years)", 
+              y.label = "Probability of survival",
+              main.title = "",
+              show.n.risk = TRUE, 
+              n.risk.step = 2, 
+              n.risk.cex = 0.85, 
+              verbose = FALSE
+              )
+
+require("survminer")
+ggsurvplot(fusfit, conf.int = TRUE)
+
+# WITH TIME EXPRESSED IN MONTHS
+str(fusna$time)
+fusna$timem = fusna$time / (365.25/12)
+
+fusfitm = survfit(Surv(timem, status) ~ 1, data = fusna)
+ggsurvplot(fusfitm, data = fusna,
+           #conf.int = TRUE, 
+           risk.table = TRUE)
+
+autoplot(fusfitm, surv.linetype = "dashed", surv.colour = "orange", 
+         censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
+
 
 ################################################################################
 
 require("survival")
+
+###################
+# TIME AND STATUS #
+###################
 
 time2 = fusna$fupd 
 status2 = as.numeric(as.character(fusna$DECES01))
 fusna$relapse2 = as.factor(fusna$relapse)
 
 coxfusnad = coxph(formula = Surv(time2, status2) ~ age + SEXE2 + Primitifpoumon + ETIOLOGIE2 + HEMOPTYSIE.VOLUME2
-                 + HEMOPTYSIE.IMPORTANTE + Hemodynamique2 + Factfavor2 + IMAGERIE.EXCAVE_class
-                 + LESION.NECROTIQUE_class + LESION.NECROTIQUE_class
-                 + lesionarterepulm2 + taillelesion_m + TECHembolPULM12 + arrethem + relapse2, data = fusna)
+                  + HEMOPTYSIE.IMPORTANTE + Hemodynamique2 + Factfavor2 + IMAGERIE.EXCAVE_class
+                  + LESION.NECROTIQUE_class + LESION.NECROTIQUE_class
+                  + lesionarterepulm2 + taillelesion_m + TECHembolPULM12 + arrethem + relapse2, data = fusna)
 
 summary(coxfusnad)
 confint(coxfusna)  #coefficient CIs
