@@ -116,7 +116,6 @@ ha %>%
   summarise_at(vars("CD_56_dim_M0_mm3"), funs(mean, sd), na.rm = TRUE)
 t.test(ha$CD_56_dim_M0_mm3, ha$recidive01, alternative = c("two.sided"), conf.level = 0.95)
 
-
 # ha$CD_56_dim_M6_mm3
 ha$CD_56_dim_M6_mm3 = as.numeric(as.character(ha$CD_56_dim_M6_mm3))
 mean(ha$CD_56_dim_M6_mm3, na.rm = TRUE)
@@ -277,6 +276,17 @@ had %>%
 had$ITKdiag_yn = as.numeric(as.character(had$ITKdiag_y))
 t.test(had$ITKdiag_yn, had$recidive01, alternative = c("two.sided"), conf.level = 0.95)
 
+# ha$Date_dinclusion - had$Date_perte_RMM 
+
+had$incre = as.Date(had$Date_dinclusion) - as.Date(had$Date_perte_RMM)
+had$incre_y = had$incre/365.25
+mean(had$incre_y, na.rm = TRUE)
+sd(had$incre_y, na.rm = TRUE)
+
+had %>%
+  group_by(recidive01) %>%
+  summarise_at(vars("incre_y"), funs(mean, sd), na.rm = TRUE)
+
 ####################################################
 
 # RELAPSE
@@ -292,13 +302,44 @@ a = as.Date(had$dernier_bcrabldose) - as.Date(had$Date_dinclusion)
 b = as.Date(had$Date_perte_RMM) - as.Date(had$Date_dinclusion)
 ha$fup = ifelse(had$recidive01 == "1", b, a)
 table(ha$fup)
-ha$time = ha$fup / 31
+ha$time = ha$fup / (365.25/12)
 ha$time = as.numeric(as.character(ha$Time))
 
 km <- survfit(Surv(time, status) ~ 1, data = ha)
 plot(km)
 plot(km, main='Courbes de survie', lwd=2, ylab='Survie', xlab='temps (mois)', xlim = c(0,6))
 
+library("ggfortify")
+
+autoplot(km, surv.linetype = "dashed", surv.colour = "orange", 
+         censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
+
+install.packages("survminer")
+library("survminer")
+
+ggsurvplot(km, data = ha)
+
+####################################################
+
+# RECIDIVE 6 MOIS
+
+bm = b/(365.25/12)
+str(bm)
+bm = as.numeric(as.character(bm))
+ha$recidive6[bm <= 6] <- "1"
+ha$recidive6[bm > 6] <- "0" 
+table(ha$recidive6)
+
+(20/25)*100 #SURVIE SANS RECHUTE
+prop.test((25-5), 25, correct = FALSE)
+0.6086905*100
+0.9113942*100
+
+
+(19/25)*100
+prop.test((25-6), 25, correct = FALSE)
+0.5657032*100
+0.8850369*100
 ####################################################
 
 variablesk = c("Nbre_de_ligands_KIR", "KIR2DL5", "KIR2DS1", "KIR2DS4exp", "KIR3DS1", "KIR2DL1plus_C2plus",
@@ -343,3 +384,14 @@ chisq.test(ha$CenBB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
 chisq.test(ha$TelAA, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
 chisq.test(ha$TelAB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
 chisq.test(ha$TelBB, ha$recidive01, correct = FALSE, simulate.p.value = TRUE)
+
+####################################################
+
+harm <- read_excel("donneesRM5.xlsx", na="") 
+names(harm)
+tabdes = table(harm$BCRM0)
+prop.table(tabdes)
+
+tabuni = table(harm$BCRM0, harm$recidive01)
+prop.table(tabuni, margin = 2)
+chisq.test(harm$BCRM0, harm$recidive01, correct = FALSE, simulate.p.value = TRUE)
