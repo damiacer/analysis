@@ -45,10 +45,10 @@ fus <- fus %>% rename(
   "arrethem" = "Arrêt immediat hemoptysie"
   )
 
-fusna <- as_tibble(fusna)
-fusna <- fusna %>% rename(
-  "arrethem" = "Arrêt immediat hemoptysie"
-)
+#fusna <- as_tibble(fusna)
+#fusna <- fusna %>% rename(
+#  "arrethem" = "Arrêt immediat hemoptysie"
+#)
 
 ################################################################################
 
@@ -72,7 +72,6 @@ fusna <- fusna %>% rename(
 # table(fus$track)
 
 # fusna$Primitifpoumon
-
 fus$Primitifpoumon2[fus$Primitifpoumon == "Primitif"] <- "1"
 fus$Primitifpoumon2[fus$Primitifpoumon == "Secondaire"] <- "2"
 table(fus$Primitifpoumon2)
@@ -206,6 +205,7 @@ variables = c("age",
               "TECHembolPULM2",
               "delaissurvgeste",
               "relapsec",
+              "arrethem",
               "DECES01")
 
 categorical = c("SEXE",
@@ -221,6 +221,7 @@ categorical = c("SEXE",
                 "prox_distal_class",
                 "TECHembolPULM2",
                 "relapsec",
+                "arrethem",
                 "DECES01")
 
 # CREATE THE DESCRIPTIVE TABLE TABLE 
@@ -228,12 +229,13 @@ tab1 = CreateTableOne(vars = variables, data = fus, factorVars = categorical)
 print(tab1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
 # CREATE THE UNIVARIATE TABLE 
-tab2 = CreateTableOne(vars = variables, data = fus, factorVars = categorical, test = TRUE, 
+tab2 = CreateTableOne(vars = variables, data = fusnad, 
+                      factorVars = categorical, test = TRUE, 
                       includeNA = FALSE, strata = "DECES01")
 print(tab2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
-str(fus$relapse)
-tab3 = CreateTableOne(vars = variables, data = fus, factorVars = categorical, test = TRUE, 
+str(fusna$relapsec)
+tab3 = CreateTableOne(vars = variables, data = fusna, factorVars = categorical, test = TRUE, 
                       includeNA = FALSE, strata = "relapsec")
 print(tab3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
@@ -417,6 +419,10 @@ mean(fus$daterecidive, na.rm = TRUE)
 min(fus$daterecidive, na.rm = TRUE)
 max(fus$daterecidive, na.rm = TRUE)
 
+#########################################
+############## FOLLOW UP ################
+#########################################
+
 # FUP OVERALL (FOLLOW UP AFTER TREATMENT)
 # DEATHS ARE CENSORED - NO CONCURRENT EVENT
 # DECES COMME DICHOTOMOUS VARIABLE
@@ -430,10 +436,22 @@ b = as.Date(fus$datedeces) - as.Date(fus$dategeste)
 fus$fup = ifelse(fus$DECES01 == "1", b, a)
 table(fus$fup)
 
+# FUP FOR DEATH DATA
+fus$fupd = a
+
+#########################################
+############## ONLY FU ##################
+#########################################
+
+require(dplyr)
+
 # NEW DATABASE WITH ONLY COMPLETE DATA
 # more on drop: https://blog.rstudio.com/2016/08/15/tidyr-0-6-0/
 fusna <- fus %>% drop_na(fup)
 count(fusna)
+
+fusnad <- fus %>% drop_na(fupd)
+count(fusnad)
 
 mean(fus$fup, na.rm = TRUE)
 is.na(fus$fup)
@@ -558,7 +576,7 @@ My.stepwise.coxph(Time = "time", Status = "status", variable.list = var.list,
 My.stepwise.coxph(Time = "time", Status = "status", variable.list = c("age"), 
                   data = fusna, sle = 0.15, sls = 0.15)
 
-################################################################################
+#-------------------------------------------------------------------------------
 
 library("survival")
 install.packages("rms")
@@ -567,7 +585,190 @@ install.packages("riskRegression")
 library("riskRegression")
 
 selectcox1 <- selectCox(Surv(time, status) ~ age + SEXE + Primitifpoumon + ETIOLOGIE2 
-             + HEMOPTYSIE.VOLUME + HEMOPTYSIE.IMPORTANTE + Hemodynamique + 
-             Factfavor2 + IMAGERIE.EXCAVE_class + LESION.NECROTIQUE_class + 
-             lesionarterepulm + taillelesion_m + prox_distal_class + 
-             TECHembolPULM1 + delaissurvgeste, data = fusna)
+                        + HEMOPTYSIE.VOLUME + HEMOPTYSIE.IMPORTANTE + Hemodynamique + 
+                          Factfavor2 + IMAGERIE.EXCAVE_class + LESION.NECROTIQUE_class + 
+                          lesionarterepulm + taillelesion_m + prox_distal_class + 
+                          TECHembolPULM1 + delaissurvgeste, data = fusna)
+
+################################################################################
+
+#################################################################
+# GET THE COX MODEL BY USING FACTOR VARIABLES WHERE APPROPRIATE #
+#################################################################
+
+# SEXE
+fusna$SEXE2 = as.factor(fusna$SEXE2)
+
+# Primitifpoumon
+fusna$Primitifpoumon2 = as.factor(fusna$Primitifpoumon2)
+
+# ETIOLOGIE2
+fusna$ETIOLOGIE2f = as.factor(fusna$ETIOLOGIE2f)
+
+# HEMOPTYSIE.VOLUME
+fusna$HEMOPTYSIE.VOLUME2 = as.factor(fusna$HEMOPTYSIE.VOLUME2)
+
+# HEMOPTYSIE.IMPORTANTE
+fusna$HEMOPTYSIE.IMPORTANTE2 = as.factor(fusna$HEMOPTYSIE.IMPORTANTE2)
+
+# Hemodynamique
+fusna$Hemodynamique2 = as.factor(fusna$Hemodynamique2)
+
+# Factfavor2
+fusna$Factfavor2 = as.factor(fusna$Factfavor2)
+
+# IMAGERIE.EXCAVE_class
+fusna$IMAGERIE.EXCAVE_class = as.factor(fusna$IMAGERIE.EXCAVE_class)
+
+# LESION.NECROTIQUE_class
+fusna$LESION.NECROTIQUE_class = as.factor(fusna$LESION.NECROTIQUE_class)
+
+# lesionarterepulm
+fusna$lesionarterepulm2 = as.factor(fusna$lesionarterepulm2)
+
+# taillelesion_m
+fusna$taillelesion_m = fusna$taillelesion_m
+
+# prox_distal_class
+fusna$prox_distal_class = as.factor(fusna$prox_distal_class)
+
+# TECHembolPULM1
+fusna$TECHembolPULM12 = as.factor(fusna$TECHembolPULM12)
+
+# fusna$delaissurvgeste
+
+#-------------------------------------------------------------------------------
+
+# UNIVARIATE MODEL VARIABLES
+
+coxdatafusna <- fusna[,c("age", "SEXE2", "Primitifpoumon", "ETIOLOGIE2", "HEMOPTYSIE.VOLUME2",
+                         "HEMOPTYSIE.IMPORTANTE", "Hemodynamique2", "Factfavor2", "IMAGERIE.EXCAVE_class",
+                         "LESION.NECROTIQUE_class", "LESION.NECROTIQUE_class", "lesionarterepulm2", "taillelesion_m",
+                         "TECHembolPULM12", "arrethem", "relapsec", "DECES01", "fup")]
+
+
+time = fusna$fupd
+
+# RECODE DECES01 AND relapse FOR THE COX STATEMENT
+# 1st UNIVARIATE
+valetudo = fusna$DECES01
+valetudo = as.numeric(as.character(valetudo))
+valetudo = ifelse(valetudo == 0, 1, 2)
+
+table(valetudo)
+str(valetudo)
+status = as.numeric(as.character(valetudo))
+
+# 2nd UNIVARIATE
+valetudo = fusna$relapsec
+valetudo = as.numeric(as.character(valetudo))
+valetudo = ifelse(valetudo == 0, 1, 2)
+
+table(valetudo)
+str(valetudo)
+status = as.numeric(as.character(valetudo))
+
+
+covariates <- c("age", "SEXE2", "Primitifpoumon", "ETIOLOGIE2", "HEMOPTYSIE.VOLUME2",
+"HEMOPTYSIE.IMPORTANTE", "Hemodynamique2", "Factfavor2", "IMAGERIE.EXCAVE_class",
+"LESION.NECROTIQUE_class", "lesionarterepulm2", "taillelesion_m",
+"TECHembolPULM12", "arrethem", "relapsec"
+ #, #DECES01"
+)
+
+univ_formulas <- sapply(covariates,
+                        function(x) as.formula(paste('Surv(time, valetudo)~', x)))
+
+library("survival")
+
+univ_models <- lapply(univ_formulas, function(x){coxph(x, data = coxdatafusna)})
+
+# EXTRACT DATA
+univ_results <- lapply(univ_models,
+                       function(x){ 
+                         x <- summary(x)
+                         p.value<-signif(x$wald["pvalue"], digits=2)
+                         wald.test<-signif(x$wald["test"], digits=2)
+                         beta<-signif(x$coef[1], digits=2); #coeficient beta
+                         HR <-signif(x$coef[2], digits=2); #exp(beta)
+                         HR.confint.lower <- signif(x$conf.int[,"lower .95"], 2)
+                         HR.confint.upper <- signif(x$conf.int[,"upper .95"],2)
+                         HR <- paste0(HR, " (", 
+                                      HR.confint.lower, "-", HR.confint.upper, ")")
+                         res<-c(beta, HR, wald.test, p.value)
+                         names(res)<-c("beta", "HR (95% CI for HR)", "wald.test", 
+                                       "p.value")
+                         return(res)
+                         #return(exp(cbind(coef(x),confint(x))))
+                       })
+
+res <- t(as.data.frame(univ_results, check.names = F))
+as.data.frame(res)
+
+#-------------------------------------------------------------------------------
+
+# COX UNIVARIATES
+
+# lesionarterepulm_class
+
+time = fusna$fup
+status = valetudo
+
+coxfusnad = coxph(formula = Surv(time, status) ~ arrethem, data = fusna)
+
+summary(coxfusnad)
+confint(coxfusnad)  #coefficient CIs
+exp(confint(coxfusnad))  #Also HR CIs
+
+################################################################################1
+
+install.packages("survminer")
+library("survminer")
+
+fusnad$status <- status
+fusnad$time <- fusnad$fup/(365.25/12)
+
+linelistsurv.by = survfit(Surv(time, status) ~ relapsec, data = fusnad)
+
+survminer::ggsurvplot(
+  linelistsurv.by, 
+  data = apkd.dathap,          
+  conf.int = FALSE,              # do not show confidence interval of KM estimates
+  surv.scale = "percent",        # present probabilities in the y axis in %
+  break.time.by = 10,            # present the time axis with an increment of 10 days
+  xlab = "Follow-up days",
+  ylab = "Survival Probability",
+  pval = T,                      # print p-value of Log-rank test 
+  pval.coord = c(40,.91),        # print p-value at these plot coordinates
+  risk.table = T,                # print the risk table at bottom 
+  legend.title = "overall",     # legend characteristics, "class1" and "class2" most of the time
+  #legend.labs = c("class1","class2"),
+  font.legend = 10, 
+  palette = "Dark2",             # color palette 
+  surv.median.line = "hv",       # draw horizontal and vertical lines to the median survivals
+  ggtheme = theme_light()        # simplify plot background
+)
+
+#-------------------------------------------------------------------------------
+
+# STRATIFY 
+library("ggplot2")
+
+survminer::ggsurvplot(
+  linelistsurv.by, 
+  data = fusnad,          
+  conf.int = FALSE,              # do not show confidence interval of KM estimates
+  surv.scale = "percent",        # present probabilities in the y axis in %
+  break.time.by = 10,            # present the time axis with an increment of 10 days
+  xlab = "Follow-up days",
+  ylab = "Survival Probability",
+  pval = T,                      # print p-value of Log-rank test 
+  pval.coord = c(40,.91),        # print p-value at these plot coordinates
+  risk.table = T,                # print the risk table at bottom 
+  legend.title = "overall",     # legend characteristics, "class1" and "class2" most of the time
+  legend.labs = c("class1","class2"),
+  font.legend = 10, 
+  palette = "Dark2",             # color palette 
+  surv.median.line = "hv",       # draw horizontal and vertical lines to the median survivals
+  ggtheme = theme_light()        # simplify plot background
+)
