@@ -28,7 +28,7 @@ hem <- hem %>% rename(
   "Surface_hematome_cm2" = "Surface_de_l'hematome_cm2",
   "Volume_hematome_cm3" = "Volume_de_l'hematome_cm3",
   "Recidive_hemorragie_apres_embolisation" = "Recidive_de_l'hemorragie_apres_embolisation"
-  )
+)
 
 ################################################################################
 
@@ -185,9 +185,26 @@ table(hem$Nombre_de_fuites01)
 fuitab = table(hem$Nombre_de_fuites01, hem$deces01)
 prop.table(fuitab, margin = 2)
 
+table(hem$Localisation)
+hem$Localisation2[hem$Localisation == "ANT"] <- "ANT"
+hem$Localisation2[hem$Localisation == "CUISSE"] <- "CUISSEFESSE"
+hem$Localisation2[hem$Localisation == "FESSE"] <- "CUISSEFESSE"
+hem$Localisation2[hem$Localisation == "POST"] <- "POST"
+table(hem$Localisation2)
+
+table(hem$Fuite_arterielle)
+hem$Fuite_arterielle2[hem$Fuite_arterielle == "0"] <- "0"
+hem$Fuite_arterielle2[hem$Fuite_arterielle == "1"] <- "1"
+hem$Fuite_arterielle2[hem$Fuite_arterielle == "X"] <- "."
+hem$Fuite_arterielle2 = as.numeric(as.character(hem$Fuite_arterielle2))
+table(hem$Fuite_arterielle2)
+hem$Fuite_arterielle2 = as.factor(hem$Fuite_arterielle2)
+
 ################################################################################
 
 # FOLLOW-UP
+
+hem$deces01 = as.factor(hem$deces01)
 
 a = as.Date(hem$Date_des_dernieres_nouvelles) - as.Date(hem$DSI)
 b = as.Date(hem$DATE_DC) - as.Date(hem$DSI)
@@ -206,7 +223,7 @@ hem$fuppos = as.numeric(as.character(hem$fuppos))
 require(dplyr)
 
 hemna <- hem %>% drop_na(fuppos)
-count(hemna) # 203
+count(hemna) # 202
 count(hem) #224
 
 ################################################################################
@@ -240,56 +257,3 @@ plot(km.by.emb)
 km_fitembo <- survfit(Surv(time, status) ~ Embolisation, data = hemna)
 autoplot(km_fitembo, surv.linetype = "dashed", surv.colour = "orange", 
          censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
-
-################################################################################
-
-# SURVIVAL ANALYSIS
-
-# install.packages("My.stepwise")
-require("My.stepwise")
-
-time = hemna$fup
-status = hemna$deces01
-
-var.list = c("Sexe",
-             "Taille_cm",
-             "Poids_kg",
-             "BMI",
-             "HTA",
-             "Comorbidite",
-             "Autre_comorbidite",
-             "Cardiopathie",
-             "Diabete",
-             "Hb_J0_gdL",
-             "Anemie",
-             "Plaquettes_J0_GL",
-             "DFG_mLmin",
-             "Indication_anticoagulant",
-             "Indication_anticoagulation_eq_trouble_du_rythme_cardiaque",
-             "Indication_anticoagulation_eq_MTEV",
-             "Indication_anticoagulation_eq_valve_mecanique",
-             "Indication_anticoagulation_eq_autre",
-             "TP_J0_perc",
-             "TCAr_J0",
-             "INR_J0",
-             "Anti_Xa_J0_UImL",
-             "Surdosage_anticoagulant",
-             "Antiaggregant_plaquettaire",
-             "Helice_apres_injection_temps_arteriel",
-             "Helice_apres_injection_temps_portal", 
-             "Nombre_hematomes",
-             "Localisation",
-             "Taille_de_l'hematome_grand_axe_mm",
-             "Surface_de_l'hematome_cm2",
-             "Volume_de_l'hematome_cm3",
-             "Fuite_arterielle",
-             "Fuite_portale",
-             "Nombre_de_fuites",
-             "Hematome_rompu",
-             "Embolisation",
-             "Fuite_arteriographique",
-             "Recidive_hemorragie_apres_embolisation",
-             "Deces_inf1_mois")
-
-My.stepwise.coxph(Time = "time", Status = "status", variable.list = var.list, 
-                  data = hemna, sle = 0.25, sls = 0.25)
