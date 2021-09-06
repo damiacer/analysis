@@ -24,7 +24,10 @@ hem <- hem %>% rename(
   # new name = old name,
   "TP_J0_perc" = "TP_J0_%",
   "Nombre_hematomes" = "Nombre_d'hematomes",
-  "Taille_hematome_grand_axe_mm" = "Taille_de_l'hematome_grand_axe,_mm"
+  "Taille_de_hematome_grand_axe_mm" = "Taille_de_l'hematome_grand_axe,_mm",
+  "Surface_hematome_cm2" = "Surface_de_l'hematome_cm2",
+  "Volume_hematome_cm3" = "Volume_de_l'hematome_cm3",
+  "Recidive_hemorragie_apres_embolisation" = "Recidive_de_l'hemorragie_apres_embolisation"
   )
 
 ################################################################################
@@ -38,10 +41,10 @@ hem$DATE_DCNUM = as.numeric(hem$DATE_DC)
 hem$DATE_DCC = as.factor(hem$DATE_DCNUM)
 
 hd <- as.data.frame(hem$DATE_DCNUM)
-  is.data.frame(hd)
-  # View(hd)
-  is.na(hd)
-  
+is.data.frame(hd)
+# View(hd)
+is.na(hd)
+
 hd[is.na(hd)] <- 0
 table(hd)
 hem$DATE_DCNUM <- hd
@@ -57,74 +60,74 @@ library("tableone")
 dput(names(hem)) 
 
 variables = c("Sexe",
-	"Taille_cm",
-	"Poids_kg",
-	"BMI",
-	"HTA",
-	"Comorbidite",
-	"Autre_comorbidite",
-	"Cardiopathie",
-	"Diabete",
-	"Hb_J0_gdL",
-	"Anemie",
-	"Plaquettes_J0_GL",
-	"DFG_mLmin",
-	"Indication_anticoagulant",
-	"Indication_anticoagulation_eq_trouble_du_rythme_cardiaque",
-	"Indication_anticoagulation_eq_MTEV",
-	"Indication_anticoagulation_eq_valve_mecanique",
-	"Indication_anticoagulation_eq_autre",
-	"TP_J0_perc",
-	"TCAr_J0",
-	"INR_J0",
-	"Anti_Xa_J0_UImL",
-	"Surdosage_anticoagulant",
-	"Antiaggregant_plaquettaire",
-	"Helice_apres_injection_temps_arteriel",
-	"Helice_apres_injection_temps_portal", 
-	"Nombre_hematomes",
-	"Localisation",
-	"Taille_de_l'hematome_grand_axe_mm",
-	"Surface_de_l'hematome_cm2",
-	"Volume_de_l'hematome_cm3",
-	"Fuite_arterielle",
-	"Fuite_portale",
-	"Nombre_de_fuites",
-	"Hematome_rompu",
-	"Embolisation",
-	"Fuite_arteriographique",
-	"Recidive_hemorragie_apres_embolisation",
-	"Deces_inf1_mois",
-	"deces01") 
+              "Taille_cm",
+              "Poids_kg",
+              "BMI",
+              "HTA",
+              "Comorbidite",
+              "Autre_comorbidite",
+              "Cardiopathie",
+              "Diabete",
+              "Hb_J0_gdL",
+              "Anemie",
+              "Plaquettes_J0_GL",
+              "DFG_mLmin",
+              "Indication_anticoagulant",
+              "Indication_anticoagulation_eq_trouble_du_rythme_cardiaque",
+              "Indication_anticoagulation_eq_MTEV",
+              "Indication_anticoagulation_eq_valve_mecanique",
+              "Indication_anticoagulation_eq_autre",
+              "TP_J0_perc",
+              "TCAr_J0",
+              "INR_J0",
+              "Anti_Xa_J0_UImL",
+              "Surdosage_anticoagulant",
+              "Antiaggregant_plaquettaire",
+              "Helice_apres_injection_temps_arteriel",
+              "Helice_apres_injection_temps_portal", 
+              "Nombre_hematomes",
+              "Localisation",
+              "Taille_de_hematome_grand_axe_mm",
+              "Surface_hematome_cm2",
+              "Volume_hematome_cm3",
+              "Fuite_arterielle",
+              "Fuite_portale",
+              "Nombre_de_fuites",
+              "Hematome_rompu",
+              "Embolisation",
+              "Fuite_arteriographique",
+              "Recidive_hemorragie_apres_embolisation",
+              "Deces_inf1_mois",
+              "deces01") 
 
 categorical = c("Sexe",
-	"HTA",
-	"Comorbidite",
-	"Autre_comorbidite",
-	"Cardiopathie",
-	"Diabete",
-	"Anemie",
-	"Indication_anticoagulant",
-	"Indication_anticoagulation_eq_trouble_du_rythme_cardiaque",
-	"Indication_anticoagulation_eq_MTEV",
-	"Indication_anticoagulation_eq_valve_mecanique",
-	"Indication_anticoagulation_eq_autre",
-	"Surdosage_anticoagulant",
-	"Antiaggregant_plaquettaire",
-	"Helice_apres_injection_temps_arteriel",
-	"Helice_apres_injection_temps_portal", 
-	"Nombre_hematomes",
-	"Localisation",
-	"Fuite_arterielle",
-	"Fuite_portale",
-	"Nombre_de_fuites",
-	"Hematome_rompu",
-	"Embolisation",
-	"DATE_embolisation",
-	"Fuite_arteriographique",
-	"Recidive_hemorragie_apres_embolisation",
-	"Deces_inf1_mois",
-	"deces01")
+                "HTA",
+                "Comorbidite",
+                "Autre_comorbidite",
+                "Cardiopathie",
+                "Diabete",
+                "Anemie",
+                "Indication_anticoagulant",
+                "Indication_anticoagulation_eq_trouble_du_rythme_cardiaque",
+                "Indication_anticoagulation_eq_MTEV",
+                "Indication_anticoagulation_eq_valve_mecanique",
+                "Indication_anticoagulation_eq_autre",
+                "Surdosage_anticoagulant",
+                "Antiaggregant_plaquettaire",
+                "Helice_apres_injection_temps_arteriel",
+                "Helice_apres_injection_temps_portal", 
+                "Nombre_hematomes",
+                "Localisation",
+                "Fuite_arterielle",
+                "Fuite_portale",
+                "Nombre_de_fuites",
+                "Hematome_rompu",
+                "Embolisation",
+                "DATE_embolisation",
+                "Fuite_arteriographique",
+                "Recidive_hemorragie_apres_embolisation",
+                "Deces_inf1_mois",
+                "deces01")
 
 # CREATE THE DESCRIPTIVE TABLE TABLE  
 tab1 = CreateTableOne(vars = variables, data = hem, factorVars = categorical) 
@@ -134,6 +137,10 @@ print(tab1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 tab2 = CreateTableOne(vars = variables, data = hem, factorVars = categorical, test = TRUE,  
                       includeNA = FALSE, strata = "deces01")
 print(tab2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)  
+
+tab3 = CreateTableOne(vars = variables, data = hem, factorVars = categorical, test = TRUE,  
+                      includeNA = FALSE, strata = "Embolisation")
+print(tab3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)  
 
 ################################################################################
 
@@ -173,6 +180,7 @@ table(hem$Nombre_de_fuites2)
 hem$Nombre_de_fuites2 = as.numeric(as.character(hem$Nombre_de_fuites2))
 str(hem$Nombre_de_fuites2)
 hem$Nombre_de_fuites01 = ifelse(hem$Nombre_de_fuites2 == 1, "1", "2")
+table(hem$Nombre_de_fuites01)
 
 fuitab = table(hem$Nombre_de_fuites01, hem$deces01)
 prop.table(fuitab, margin = 2)
@@ -214,13 +222,23 @@ km <- with(hemna, Surv(time, status))
 plot(km, xscale = 365.25)
 
 
-# install.packages("ggfortify")
+install.packages("ggfortify")
 library("ggfortify")
 
 km_fit <- survfit(Surv(time, status) ~ 1, data = hemna)
 summary(km_fit, times = c(1,100,200,500*(1:10)))
 
 autoplot(km_fit, surv.linetype = "dashed", surv.colour = "orange", 
+         censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
+
+#------------------------------------------------------------------------------
+
+survobj = with(hemna, Surv(time, status))
+km.by.emb <- survfit(survobj ~ Embolisation, data = hemna, conf.type = "log-log")
+plot(km.by.emb)
+
+km_fitembo <- survfit(Surv(time, status) ~ Embolisation, data = hemna)
+autoplot(km_fitembo, surv.linetype = "dashed", surv.colour = "orange", 
          censor.colour = "red", conf.int = "TRUE", censor.shape = "*")
 
 ################################################################################
