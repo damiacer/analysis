@@ -17,25 +17,25 @@ library("tidyverse")
 camat <- read_excel("database.xlsx", na=".")
 
 names(camat)
-View(camat)
+#View(camat)
 table(camat$groupe)
 
 ################################################################################
 
-# Critère de jugement principal :
-# Comparaison du delta du score à l'inclusion (T0) et après 6 mois de prise 
-# en charge (T1) à l'inventaire d'alliance de travail (de Roten, 2006) pour le 
+# CritÃ¨re de jugement principal :
+# Comparaison du delta du score Ã  lâ€™inclusion (T0) et aprÃ¨s 6 mois de prise 
+# en charge (T1) Ã  lâ€™inventaire dâ€™alliance de travail (de Roten, 2006) pour le 
 # groupe case management comparativement au groupe prise en charge 
-# infirmière traditionnelle.
+# infirmiÃ¨re traditionnelle.
 
-# Critère de jugement Secondaire :
-# Scores aux échelles suivantes : Birchwood Insight Scale (Jaafari et al., 2007), 
+# CritÃ¨re de jugement Secondaire :
+# Scores aux Ã©chelles suivantes : Birchwood Insight Scale (Jaafari et al., 2007), 
 # The Scale to assess Unawareness of Mental Disorder (Jaafari et al., 2010), 
-# Echelle de bien-être au travail (Biétry et Creusier, 2013)
-# Corrélations entre les scores à l'inventaire d'alliance de travail (de Roten, 2006)
-# et les échelles suivantes : Birchwood Insight Scale (Jaafari et al., 2007), 
+# Echelle de bien-Ãªtre au travail (BiÃ©try et Creusier, 2013)
+# CorrÃ©lations entre les scores Ã  lâ€™inventaire dâ€™alliance de travail (de Roten, 2006)
+# et les Ã©chelles suivantes : Birchwood Insight Scale (Jaafari et al., 2007), 
 # The Scale to assess Unawareness of Mental Disorder (Jaafari et al., 2010), 
-# Echelle de bien-être au travail (Biétry et Creusier, 2013)
+# Echelle de bien-Ãªtre au travail (BiÃ©try et Creusier, 2013)
 
 ################################################################################
 
@@ -46,9 +46,28 @@ nf <- function(x){
   return(result)
 }
 
+camat$duree_mal_annee  <- nf(camat$duree_mal_annee)
+camat$chlorpromazine_equivalent_mg_j <- nf(camat$chlorpromazine_equivalent_mg_j)
+camat$m6_chlorpromazine_equivalent_mg_j <- nf(camat$m6_chlorpromazine_equivalent_mg_j)
+camat$m6_bientravail <- nf(camat$m6_bientravail)
+camat$sumd_partconscien_ca <- nf(camat$sumd_partconscien_ca)
+camat$m6_sumd_partconscien_na <- nf(camat$m6_sumd_partconscien_na)
+camat$m6_sumd_partconscien_np <- nf(camat$m6_sumd_partconscien_np)
+camat$sumd_ratio_ca <- nf(camat$sumd_ratio_ca)
+camat$sumd_ratio_cp <- nf(camat$sumd_ratio_cp)
+camat$sumd_ratio_aa <- nf(camat$sumd_ratio_aa)
+camat$sumd_ratio_ap <- nf(camat$sumd_ratio_ap)
+camat$m6_sumd_ratio_ca <- nf(camat$m6_sumd_ratio_ca)
+camat$m6_sumd_ratio_cp <- nf(camat$m6_sumd_ratio_cp)
+camat$m6_sumd_ratio_aa <- nf(camat$m6_sumd_ratio_aa)
+camat$m6_sumd_ratio_ap <- nf(camat$m6_sumd_ratio_ap)
+camat$sumd_somme <- nf(camat$sumd_somme)
+camat$m6_sumd_somme <- nf(camat$m6_sumd_somme)
+camat$m6_bientravail <- nf(camat$m6_bientravail)
+
 ################################################################################
 
-install.packages("tableone")
+#install.packages("tableone")
 library("tableone")
 
 camatvars = c("groupe",
@@ -135,7 +154,6 @@ camatvars = c("groupe",
               )
 
 camatcat = c("groupe",
-              "age",
               "antecedents_fam",
               "antipsychotique",
               "m6_antipsychotique",
@@ -148,3 +166,163 @@ camatcat = c("groupe",
 
 camat_descriptive = CreateTableOne(vars = camatvars, data = camat, factorVars = camatcat)
 print(camat_descriptive, showAllLevels = TRUE, quote = TRUE, noSpaces = TRUE)
+
+camat_deux = CreateTableOne(vars = camatvars, data = camat, factorVars = camatcat,
+                            test = FALSE, includeNA = FALSE, strata = "groupe")
+print(camat_deux, showAllLevels = FALSE, quote = TRUE, noSpaces = TRUE)
+
+################################################################################
+
+# CREATION DE DELTAS POUR TOUTES LES VARIABLES SCORE
+
+# posneg_P 
+
+camat$
+
+# posneg_N 
+  
+camat$
+
+# posneg_G 
+
+camat$
+
+# posneg_T
+
+camat$
+
+# sumd_conscient_ca 
+  
+camat$
+
+# sumd_conscient_cp
+
+camat$
+
+# sumd_conscient_aa
+  
+camat$
+
+# sumd_conscient_ap
+  
+camat$
+
+# sumd_conscient_na
+  
+camat$
+
+# sumd_conscient_np
+  
+camat$
+
+# sumd_partconscien_ca
+  
+camat$
+
+# sumd_partconscien_ca
+
+camat$
+
+# sumd_partconscien_cp
+  
+camat$
+
+# sumd_partconscien_aa
+  
+camat$
+
+# sumd_partconscien_ap
+  
+camat$
+
+# sumd_partconscien_na
+  
+camat$
+
+# sumd_partconscien_np
+  
+camat$
+
+# sumd_inc_ca
+  
+camat$
+
+# sumd_inc_cp
+  
+camat$
+
+# sumd_inc_aa
+  
+camat$
+
+# sumd_inc_ap
+  
+camat$
+
+# sumd_inc_na
+  
+camat$
+
+# sumd_inc_np
+  
+camat$
+
+# m6_sumd_inc_ca
+  
+camat$
+
+# m6_sumd_inc_cp
+  
+camat$
+
+# m6_sumd_inc_aa
+  
+camat$
+
+# m6_sumd_inc_ap
+  
+camat$
+
+# m6_sumd_inc_na
+  
+camat$
+
+# m6_sumd_inc_np
+  
+camat$
+
+# sumd_ratio_ca
+  
+camat$
+
+# sumd_ratio_cp
+  
+camat$
+
+# sumd_ratio_aa 
+  
+camat$
+
+# sumd_ratio_ap 
+
+camat$
+
+# sumd_ratio_na
+  
+camat$
+
+# sumd_ratio_np
+  
+camat$
+
+# sumd_somme
+  
+
+
+# medadhe 
+
+# invenalliance 
+
+# birch 
+
+# bientravail 
