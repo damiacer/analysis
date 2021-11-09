@@ -173,156 +173,226 @@ print(camat_deux, showAllLevels = FALSE, quote = TRUE, noSpaces = TRUE)
 
 ################################################################################
 
+# camat$groupe_n[camat$groupe == "A"] <- "1"
+# camat$groupe_n[camat$groupe == "B"] <- "2"
+# camat$groupe_n = as.numeric(as.character(camat$groupe_n))
+
+camat2 <- camat %>% drop_na(groupe)
+
+install.packages("doBy")
+library("doBy")
+
+diff <- function(x,y){
+  result = x-y
+  return(result)
+}
+
+w <- function(x){
+  #result = shapiro.test(x)
+  result = wilcox.test(x ~ camat2$groupe, paired=F, exact=F, 
+                       correct=F,  alternative = "two.sided")
+  #result = t.test(x, y, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
+  return(result)
+}
+
 # CREATION DE DELTAS POUR TOUTES LES VARIABLES SCORE
 
 # posneg_P 
-
-camat$
+camat2$delta.posneg_P = diff(camat2$m6_posneg_P, camat2$posneg_P)
+str(camat2$delta.posneg_P)
+summaryBy(delta.posneg_P ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.posneg_P)
 
 # posneg_N 
-  
-camat$
+camat2$delta.posneg_N = (camat2$m6_posneg_N - camat2$posneg_N)
+summaryBy(delta.posneg_N ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.posneg_N)
 
 # posneg_G 
-
-camat$
+camat2$delta.posneg_G = diff(camat2$m6_posneg_G, camat2$posneg_G)
+summaryBy(delta.posneg_G ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.posneg_G)
 
 # posneg_T
-
-camat$
+camat2$delta.posneg_T = diff(camat2$m6_posneg_T, camat2$posneg_T)
+summaryBy(delta.posneg_T ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.posneg_T)
 
 # sumd_conscient_ca 
-  
-camat$
+camat2$delta.sumd_conscient_ca  = diff(camat2$m6_sumd_conscient_ca, camat2$sumd_conscient_ca)
+summaryBy(delta.sumd_conscient_ca ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_ca)
 
 # sumd_conscient_cp
+camat2$delta.sumd_conscient_cp = diff(camat2$m6_sumd_conscient_cp, camat2$sumd_conscient_cp)
+summaryBy(delta.sumd_conscient_cp ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_cp)
 
-camat$
 
 # sumd_conscient_aa
-  
-camat$
+camat2$delta.sumd_conscient_aa = diff(camat2$m6_sumd_conscient_aa, camat2$sumd_conscient_aa)
+summaryBy(delta.sumd_conscient_aa ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_aa)
 
 # sumd_conscient_ap
-  
-camat$
+camat2$delta.sumd_conscient_ap = diff(camat2$m6_sumd_conscient_ap, camat2$sumd_conscient_ap)
+summaryBy(delta.sumd_conscient_ap ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_ap)
 
 # sumd_conscient_na
-  
-camat$
+camat2$delta.sumd_conscient_na = diff(camat2$m6_sumd_conscient_na, camat2$sumd_conscient_na)
+summaryBy(delta.sumd_conscient_na ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_na)
 
 # sumd_conscient_np
-  
-camat$
+camat2$delta.sumd_conscient_np = diff(camat2$m6_sumd_conscient_np, camat2$sumd_conscient_np)
+summaryBy(delta.sumd_conscient_np ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_conscient_np)
 
 # sumd_partconscien_ca
-  
-camat$
-
-# sumd_partconscien_ca
-
-camat$
+camat2$delta.sumd_partconscien_ca = diff(camat2$m6_sumd_partconscien_ca, camat2$sumd_partconscien_ca)
+summaryBy(delta.sumd_partconscien_ca ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_ca)
 
 # sumd_partconscien_cp
-  
-camat$
+camat2$delta.sumd_partconscien_cp = diff(camat2$m6_sumd_partconscien_cp, camat2$sumd_partconscien_cp)
+summaryBy(delta.sumd_partconscien_cp ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_cp)
 
 # sumd_partconscien_aa
-  
-camat$
+camat2$delta.sumd_partconscien_aa = diff(camat2$m6_sumd_partconscien_aa, camat2$sumd_partconscien_aa)
+summaryBy(delta.sumd_partconscien_aa ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_aa)
 
 # sumd_partconscien_ap
-  
-camat$
+camat2$delta.sumd_partconscien_ap = diff(camat2$m6_sumd_partconscien_ap, camat2$sumd_partconscien_ap)
+summaryBy(delta.sumd_partconscien_ap ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_ap)
 
 # sumd_partconscien_na
-  
-camat$
+camat2$delta.sumd_partconscien_na = diff(camat2$m6_sumd_partconscien_na, camat2$sumd_partconscien_na)
+summaryBy(delta.sumd_partconscien_na ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_na)
 
 # sumd_partconscien_np
-  
-camat$
+camat2$delta.sumd_partconscien_np = diff(camat2$m6_sumd_partconscien_np, camat2$sumd_partconscien_np)
+summaryBy(delta.sumd_partconscien_np ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_partconscien_np)
 
 # sumd_inc_ca
-  
-camat$
+camat2$delta.sumd_inc_ca = diff(camat2$m6_sumd_inc_ca, camat2$sumd_inc_ca)
+summaryBy(delta.sumd_inc_ca ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_ca)
 
 # sumd_inc_cp
-  
-camat$
+camat2$delta.sumd_inc_cp = diff(camat2$m6_sumd_inc_cp, camat2$sumd_inc_cp)
+summaryBy(delta.sumd_inc_cp ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_cp)
 
 # sumd_inc_aa
-  
-camat$
+camat2$delta.sumd_inc_aa = diff(camat2$m6_sumd_inc_aa, camat2$sumd_inc_aa)
+summaryBy(delta.sumd_inc_aa ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_aa)
 
 # sumd_inc_ap
-  
-camat$
+camat2$delta.sumd_inc_ap = diff(camat2$m6_sumd_inc_ap, camat2$sumd_inc_ap)
+summaryBy(delta.sumd_inc_ap ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_ap)
 
 # sumd_inc_na
-  
-camat$
+camat2$delta.sumd_inc_na = diff(camat2$m6_sumd_inc_na, camat2$sumd_inc_na)
+summaryBy(delta.sumd_inc_na ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_na)
 
 # sumd_inc_np
-  
-camat$
-
-# m6_sumd_inc_ca
-  
-camat$
-
-# m6_sumd_inc_cp
-  
-camat$
-
-# m6_sumd_inc_aa
-  
-camat$
-
-# m6_sumd_inc_ap
-  
-camat$
-
-# m6_sumd_inc_na
-  
-camat$
-
-# m6_sumd_inc_np
-  
-camat$
+camat2$delta.sumd_inc_np = diff(camat2$m6_sumd_inc_np, camat2$sumd_inc_np)
+summaryBy(delta.sumd_inc_np ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_inc_np)
 
 # sumd_ratio_ca
-  
-camat$
+camat2$delta.sumd_ratio_ca = diff(camat2$m6_sumd_ratio_ca, camat2$sumd_ratio_ca)
+summaryBy(delta.sumd_ratio_ca ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_ca)
 
 # sumd_ratio_cp
-  
-camat$
+camat2$delta.sumd_ratio_cp = diff(camat2$m6_sumd_ratio_cp, camat2$sumd_ratio_cp)
+summaryBy(delta.sumd_ratio_cp ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_cp)
 
 # sumd_ratio_aa 
-  
-camat$
+camat2$delta.sumd_ratio_aa = diff(camat2$m6_sumd_ratio_aa , camat2$sumd_ratio_aa )
+summaryBy(delta.sumd_ratio_aa ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_aa)
 
 # sumd_ratio_ap 
-
-camat$
+camat2$delta.sumd_ratio_ap = diff(camat2$m6_sumd_ratio_ap , camat2$sumd_ratio_ap )
+summaryBy(delta.sumd_ratio_ap ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_ap)
 
 # sumd_ratio_na
-  
-camat$
+camat2$delta.sumd_ratio_na = diff(camat2$m6_sumd_ratio_na, camat2$sumd_ratio_na)
+summaryBy(delta.sumd_ratio_na ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_na)
 
 # sumd_ratio_np
-  
-camat$
+camat2$delta.sumd_ratio_np = diff(camat2$m6_sumd_ratio_np, camat2$sumd_ratio_np)
+summaryBy(delta.sumd_ratio_np ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_ratio_np)
 
 # sumd_somme
-  
-
+camat2$delta.sumd_somme = diff(camat2$m6_sumd_somme, camat2$m6_sumd_somme)
+summaryBy(delta.sumd_somme ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.sumd_somme)
 
 # medadhe 
+camat2$delta.medadhe = diff(camat2$m6_medadhe, camat2$medadhe )
+summaryBy(delta.medadhe ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.medadhe)
 
 # invenalliance 
+camat2$delta.invenalliance = diff(camat2$m6_invenalliance, camat2$invenalliance )
+summaryBy(delta.invenalliance ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.invenalliance)
 
 # birch 
+camat2$delta.birch = diff(camat2$m6_birch, camat2$birch)
+summaryBy(delta.birch ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.birch)
 
 # bientravail 
+camat2$delta.bientravail = diff(camat2$m6_bientravail , camat2$bientravail)
+summaryBy(delta.bientravail ~ groupe, data = camat2, na.rm = TRUE,
+          FUN = list(median, min, max))
+w(camat2$delta.bientravail)
