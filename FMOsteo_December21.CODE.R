@@ -1,6 +1,6 @@
 ### FOLDER
 getwd()
-setwd("P:/CONSULTATION/FMOstéo")
+setwd("P:/CONSULTATION/FMOstÃ©o")
 getwd()
 
 #--------------------------------------------------------------------
@@ -386,7 +386,7 @@ w(fm$QDSA_NVAL_J301, fm$QDSA_NVAL)
 w(fm$QDSA_OVAL_J301, fm$QDSA_OVAL)
 w(fm$QDSA_PVAL_J301, fm$QDSA_PVAL) 
 
-# comparer la variation du score QDSA (à J232 et J301, par rapport à J0) 
+# comparer la variation du score QDSA (Ã  J232 et J301, par rapport Ã  J0) 
 # entre le groupe OSTEO et le groupe TEMOIN.
 
 deltafunc <- function(x, y){
