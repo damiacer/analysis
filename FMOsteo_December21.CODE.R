@@ -620,3 +620,37 @@ library("asht")
 set.seed(1000)
 theta <- function(x){mean(x)}
 abcnonHtest(x, theta, conf.level=0.95, nullValue=0)
+
+#####################################################################
+
+require("tableone")
+create("tableone")
+
+dput(names(fm))
+
+variables = c("TRT_FM", "TRT_ANTAL", "TRT_ANTID", "TRT_ANXIO", "TRT_ANTIE", "TRT_VORAL",
+              "TRT_VITA", "TRT_MYOR", "TRT_AINS", "TRT_CORTI", "TRT_ATE",
+              "PATH_NEURO_E1_C8", "PATH_NEURO_ACTAS_E1_C8", "PATH_HEPA_E1_C8", 
+              "PATH_HEPA_ACTAS_E1_C8", "PATH_PULMO_E1_C8", "PATH_PULMO_ACTAS_E1_C8", 
+              "PATH_HEMATO_E1_C8", "PATH_HEMATO_ACTAS_E1_C8", "PATH_GASTRO_E1_C8", 
+              "PATH_GASTRO_ACTAS_E1_C8", "PATH_PSYCHI_E1_C8", "PATH_PSYCHI_ACTAS_E1_C8", 
+              "PATH_CANCER_E1_C8", "PATH_CANCER_ACTAS_E1_C8", "SYMP_DEPRES", 
+              "SYMP_SOMMEIL", "SYMP_FATCRO", "ACT_6M", "ACT_PRO", "RECONV", 
+              "ARET_MALA", "ACID_TRAV", "INVALID", "CHOM", "SS_EMPLOI", "RETRAITE")
+
+categorical = c("TRT_FM", "TRT_ANTAL", "TRT_ANTID", "TRT_ANXIO", "TRT_ANTIE", "TRT_VORAL",
+                "TRT_VITA", "TRT_MYOR", "TRT_AINS", "TRT_CORTI", "TRT_ATE",
+                "PATH_NEURO_E1_C8", "PATH_NEURO_ACTAS_E1_C8", "PATH_HEPA_E1_C8", 
+                "PATH_HEPA_ACTAS_E1_C8", "PATH_PULMO_E1_C8", "PATH_PULMO_ACTAS_E1_C8", 
+                "PATH_HEMATO_E1_C8", "PATH_HEMATO_ACTAS_E1_C8", "PATH_GASTRO_E1_C8", 
+                "PATH_GASTRO_ACTAS_E1_C8", "PATH_PSYCHI_E1_C8", "PATH_PSYCHI_ACTAS_E1_C8", 
+                "PATH_CANCER_E1_C8", "PATH_CANCER_ACTAS_E1_C8", "SYMP_DEPRES", 
+                "SYMP_SOMMEIL", "SYMP_FATCRO", "ACT_6M", "ACT_PRO", "RECONV", 
+                "ARET_MALA", "ACID_TRAV", "INVALID", "CHOM", "SS_EMPLOI", "RETRAITE")
+
+tabfm1 = CreateTableOne(vars = variables, data = fm, factorVars = categorical)
+print(tabfm1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+tabfm2 = CreateTableOne(vars = variables, data = fm, factorVars = categorical, 
+                        test = TRUE, includeNA = FALSE, strata = "GP_RANDO")
+print(tabfm2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
