@@ -26,6 +26,9 @@ library("bootstrap")
 #install.packages("boot")
 library("boot")
 
+#install.packages("lme4")
+#install.packages("lmer")
+
 #--------------------------------------------------------------------
 
 ### DATA MANAGEMENT
@@ -34,12 +37,12 @@ library("boot")
 fm <- as_tibble(fm)
 fm <- fm %>% rename(
   # new name = old name,
-  "E_5" = "E_5",
-  "E_47" = "E_47",
-  "E_89" = "E_89",
-  "E_131" = "E_131",
-  "E_173" = "E_173",
-  "E_215" = "E_215",
+  "E_5" = "EVA_SCORE_J5",
+  "E_47" = "EVA_SCORE_J47",
+  "E_89" = "EVA_SCORE_J89",
+  "E_131" = "EVA_SCORE_J131",
+  "E_173" = "EVA_SCORE_J173",
+  "E_215" = "EVA_SCORE_J215",
   "E_232" = "SC_DOL_MM_J232",
   "E_301" = "SC_DOL_MM_J301"
   )
@@ -118,21 +121,26 @@ descriptive(fm$E_301)
 # different from normal distribution: we can assume the normality
 #t.test(fm$eva_delta ~ fm$GP_RANDO, var.equal=FALSE, paired=FALSE, conf.level=0.95)
 
+#difference entre les deux groupes
+wilcox.test(fm$E_5 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
 fm$ED47 <- (fm$E_47 - fm$E_5)
 #shapiro.test(fm$ED47)
 #t.test(fm$ED47, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED47 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+#difference entre les deux groupes
+wilcox.test(fm$E_47 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
 #fm$ED47<-as.numeric(as.character(fm$ED47))
-wilcox.test(eva_completedData$ED47 ~ fm$GP_RANDO, paired=F, exact=F, correct=F, 
-            confint.merMod(method = "boot", boot.type = "perc", object = "boot.ci"))
+#wilcox.test(fm$ED47 ~ fm$GP_RANDO, paired=F, exact=F, correct=F, 
+#            confint.merMod(method = "boot", boot.type = "perc", object = "boot.ci")) #this functions works under lmer or lm4. It does not run on CHU computer
 
-eva_completedData$ED47 <-as.numeric(as.character(eva_completedData$ED47 ))
-    x <- eva_completedData$ED47 
+fm$ED47 <-as.numeric(as.character(fm$ED47))
+    x <- fm$ED47 
     theta <- function(x){mean(x)}
     results <- boott(x,theta,nbootsd=200,nboott=1000)
 
     set.seed(1000)
-    x <- eva_completedData$ED47
+    x <- fm$ED47
     #x <- as.vector(x)
     theta <- function(p,x) {sum(p*x)/sum(p)}
     abcnonHtest(x, theta, conf.level=0.95, nullValue=0)
@@ -144,7 +152,10 @@ fm$ED89 <- (fm$E_89 - fm$E_5)
 #shapiro.test(fm$ED89)
 #t.test(fm$ED89, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED89 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
-wilcox.test(eva_completedData$ED89 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+#difference entre groupes
+wilcox.test(fm$E_89 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
+#wilcox.test(eva_completedData$ED89 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
     x <- eva_completedData$ED89 
     theta <- function(x){mean(x)}
     results <- boott(x,theta,nbootsd=200,nboott=1000)
@@ -162,14 +173,18 @@ fm$ED131 <- (fm$E_131 - fm$E_5)
 #shapiro.test(fm$ED131)
 #t.test(fm$ED131, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED131 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
+#difference entre les deux groupes
+wilcox.test(fm$E_131 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
 wilcox.test(eva_completedData$ED131 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
-    x <- eva_completedData$ED131 
+    x <- as.numeric(fm$ED131)
     theta <- function(x){mean(x)}
     results <- boott(x,theta,nbootsd=200,nboott=1000)
     results
     
     set.seed(1000)
-    x <- eva_completedData$ED131
+    x <- as.numeric(fm$ED131)
     #x <- as.vector(x)
     theta <- function(p,x) {sum(p*x)/sum(p)}
     abcnonHtest(x, theta, conf.level=0.95, nullValue=0)
@@ -181,6 +196,9 @@ fm$ED173 <- (fm$E_173 - fm$E_5)
 #shapiro.test(fm$ED173)
 #t.test(fm$ED173, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED173 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+#difference entre les deux groupes
+wilcox.test(fm$E_173 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
 wilcox.test(eva_completedData$ED173 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
     x <- eva_completedData$ED173 
     theta <- function(x){mean(x)}
@@ -200,6 +218,9 @@ fm$ED215 <- (fm$E_215 - fm$E_5)
 #shapiro.test(fm$ED215)
 #t.test(fm$ED215, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED215 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+#difference entre les deux groupes
+wilcox.test(fm$E_215 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
 wilcox.test(eva_completedData$ED215 ~ fm$GP_RANDO, paired=F, exact=F, correct=F 
             #, bootstrap(x, theta, nboot = 100)
     )
@@ -221,6 +242,9 @@ fm$ED232 <- (fm$E_232 - fm$E_5)
 #shapiro.test(fm$ED232)
 #t.test(fm$ED232, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED232 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+#difference entre les deux groupes
+wilcox.test(fm$E_232 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
 wilcox.test(eva_completedData$ED215 ~ fm$GP_RANDO, paired=F, exact=F, correct=F, conf.int = TRUE, conf.level = 0.95)
     x <- eva_completedData$ED232 
     theta <- function(x){mean(x)}
@@ -238,6 +262,9 @@ fm$ED301 <- (fm$E_301 - fm$E_5)
 #shapiro.test(fm$ED301)
 #t.test(fm$ED301, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(fm$ED301 ~ fm$GP_RANDO, paired=F, exact=F, correct=F, conf.int=T, conf.level=0.95)
+#difference entre les deux groupes
+wilcox.test(fm$E_301 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
+
 wilcox.test(eva_completedData$ED301 ~ fm$GP_RANDO, paired=F, exact=F, correct=F, conf.level = 0.95, conf.int = T)
     x <- eva_completedData$ED301
     theta <- function(x){mean(x)}
@@ -301,13 +328,24 @@ sens_base = fm$QDSA_AVAL + fm$QDSA_BVAL +
   fm$QDSA_EVAL + fm$QDSA_FVAL + 
   fm$QDSA_GVAL + fm$QDSA_HVAL + 
   fm$QDSA_IVAL 
-descriptive(sens_base)
+
+fm$sens_base = sens_base
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("sens_base"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$sens_base ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
 
 aff_base = fm$QDSA_JVAL + fm$QDSA_KVAL + 
   fm$QDSA_LVAL + fm$QDSA_MVAL + 
   fm$QDSA_NVAL + fm$QDSA_OVAL + 
   fm$QDSA_PVAL
 descriptive(aff_base)
+
+fm$aff_base = aff_base
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("aff_base"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$aff_base ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
 
 #-----------------------------------------------------------------------
 
@@ -318,11 +356,23 @@ sens_j232 = fm$QDSA_AVAL_J232 + fm$QDSA_BVAL_J232 +
   fm$QDSA_IVAL_J232 
 descriptive(sens_j232)
 
+fm$sens_j232 = sens_j232
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("sens_j232"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$sens_j232 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
 aff_j232 = fm$QDSA_JVAL_J232 + fm$QDSA_KVAL_J232 + 
   fm$QDSA_LVAL_J232 + fm$QDSA_MVAL_J232 + 
   fm$QDSA_NVAL_J232 + fm$QDSA_OVAL_J232 + 
   fm$QDSA_PVAL_J232
 descriptive(aff_j232)
+
+fm$aff_j232 = aff_j232
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("aff_j232"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$aff_j232 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
 
 #-----------------------------------------------------------------------
 
@@ -333,12 +383,24 @@ sens_j301 = fm$QDSA_AVAL_J301 + fm$QDSA_BVAL_J301 +
   fm$QDSA_IVAL_J301 
 descriptive(sens_j301)
 
+fm$sens_j301 = sens_j301
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("sens_j301"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$sens_j301 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
 
 aff_j301 = fm$QDSA_JVAL_J301 + fm$QDSA_KVAL_J301 + 
   fm$QDSA_LVAL_J301 + fm$QDSA_MVAL_J301 + 
   fm$QDSA_NVAL_J301 + fm$QDSA_OVAL_J301 + 
   fm$QDSA_PVAL_J301
 descriptive(aff_j301)
+
+fm$aff_j301 = aff_j301
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("aff_j301"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$aff_j301 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
 
 #--------------------------------------------------------------------
 
@@ -477,6 +539,9 @@ wg(DP_301)
 # to compare QDSA DELTAS TO BASELINE ACCORDING TO THE GROUP
 
 sens_b232 <- (sens_j232 - sens_base)
+descriptive(sens_b232)
+wilcox.test(sens_j232, sens_base, exact = FALSE, paired = TRUE, correct = FALSE)
+
 shapiro.test(sens_b232) # NOTE : H0 CANNOT BE REJECTED P>0.05 H0:POPULATION IS NORMALLY DISTRIBUTED
 mean(sens_b232, na.rm=T)
 describeBy(sens_b232, fm$GP_RANDO)
@@ -484,16 +549,27 @@ t.test(sens_b232, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, c
 wilcox.test(sens_b232 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
 
 aff_b232 <- (aff_j232 - aff_base)
+descriptive(aff_b232)
+wilcox.test(aff_b232, aff_base, paired = TRUE, exact = FALSE, correct = FALSE)
+
+
 describeBy(aff_b232, fm$GP_RANDO)
 t.test(aff_b232, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(aff_b232 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
 
 sens_b301 <- (sens_j301 - sens_base)
+descriptive(sens_b301)
+wilcox.test(sens_j301, sens_base, paired = TRUE, exact = FALSE, correct = FALSE)
+
 describeBy(sens_b301, fm$GP_RANDO)
 t.test(sens_b301, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(sens_b301 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
 
-aff_b301 <- (aff_j301 - sens_base)
+aff_b301 <- (aff_j301 - aff_base)
+descriptive(aff_b301)
+wilcox.test(aff_j301, aff_base, paired = TRUE, exact = FALSE, correct = FALSE)
+
+
 describeBy(aff_b301, fm$GP_RANDO)
 t.test(aff_b301, fm$GP_RANDO, alternative="two.sided", paired=F, var.equal=F, conf.level=0.95)
 wilcox.test(aff_b301 ~ fm$GP_RANDO, paired=F, exact=F, correct=F)
@@ -582,6 +658,79 @@ fm$SF36_SC_MEN_J301=(fm$SF36_VT_J301 + fm$SF36_SF_J301 + fm$SF36_RE_J301 + fm$SF
 fm$SF36_SC_PHY_J301=(fm$SF36_PF_J301 + fm$SF36_RP_J301 + fm$SF36_BP_J301 + fm$SF36_GH_J301)/4
 
 wilcox.test(fm$SF36_SC_MEN, fm$SF36_SC_MEN_J301, paired=T, exact=F)
+
+#####################################################################
+
+# DESCRIPTIVE FOR THE SF VARIABLES
+# descriptive function : mean, sd, median, mean, max
+
+# fm$SF36_SC_MEN
+descriptive(fm$SF36_SC_MEN)
+library(dplyr)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_MEN"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_MEN ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
+# fm$SF36_SC_PHY
+descriptive(fm$SF36_SC_PHY)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_PHY"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_PHY ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
+# fm$SF36_SC_MEN_J232
+descriptive(fm$SF36_SC_MEN_J232)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_MEN_J232"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_MEN_J232 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+    
+    # deltas
+    # x-y
+    sfd232 = deltafunc(fm$SF36_SC_MEN_J232, fm$SF36_SC_MEN)
+    descriptive(sfd232)
+    wilcox.test(fm$SF36_SC_MEN, fm$SF36_SC_MEN_J232, paired = TRUE, exact = FALSE, correct = FALSE)
+
+# fm$SF36_SC_PHY_J232
+descriptive(fm$SF36_SC_PHY_J232)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_PHY_J232"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_PHY_J232 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
+    # deltas
+    # x-y
+    sfdp232 = deltafunc(fm$SF36_SC_PHY_J232, fm$SF36_SC_PHY)
+    descriptive(sfdp232)
+    wilcox.test(fm$SF36_SC_PHY, fm$SF36_SC_PHY_J232, paired = TRUE, exact = FALSE, correct = FALSE)
+
+# fm$SF36_SC_MEN_J301
+descriptive(fm$SF36_SC_MEN_J301)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_MEN_J301"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_MEN_J301 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
+    # deltas
+    # x-y
+    sfd301 = deltafunc(fm$SF36_SC_MEN_J301, fm$SF36_SC_MEN)
+    descriptive(sfd301)
+    wilcox.test(fm$SF36_SC_MEN, fm$SF36_SC_MEN_J301, paired = TRUE, exact = FALSE, correct = FALSE)
+
+# fm$SF36_SC_PHY_J301
+descriptive(fm$SF36_SC_PHY_J301)
+fm %>%
+  group_by(GP_RANDO) %>%
+  summarise_at(vars("SF36_SC_PHY_J301"), list(Mean = mean, Sd = sd, Median = median, Min = min, Max = max), na.rm = TRUE)
+wilcox.test(fm$SF36_SC_PHY_J301 ~ fm$GP_RANDO, paired = FALSE, exact = FALSE, correct = FALSE)
+
+    # deltas
+    # x-y
+    sfdp301 = deltafunc(fm$SF36_SC_PHY_J301, fm$SF36_SC_PHY)
+    descriptive(sfdp301)
+    wilcox.test(fm$SF36_SC_PHY, fm$SF36_SC_PHY_J301, paired = TRUE, exact = FALSE, correct = FALSE)
+
 
 #####################################################################
 #####################################################################
