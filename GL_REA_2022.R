@@ -35,7 +35,7 @@ vars <- c("sexe", "age", "taille_m", "poids_kg", "imc", "atcd_ei",
           "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
           "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant", 
           "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", "ttt_antiarythmique", 
-          "ttt_antidiabétiquesoraux", "ttt_insuline", "hemoglobine_gdL", 
+          "ttt_antidiabÃ©tiquesoraux", "ttt_insuline", "hemoglobine_gdL", 
           "plaquettes_GL", "TP_pourcent", "TCA", "Fibrinogene_gL", 
           "leucocytes_GL", "PNN", "lymphocytes_GL", "creatinine_micromolL", 
           "albumine_gL", "preAlbumine_gL", "HbA1c_pourcent", "troponine_ngmL", 
@@ -61,7 +61,7 @@ qualvars <- c("sexe", "atcd_ei",
               "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
               "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant",
               "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", 
-              "ttt_antiarythmique", "ttt_antidiabétiquesoraux", "ttt_insuline", 
+              "ttt_antiarythmique", "ttt_antidiabÃ©tiquesoraux", "ttt_insuline", 
               "valve", "localisationEI", "severite_atteinteValvulaire", 
               "embols", "porteEntree", "germe", "hemoculture", "cultureValve", 
               "PCR", "atb_penicilline", "atb_cephalosporine", "atb_rifampicine", 
@@ -91,7 +91,7 @@ vars_1 <- c("sexe", "age", "taille_m", "poids_kg", "imc", "atcd_ei",
           "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
           "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant", 
           "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", "ttt_antiarythmique", 
-          "ttt_antidiabétiquesoraux", "ttt_insuline", "hemoglobine_gdL") 
+          "ttt_antidiabÃ©tiquesoraux", "ttt_insuline", "hemoglobine_gdL") 
         vars_2 <- c("plaquettes_GL", "TP_pourcent", "TCA", "Fibrinogene_gL", 
           "leucocytes_GL", "PNN", "lymphocytes_GL", "creatinine_micromolL", 
           "albumine_gL", "preAlbumine_gL", "HbA1c_pourcent", "troponine_ngmL", 
@@ -117,7 +117,7 @@ qualvars_1 <- c("sexe", "atcd_ei",
               "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
               "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant",
               "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", 
-              "ttt_antiarythmique", "ttt_antidiabétiquesoraux", "ttt_insuline") 
+              "ttt_antiarythmique", "ttt_antidiabÃ©tiquesoraux", "ttt_insuline") 
               qualvars_2 <- c("valve", "localisationEI", "severite_atteinteValvulaire", 
               "embols", "porteEntree", "germe", "hemoculture", "cultureValve", 
               "PCR", "atb_penicilline", "atb_cephalosporine", "atb_rifampicine", 
@@ -159,11 +159,11 @@ lg <- lg %>%
     complication == "0" ~ "0", 
     # complication mineure 
     complication == "1" ~ "0", 
-    # complication modérée
+    # complication modÃ©rÃ©e
     complication == "2" ~ "1",
-    # complication sévère 
+    # complication sÃ©vÃ¨re 
     complication == "3" ~ "1",
-    # décès
+    # dÃ©cÃ¨s
     complication == "4" ~ "1"
   )) 
 
@@ -179,11 +179,11 @@ lg <- lg %>%
     complication == "0" ~ "0", 
     # complication mineure 
     complication == "1" ~ "0", 
-    # complication modérée
+    # complication modÃ©rÃ©e
     complication == "2" ~ "1",
-    # complication sévère 
+    # complication sÃ©vÃ¨re 
     complication == "3" ~ "1",
-    # décès
+    # dÃ©cÃ¨s
     #complication == "4" ~ "1"
   )) 
 
@@ -199,11 +199,11 @@ lg <- lg %>%
     complication == "0" ~ "0", 
     # complication mineure 
     complication == "1" ~ "0", 
-    # complication modérée
+    # complication modÃ©rÃ©e
     complication == "2" ~ "1",
-    # complication sévère 
+    # complication sÃ©vÃ¨re 
     complication == "3" ~ "1",
-    # décès
+    # dÃ©cÃ¨s
     complication == "4" ~ "2"
   )) 
 
@@ -219,11 +219,11 @@ lg <- lg %>%
     complication == "0" ~ "0", 
     # complication mineure 
     complication == "1" ~ "0", 
-    # complication modérée
+    # complication modÃ©rÃ©e
     complication == "2" ~ "0",
-    # complication sévère 
+    # complication sÃ©vÃ¨re 
     complication == "3" ~ "0",
-    # décès
+    # dÃ©cÃ¨s
     complication == "4" ~ "1"
   )) 
 
@@ -236,7 +236,7 @@ table(lg$death)
 # TABLE 1-2-3
 # "img1.jpg" IN THE FOLDER 
 
-# variables à inclure dans le tableau 
+# variables Ã  inclure dans le tableau 
 #   arretcardiaqueRecupere
 #   infarctus_myocarde
 #   Choc
@@ -299,7 +299,7 @@ fisher.test(lg$infarctus_myocarde, lg$death, conf.level = .95,
 #fisher.test(table(lg$infarctus_myocarde, lg$death), simulate.p.value = TRUE)
 
 # CHOC --> les matrices montrent que la condition 
-#          d'application n'est pas respectées
+#          d'application n'est pas respectÃ©es
 
 #44 (18.0)	2 (4.3)
 #110 (45.1)	11 (23.9)
@@ -392,7 +392,7 @@ vars_1 <- c("sexe", "age", "taille_m", "poids_kg", "imc", "atcd_ei",
             "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
             "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant", 
             "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", "ttt_antiarythmique", 
-            "ttt_antidiabétiquesoraux", "ttt_insuline", "hemoglobine_gdL") 
+            "ttt_antidiabÃ©tiquesoraux", "ttt_insuline", "hemoglobine_gdL") 
 vars_2 <- c("plaquettes_GL", "TP_pourcent", "TCA", "Fibrinogene_gL", 
             "leucocytes_GL", "PNN", "lymphocytes_GL", "creatinine_micromolL", 
             "albumine_gL", "preAlbumine_gL", "HbA1c_pourcent", "troponine_ngmL", 
@@ -413,7 +413,7 @@ qualvars_1 <- c("sexe", "atcd_ei",
                 "atcd_toxicomanie", "bmr", "ttt_kardegic", "ttt_AntiP2Y12", 
                 "ttt_HBPMCuratif", "ttt_antivitK", "ttt_AOD", "ttt_betabloquant",
                 "ttt_IEC_Sartan", "ttt_HTAautre", "ttt_diuretique", 
-                "ttt_antiarythmique", "ttt_antidiabétiquesoraux", "ttt_insuline") 
+                "ttt_antiarythmique", "ttt_antidiabÃ©tiquesoraux", "ttt_insuline") 
 qualvars_2 <- c("valve", "localisationEI", "severite_atteinteValvulaire", 
                 "embols", "porteEntree", "germe", "hemoculture", "cultureValve", 
                 "PCR", "atb_penicilline", "atb_cephalosporine", "atb_rifampicine", 
