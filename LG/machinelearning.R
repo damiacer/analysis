@@ -1,22 +1,19 @@
-fit5 <- glm(complication.d ~ #atcd_ethylisme.2 +
-              ttt_betabloquant + 
-              ttt_diuretique + creatinine_micromolL + albumine_gL +
-              duree_CEC + min_clampageAortique + EUROSCORE_II #+ degree_urgenceChir3
-            ,
-            data = lg, family = binomial)
+### FULL MODEL
+fullmodel <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
+              duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
+                 data = lg, family = binomial)
             
 xtabs(~ ttt_diuretique + ttt_diuretique, data = lg)
 # there is no zero for nominal variables 
 # zeros are present for the quantitative variables
 
+### DATA PARTITION
 set.seed(21051986)
 ind <- sample(2, nrow(lg), replace = T, prob = c(0.8, 0.2))
 train <- lg[ind==1,]
 test <- lg[ind==2,]
 
-mod.lg <- glm(compl.s ~ atcd_ethylisme.2 +
-              ttt_betabloquant + 
-              ttt_diuretique + creatinine_micromolL + albumine_gL +
+mod.lg <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
               duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
               data = train, family = 'binomial')
 summary(mod.lg)
@@ -60,6 +57,7 @@ summary(mod.lg)
 ### PREDICTION
 p1 <- predict(mod.lg, train, type = 'response')
 head(p1, n=30)
+
 #       1         2         3         4         5         6         7         8 
 #       NA        NA        NA        NA        NA        NA 0.4876013        NA 
 #        9        10        11        12        13        14        15        16 
@@ -70,7 +68,7 @@ head(p1, n=30)
 #0.3972732 0.6198268 0.1818924 0.5842666 0.5998957        NA 
 
 
-### Misclassification error – train data
+### MISCLASSIFICATION ERROR ON TRAIN DATA
 pred1 <- ifelse(p1>0.5, 1, 0)
 tab1 <- table(Predicted = pred1, Actual = train$compl.s)
 tab1
@@ -79,11 +77,11 @@ tab1
 #        0  20   7
 #        1  19 105
 
-### misclassifications error rate
+### MISCLASSIFICATION ERROR RATE 
 1 - sum(diag(tab1))/sum(tab1)
+# 0.1721854 ==> 17%
 
-
-### misclassification on TEST data
+### MISCLASSIFICATION ON TEST DATA
 p2 <- predict(mod.lg, test, type = 'response')
 pred2 <- ifelse(p2>0.5, 1, 0)
 tab2 <- table(Predicted = pred2, Actual = test$compl.s)
@@ -94,35 +92,33 @@ tab2
 #        1 11 29
 # 5+29 = 34% of misclassification in test data
 
-# goodness of fit test 
+### GOODNESS-OF-FIT 
 pvalue = 1-pchisq(172 - 118, df=(150-140)#, lower.tail = F #specify lower tail to get extreme values or substract -1
 )
-# p-value = 4.852262e-08
+# p-value = 4.852262e-08 => MODEL IS VALID
 
 table(lg$compl.s)
 str(lg$compl.s)
 
-library("tidyverse")
-train %>%
-  mutate(prob = ifelse(compl.s == 1, 1, 0)) %>%
-  ggplot(aes(creatinine_micromolL, prob)) +
-  geom_point(alpha = 0.2) +
-  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
-  labs(
-    title = "Logistic Regression Model", 
-    x = "Creat micromol/L",
-    y = "Probability of having a major compl/death"
-    )
+#library("tidyverse")
+#train %>%
+#  mutate(prob = ifelse(compl.s == 1, 1, 0)) %>%
+#  ggplot(aes(creatinine_micromolL, prob)) +
+#  geom_point(alpha = 0.2) +
+#  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+#  labs(
+#    title = "Logistic Regression Model", 
+#    x = "Creat micromol/L",
+#    y = "Probability of having a major compl/death"
+#    )
 
 
-### MOD COMPL
-mod.lg.c <- glm(compl.s ~ atcd_ethylisme.2 +
-              ttt_betabloquant + 
-              ttt_diuretique + creatinine_micromolL + albumine_gL +
+### COMPLETE MODEL
+mod.lg.c <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
               duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
               data = lg, family = 'binomial')
               
-# pseudo R2
+# PSEUDO-R2
 mod <- glm(compl.s~atcd_ethylisme.2 + ttt_betabloquant + 
     ttt_diuretique + creatinine_micromolL + albumine_gL + duree_CEC + 
     min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, data = lg, family="binomial")
@@ -133,4 +129,3 @@ nullmod <- glm(compl.s~1, data = lg, family="binomial")
 
 lg$mod.pred <- predict(mod.lg.c, newdata = lg, type = "response")
 lg
-
