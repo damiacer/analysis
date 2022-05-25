@@ -133,27 +133,60 @@ tab2
 #Predicted  0  1
 #        0  5  6
 #        1 11 29
-# 5+29 = 34% of misclassification in test data
+# 5+29 = 34% of misclassification in test data (33.3333333% exactly)
 
 ### GOODNESS-OF-FIT 
 pvalue = 1-pchisq(172 - 118, df=(150-140)#, lower.tail = F #specify lower tail to get extreme values or substract -1
 )
 # p-value = 4.852262e-08 => MODEL IS VALID
 
-table(lg$compl.s)
-str(lg$compl.s)
+### SHRINKED MODEL 
 
-#library("tidyverse")
-#train %>%
-#  mutate(prob = ifelse(compl.s == 1, 1, 0)) %>%
-#  ggplot(aes(creatinine_micromolL, prob)) +
-#  geom_point(alpha = 0.2) +
-#  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
-#  labs(
-#    title = "Logistic Regression Model", 
-#    x = "Creat micromol/L",
-#    y = "Probability of having a major compl/death"
-#    )
+rest.mod <- glm(compl.s ~ albumine_gL + duree_CEC, data = train, family = "binomial")
+summary(rest.mod)
+AIC(rest.mod)
+# 149.1677
+
+#Call:
+#glm(formula = compl.s ~ albumine_gL + duree_CEC, family = "binomial", 
+#    data = train)
+#
+#Deviance Residuals: 
+#    Min       1Q   Median       3Q      Max  
+#-2.6348  -0.7629   0.3916   0.7712   1.5040  
+#
+#Coefficients:
+#             Estimate Std. Error z value Pr(>|z|)    
+#(Intercept)  1.462069   1.143021   1.279  0.20085    
+#albumine_gL -0.107004   0.036193  -2.956  0.00311 ** 
+#duree_CEC    0.025311   0.005754   4.399 1.09e-05 ***
+#---
+#Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#
+#(Dispersion parameter for binomial family taken to be 1)
+#
+#    Null deviance: 182.36  on 156  degrees of freedom
+#Residual deviance: 143.17  on 154  degrees of freedom
+#  (62 observations deleted due to missingness)
+#AIC: 149.17
+#
+#Number of Fisher Scoring iterations: 5
+
+#AIC(mod.lg)
+
+p1.r <- predict(rest.mod, train, type = 'response')
+pred1.rest <- ifelse(p1.r>0.5, 1, 0)
+rest.tab1 <- table(Predicted = pred1.rest, Actual = train$compl.s)
+rest.tab1
+1 - sum(diag(rest.tab1))/sum(rest.tab1)
+# 0.2229299 ==> misclassification = 23%
+
+p2.r <- predict(rest.mod, test, type = 'response')
+pred2.rest <- ifelse(p2.r>0.5, 1, 0)
+rest.tab2 <- table(Predicted = pred2.rest, Actual = test$compl.s)
+rest.tab2
+1 - sum(diag(rest.tab2))/sum(rest.tab2)
+# 0.2830189 ==> misclassification = 28% (compared to 34% of the full model)
 
 
 ### COMPLETE MODEL
@@ -170,5 +203,20 @@ nullmod <- glm(compl.s~1, data = lg, family="binomial")
 
 # 'log Lik.' 0.5329728 (df=11)
 
-lg$mod.pred <- predict(mod.lg.c, newdata = lg, type = "response")
-lg
+### ACCURACY OF THE COMPLETE MODEL BY BOOTSTRAPPING
+
+performance_accuracy(
++   cmod.lg,
++   method = c(#"cv"#, #USE CROSSVALIDATION
++   "boot" #USE BOOTSTRAP
++   	), 
++   k = 5,
++   n = 1000,
++   verbose = TRUE
++ )
+
+# Accuracy of Model Predictions
+
+#Accuracy: 85.25%
+#      SE: 2.83%-points
+#  Method: Area under Curve
