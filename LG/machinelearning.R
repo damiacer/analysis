@@ -2,7 +2,50 @@
 fullmodel <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
               duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
                  data = lg, family = binomial)
-            
+
+performance::check_collinearity(fit)
+# Check for Multicollinearity
+#
+#Low Correlation
+#
+#                 Term  VIF Increased SE Tolerance
+#     atcd_ethylisme.2 1.03         1.02      0.97
+#     ttt_betabloquant 1.18         1.09      0.85
+#       ttt_diuretique 1.14         1.07      0.87
+# creatinine_micromolL 1.12         1.06      0.89
+#          albumine_gL 1.20         1.10      0.83
+#         EUROSCORE_II 1.20         1.09      0.83
+#  degree_urgenceChir3 1.34         1.16      0.75
+#
+#Moderate Correlation
+#
+#                 Term  VIF Increased SE Tolerance
+#            duree_CEC 7.80         2.79      0.13
+# min_clampageAortique 7.66         2.77      0.13
+
+glmtoolbox::hltest(fit)
+
+#   The Hosmer-Lemeshow goodness-of-fit test
+#
+# Group Size Observed Expected
+#     1   20        5    0.498
+#     2   20       10    0.857
+#     3   20       11    1.100
+#     4   20       12    1.332
+#     5   20       13    1.464
+#     6   20       17    1.599
+#     7   20       19    1.743
+#     8   20       19    1.852
+#     9   20       19    1.935
+#    10   20       20    1.977
+#    11    2        2    0.020
+#
+#         Statistic =  1499.959 
+#degrees of freedom =  9 
+#           p-value =  < 2.22e-16 
+
+### MACHINE LEARNING
+
 xtabs(~ ttt_diuretique + ttt_diuretique, data = lg)
 # there is no zero for nominal variables 
 # zeros are present for the quantitative variables
