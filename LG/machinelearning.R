@@ -44,6 +44,40 @@ glmtoolbox::hltest(fit)
 #degrees of freedom =  9 
 #           p-value =  < 2.22e-16 
 
+### COMPLETE MODEL
+mod.lg.c <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
+              duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
+              data = lg, family = 'binomial')
+              
+# PSEUDO-R2
+mod <- glm(compl.s~atcd_ethylisme.2 + ttt_betabloquant + 
+    ttt_diuretique + creatinine_micromolL + albumine_gL + duree_CEC + 
+    min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, data = lg, family="binomial")
+nullmod <- glm(compl.s~1, data = lg, family="binomial")
+1-logLik(mod)/logLik(nullmod)
+
+# 'log Lik.' 0.5329728 (df=11)
+
+### ACCURACY OF THE COMPLETE MODEL BY BOOTSTRAPPING
+
+performance_accuracy(
++   cmod.lg,
++   method = c(#"cv"#, #USE CROSSVALIDATION
++   "boot" #USE BOOTSTRAP
++   	), 
++   k = 5,
++   n = 1000,
++   verbose = TRUE
++ )
+
+# Accuracy of Model Predictions
+
+#Accuracy: 85.25%
+#      SE: 2.83%-points
+#  Method: Area under Curve
+
+############################################################################################################
+
 ### MACHINE LEARNING
 
 xtabs(~ ttt_diuretique + ttt_diuretique, data = lg)
@@ -187,36 +221,3 @@ rest.tab2 <- table(Predicted = pred2.rest, Actual = test$compl.s)
 rest.tab2
 1 - sum(diag(rest.tab2))/sum(rest.tab2)
 # 0.2830189 ==> misclassification = 28% (compared to 34% of the full model)
-
-
-### COMPLETE MODEL
-mod.lg.c <- glm(compl.s ~ atcd_ethylisme.2 + ttt_betabloquant + ttt_diuretique + creatinine_micromolL + albumine_gL +
-              duree_CEC + min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, 
-              data = lg, family = 'binomial')
-              
-# PSEUDO-R2
-mod <- glm(compl.s~atcd_ethylisme.2 + ttt_betabloquant + 
-    ttt_diuretique + creatinine_micromolL + albumine_gL + duree_CEC + 
-    min_clampageAortique + EUROSCORE_II + degree_urgenceChir3, data = lg, family="binomial")
-nullmod <- glm(compl.s~1, data = lg, family="binomial")
-1-logLik(mod)/logLik(nullmod)
-
-# 'log Lik.' 0.5329728 (df=11)
-
-### ACCURACY OF THE COMPLETE MODEL BY BOOTSTRAPPING
-
-performance_accuracy(
-+   cmod.lg,
-+   method = c(#"cv"#, #USE CROSSVALIDATION
-+   "boot" #USE BOOTSTRAP
-+   	), 
-+   k = 5,
-+   n = 1000,
-+   verbose = TRUE
-+ )
-
-# Accuracy of Model Predictions
-
-#Accuracy: 85.25%
-#      SE: 2.83%-points
-#  Method: Area under Curve
