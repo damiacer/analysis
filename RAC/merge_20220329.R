@@ -77,10 +77,6 @@ a10$visit.10 = rep(10, times = 462)
 # notes: this variable will be created 
 
 library(lubridate)
-pro$visit.0d = as.Date(all.v$date_inclusion)
-
-a3$visit.3[is.na(a3$visit.3)] <- "0"
-table(a3$visit.3)
 
 pro$inclusion3 = (as.Date(pro$date_inclusion) %m+% years(3))
 table(pro$inclusion3, pro$date_inclusion)
@@ -101,22 +97,22 @@ pro$PROTH_HG[is.na(pro$PROTH_HG)] <- 0
 
 pro <- pro %>%
   mutate(DTPROTH_GD.i = case_when(
-    as.Date(DTPROTH_GD) > as.Date(date_inclusion) ~ as.Date(DTPROTH_GD)
+    as.Date(DTPROTH_GD) > as.Date(inclusion3) ~ as.Date(DTPROTH_GD)
   ))
 
 pro <- pro %>% 
   mutate(DTPROTH_GG.i = case_when(
-    as.Date(DTPROTH_GG) > as.Date(date_inclusion) ~ as.Date(DTPROTH_GG)
+    as.Date(DTPROTH_GG) > as.Date(inclusion3) ~ as.Date(DTPROTH_GG)
   ))
 
 pro <- pro %>%
   mutate(DTPROTH_HD.i = case_when(
-    as.Date(DTPROTH_HD) > as.Date(date_inclusion) ~ as.Date(DTPROTH_HD)
+    as.Date(DTPROTH_HD) > as.Date(inclusion3) ~ as.Date(DTPROTH_HD)
   ))
 
 pro <- pro %>%
   mutate(DTPROTH_HG.i = case_when(
-    as.Date(DTPROTH_HG) > as.Date(DTPROTH_HG) ~ as.Date(DTPROTH_HG)
+    as.Date(DTPROTH_HG) > as.Date(inclusion3) ~ as.Date(DTPROTH_HG)
   ))
 
 
@@ -154,20 +150,77 @@ table(pro$first)
 #pro.gd pro.gg pro.hd 
 #28     17      6 
 
+################################################################################
+                                                                               #
+                                                                               #
+                                                                               #
+
+    ## FIRST EVENT - SECOND CODE
+    # FOUR SEPARETES CODES FOR FOUR ART 
+    # DATES TRANSFORMED IN NUMERIC
+    pro$DTPROTH_GD.in = as.numeric(pro$DTPROTH_GD.i)
+    pro$DTPROTH_GG.in = as.numeric(pro$DTPROTH_GG.i)
+    pro$DTPROTH_HD.in = as.numeric(pro$DTPROTH_HD.i)
+    pro$DTPROTH_HG.in = as.numeric(pro$DTPROTH_HG.i)
+    
+    pro <- pro %>%
+      mutate(first.gd = case_when(
+        # LA DATE DE LA prothese genou droit EST INFERIEURE AUX AUTRES PROTHESES
+        DTPROTH_GD.in < DTPROTH_GG.in | 
+          DTPROTH_GD.in < DTPROTH_HD.in | 
+          DTPROTH_GD.in < DTPROTH_HG.in ~ "pro.gd"
+      ))
+    table(pro$first.gd)
+    table(pro$first.gd, pro$first)
+    
+    pro <- pro %>%
+      mutate(first.gg = case_when(
+        # LA DATE DE LA prothese genou gauche EST INFERIEURE AUX AUTRES PROTHESES
+        DTPROTH_GG.in < DTPROTH_GD.in |
+          DTPROTH_GG.in < DTPROTH_HD.in |
+          DTPROTH_GG.in < DTPROTH_HG.in ~ "pro.gg"
+      ))
+    table(pro$first.gg)
+    table(pro$first.gg, pro$first)
+    
+    pro <- pro %>%
+      mutate(first.hd = case_when(
+        # LA DATE DE LA prothese de hanche droite EST INFERIEURE AUX AUTRES PROTHESES
+        DTPROTH_HD.in < DTPROTH_GD.in |
+          DTPROTH_HD.in < DTPROTH_GG.in |
+          DTPROTH_HD.in < DTPROTH_HG.in ~ "pro.hd"
+      ))
+    table(pro$first.hd)
+    table(pro$first.hd, pro$first)
+    
+    pro <- pro %>% 
+      mutate(first.hg = case_when(
+        # LA DATE DE LA prothese de hance gauche EST INFERIEURE AUX AUTRES PROTHESES 
+        DTPROTH_HG.in < DTPROTH_GD.in |
+          DTPROTH_HG.in < DTPROTH_GG.in |
+          DTPROTH_HG.in < DTPROTH_HD.in ~ "pro.hg"
+        ))
+    table(pro$first.hg)
+    table(pro$first.hg, pro$first)
+
+                                                                               #
+                                                                               #
+################################################################################
+
 #------------------------------------------------
-# veryfing thate there is no HANCHE GAUCHE event in the data
+# verifying that there is no HANCHE GAUCHE event in the data
 
 pro$PROTH_HG.n = as.numeric(pro$PROTH_HG)
-pro$date_inclusion.n = as.numeric(pro$date_inclusion)
+pro$inclusion3.n = as.numeric(pro$inclusion3)
 
 hanche.g <- pro %>%
-  select(PROTH_GD, PROTH_GG, PROTH_HD, PROTH_HG.n, date_inclusion.n) %>%
-  filter(PROTH_HG.n > date_inclusion.n)
+  select(PROTH_GD, PROTH_GG, PROTH_HD, PROTH_HG.n, inclusion3.n) %>%
+  filter(PROTH_HG.n > inclusion3.n)
 dim(hanche.g)
 View(hanche.g)
 # there is no incident event for the HANCHE GAUCHE
 
-pro = subset(pro, select = -c(date_inclusion.n, PROTH_HG.n))
+pro = subset(pro, select = -c(inclusion3.n, PROTH_HG.n))
 
 #------------------------------------------------
 ### EVENT DATE
@@ -198,7 +251,96 @@ pro <- pro %>%
 table(pro$event.bin)
 pro$event.bin[is.na(pro$event.bin)] <- "0"
 #   0   1 
-# 793  85 first events, while 793 have no event at all ? 
+# 842  36 first events, while 793 have no event at all ? 
+
+################################################################################
+                                                                               #
+                                                                               #
+                                                                               #
+
+pro <- pro %>%
+  mutate(event.sum = case_when(
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 1 ~ "all events",
+    
+    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 1 ~ "one event HG",
+    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 0 ~ "one event HD",
+    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "one event GG",
+    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 0 ~ "one event GD",
+    
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "two events",
+    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 0 ~ "two events",
+    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 1 ~ "two events",
+
+    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "two events",
+    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "two events",
+    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "two events",
+    
+    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "two events",
+  
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "thee events",
+    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events",
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "thee events",
+    
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "thee events",
+    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events",
+    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "thee events",
+    
+    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events"
+  ))
+
+table(pro$event.sum)
+
+pro <- pro %>%
+  mutate(event.date = case_when(
+    event.sum == "one event HG" ~ as.Date(DTPROTH_HG),
+    event.sum == "one event HD" ~ as.Date(DTPROTH_HD),
+    event.sum == "one event GG" ~ as.Date(DTPROTH_GG),
+    event.sum == "one event gd" ~ as.Date(DTPROTH_GD)
+  ))
+
+table(pro$event.date)
+
+# INCIDENT EVENTS
+
+pro <- pro %>%
+  mutate(event.incident = case_when(
+    event.date < inclusion3 ~ "not_incid",
+    event.date > inclusion3 ~ "incident"
+  ))
+
+table(pro$event.incident)
+str(pro$event.incident)
+
+# INCIDENT DATE
+
+pro <- pro %>%
+  mutate(event.date.i = case_when(
+    event.incident == "incident" ~ event.date
+  ))
+
+table(pro$event.date.i, pro$event.date)
+
+# verifying the dates 
+# rdb$e.b.i = if_else(rdb$event.n < rdb$inclusion.n, "1", "0")
+
+pro$event.date.iN = as.numeric(pro$event.date.i)
+pro$event.date.N = as.numeric(pro$event.date)
+
+pro$eventi01 = if_else(pro$event.date.iN == ' ', "0", "1")
+table(pro$eventi01) #95 == as var 'event.incident'
+
+pro$event01 = if_else(pro$event.date.N == ' ', "0", "1")
+table(pro$event01) #133
+
+pro <- pro %>%
+  mutate(eventd01 = case_when(
+    event.date.i != "" ~ "1",
+    
+  ))
+                                                                               #
+                                                                               #
+                                                                               #
+################################################################################
 
 #------------------------------------------------
 
@@ -260,7 +402,7 @@ pro.f$event.bin = as.factor(pro$event.bin)
 pro.f <- pro.f %>%
   mutate(fup = case_when(
     event.bin == "1" ~ (as.Date(DTPROTH_GD.i) - as.Date(date_inclusion)),
-    event.bin == "1" ~ (as.Date(DTPROTH_GG.i) - as.Date(date_inclusion)),
+    event.bin == "1" ~ (DTPROTH_GG.in - as.Date(date_inclusion)),
     event.bin == "1" ~ (as.Date(DTPROTH_HD.i) - as.Date(date_inclusion)),
     event.bin == "1" ~ (as.Date(DTPROTH_HG.i) - as.Date(date_inclusion)),
     event.bin == "0" ~ (as.Date(last) - as.Date(date_inclusion))
