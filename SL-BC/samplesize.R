@@ -11,3 +11,8 @@ n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
 #
 #NOTE: padj is the adjusted proportion, from which the ci is calculated.
 
+#234.8403*0.10
+#234.8403+23.48403=258.3243
+
+#234.8403*0.20
+#234.8403+46.96806=281.8084
