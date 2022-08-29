@@ -1,18 +1,22 @@
+install.packages("presize")
 library("presize")
 
+# anxiety about 17% of haemodialysis patients: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6572629/
+# about 22%: https://www.ajkd.org/article/S0272-6386(19)30619-5/fulltext
+
 prec_prop(p = 0.17, 
-n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
+          n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
 
+#sample size for a proportion with exact confidence interval. 
 
-#     sample size for a proportion with exact confidence interval. 
-#
-#     p padj        n conf.width conf.level       lwr       upr
-#1 0.17   NA 234.8403        0.1       0.95 0.1242729 0.2242729
-#
-#NOTE: padj is the adjusted proportion, from which the ci is calculated.
+#p      padj    n       conf.width   conf.level       lwr     upr
+#0.17   NA 234.8403        0.1       0.95        0.1242729 0.2242729
 
-#234.8403*0.10
-#234.8403+23.48403=258.3243
+prec_prop(p = 0.22, 
+          n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
 
-#234.8403*0.20
-#234.8403+46.96806=281.8084
+# p     padj   n     conf.width    conf.level       lwr       upr
+# 0.22   NA 281.4165        0.1       0.95      0.1730013 0.2730013
+
+prec_prop(p = 0.195, 
+          n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
