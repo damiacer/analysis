@@ -4,8 +4,9 @@ library("presize")
 # anxiety about 17% of haemodialysis patients: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6572629/
 # about 22%: https://www.ajkd.org/article/S0272-6386(19)30619-5/fulltext
 
+# CALCUL RETENU POUR L'APRI
 prec_prop(p = 0.17, 
-          n = NULL, conf.width = 0.1, conf.level = 0.95, method = "exact")
+          n = NULL, conf.width = 0.1, conf.level = 0.99, method = "exact")
 
 #sample size for a proportion with exact confidence interval. 
 
