@@ -34,7 +34,7 @@ si <- si %>%
     Douleurs.D_C == 2 | Douleurs.D_C == 3 ~ "1",
     Diarrhee == 2 | Diarrhee == 3 ~ "1",
     Vertiges == 2 | Vertiges == 3 ~ "1",
-    Maux.de.tête == 2 | Maux.de.tête == 3 ~ "1",
+    Maux.de.tÃªte == 2 | Maux.de.tÃªte == 3 ~ "1",
     Tremblements == 2 | Tremblements == 3 ~ "1",
     Tb.Libido == 2 | Tb.Libido == 3 ~ "1",
     Anxiete == 2 | Anxiete == 3 ~ "1",
@@ -71,7 +71,7 @@ si <- si %>%
     Douleurs.D_C == 3 ~ "1",
     Diarrhee == 3 ~ "1",
     Vertiges == 3 ~ "1",
-    Maux.de.tête == 3 ~ "1",
+    Maux.de.tÃªte == 3 ~ "1",
     Tremblements == 3 ~ "1",
     Tb.Libido == 3 ~ "1",
     Anxiete == 3 ~ "1",
@@ -104,7 +104,7 @@ si <- si %>%
     Douleurs.D_C == 3  | 
     Diarrhee == 3| 
     Vertiges == 3 | 
-    Maux.de.tête == 3  | 
+    Maux.de.tÃªte == 3  | 
     Tremblements == 3  | 
     Tb.Libido == 3 | 
     Anxiete == 3  | 
@@ -283,7 +283,7 @@ si2 <- si2 %>%
       Douleurs.D_C == 3  | 
       Diarrhee == 3| 
       Vertiges == 3 | 
-      Maux.de.tête == 3  | 
+      Maux.de.tÃªte == 3  | 
       Tremblements == 3  | 
       Tb.Libido == 3 | 
       Anxiete == 3  | 
@@ -342,7 +342,7 @@ si <- si %>%
     Aug.appetit == 3| Sens.corp..Inh == 3 | Nausees == 3 | Vomissements == 3  |
     Baillements == 3 | Somnolence == 3 | (Tb.erection == 3 & Sexe == "H") | Tb.equilibre == 3 |
     Prise.de.poids == 3 | Douleurs.D_C == 3 | Diarrhee == 3 | Vertiges == 3 |
-    Maux.de.tête == 3 | Tremblements == 3 | Tb.Libido == 3 |Anxiete == 3 |
+    Maux.de.tÃªte == 3 | Tremblements == 3 | Tb.Libido == 3 |Anxiete == 3 |
     Demotivation == 3 | Diminution.emotion == 3 |
     Acouphenes. == 3 ~ "intol",
     
@@ -351,7 +351,7 @@ si <- si %>%
       Aug.appetit == 2 | Sens.corp..Inh == 2 | Nausees == 2 | Vomissements == 2 | 
       Baillements == 2 | Somnolence == 2 | (Tb.erection == 2 & Sexe == "H") |
       Tb.equilibre== 2 | Tb.equilibre== 2 | Douleurs.D_C == 2 | Diarrhee == 2 | 
-      Vertiges == 2 | Maux.de.tête == 2 | Tremblements == 2 | 
+      Vertiges == 2 | Maux.de.tÃªte == 2 | Tremblements == 2 | 
       Tb.Libido == 2 | Anxiete == 2 | Demotivation == 2 | Diminution.emotion == 2 | 
       Acouphenes. == 2 ~ "tol"
   ))
