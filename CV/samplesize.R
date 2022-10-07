@@ -1,5 +1,7 @@
 library("pwr")
 
+# 1st = extremely small Cohen's d and 90% power
+
 pwr.t.test(d=0.1337089,
 	power=0.9,
 	sig.level=0.05,
@@ -14,11 +16,15 @@ pwr.t.test(d=0.1337089,
 #          power = 0.9
 #    alternative = two.sided
 
-589.6508/0.846
+# ARE (Asymptotic Relative Efficiency)
+589.6508/0.846 
 # N = 696.9868
+# Lost to Follow-Up
 # N + (N * 0.20) = 836.3842
 
 #---------------------------------------------------------------
+
+# 2nd = extremely small Cohen's d and 80% power
 
 pwr.t.test(d=0.1337089,
 	power=0.8,
@@ -40,6 +46,8 @@ pwr.t.test(d=0.1337089,
 
 #---------------------------------------------------------------
 
+# 3rd = bigger Cohen's d (0.2) with a 90% power
+
 pwr.t.test(d=0.2,
 	power=0.9,
 	sig.level=0.05,
@@ -59,6 +67,8 @@ pwr.t.test(d=0.2,
 # N + (N * 0.20) = 375.3386
 
 #---------------------------------------------------------------
+
+# 3rd = largest Cohen's d (0.5) with a 90% power
 
 pwr.t.test(d=0.5,
 	power=0.9,
