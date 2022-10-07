@@ -19,7 +19,7 @@ pwr.t.test(d=0.1337089,
 # ARE (Asymptotic Relative Efficiency)
 589.6508/0.846 
 N = 696.9868
-# Lost to Follow-Up
+# Taking into account a 20 p100 Lost to Follow-Up
 N + (N * 0.20) # = 836.3842
 
 #---------------------------------------------------------------
