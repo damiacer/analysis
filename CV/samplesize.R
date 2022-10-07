@@ -68,7 +68,7 @@ N + (N * 0.20) # = 375.3386
 
 #---------------------------------------------------------------
 
-# 3rd = largest Cohen's d (0.5) with 90% power
+# 4rd = largest Cohen's d (0.5) with 90% power
 
 pwr.t.test(d=0.5,
 	power=0.9,
