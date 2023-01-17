@@ -1,6 +1,6 @@
 ### folder
 getwd()
-setwd("P:/CONSULTATION/FMOstéo")
+setwd("P:/CONSULTATION/FMOstÃ©o")
 getwd()
 
 ### database
