@@ -1,5 +1,5 @@
 getwd()
-setwd("P:/CONSULTATION/Benoit_Alexandra")
+setwd("")
 
 library("readxl")
 
