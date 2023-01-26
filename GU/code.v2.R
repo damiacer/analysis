@@ -4,14 +4,14 @@ setwd("P:/CONSULTATION/Gueutin_Victor")
 
 library("readxl")
 
-gu <- read_excel("BaseGBM2020_DCMOD.xlsx", na = "NA")
+gu <- read_excel("BaseGBM2020_DCMOD.xlsx", na = "")
 warnings()
 names(gu)
 #View(gu)
 
 #---------------------------------------------------------------------------------
 
-### TRAITMENT VARIABLE 
+# TRAITMENT VARIABLE 
 
 table(gu$traitement)
 # 0  1 
@@ -20,21 +20,25 @@ table(gu$traitement)
 table(gu$tt_etude_3classes)
 # 0  1  2 
 # 6 51 45
-
+ 
 table(gu$tt_etude_4classes)
 # 0  1  2  3 
 # 6 13 39 45 
 
 library("tidyverse")
 
+# VARIABLE groups = TRAITEMENT EN BINAIRE 0 (0+1)/1(2+3)
+
 str(gu$tt_etude_4classes)
 gu <- gu %>%
-  mutate(groups = case_when(
-    tt_etude_4classes ==  0 | tt_etude_4classes == 1 ~ "0", 
-    tt_etude_4classes == 2 | tt_etude_4classes == 3 ~ "1"
-  ))
-
+	mutate(groups = case_when(
+			tt_etude_4classes ==  0 | tt_etude_4classes == 1 ~ "0", 
+			tt_etude_4classes == 2 | tt_etude_4classes == 3 ~ "1"
+			))
+			
 table(gu$groups, gu$tt_etude_4classes)
+
+# VARIABLE groups2 = TRAITEMENT EN 3 (0+1)/(2)/(3)
 
 gu <- gu %>%
   mutate(groups2 = case_when(
@@ -42,11 +46,9 @@ gu <- gu %>%
     tt_etude_4classes == 2 ~ "2",
     tt_etude_4classes == 3 ~ "3"
   ))
-table(gu$groups2, useNA = "always")
+table(gu$groups2)
 
-#---------------------------------------------------------------------------------
-
-### OUTCOME 1: ESRD_M1 and ESRD_M12
+# OUTCOME : ESRD_M1 and ESRD_M12
 dim(gu)
 table(gu$ESRD_M1, useNA = "always")
 table(gu$dialyse_M1, useNA = "always")
@@ -54,24 +56,52 @@ table(gu$dialyse_M1, useNA = "always")
 table(gu$ESRD_M6, useNA = "always")
 table(gu$ESRD_M12, useNA = "always")
 
+# OUTCOME DEATH AND COMPOSITE VARIABLE
+
+table(gu$deces_3ans, useNA = "always")
+table(gu$deces_1an, useNA = "always")
+table(gu$DCD_M12, useNA = "always")
+
+#gu$DCD_M12, useNA = "always")
+table(gu$DCD_M12, gu$deces_1an, useNA = "always")
+#        0   1    <NA>
+#  0     64  0    3
+#  1     0   8    0
+#<NA> 30 0   0
+
+gu$DCD_M12NA <- gu$DCD_M12
+gu$DCD_M12NA[is.na(gu$DCD_M12NA )] <- 99
+gu$deces_1anNA <- gu$deces_1an 
+gu$deces_1anNA[is.na(gu$deces_1anNA)] <- 99
+table(gu$DCD_M12NA, gu$deces_1anNA, useNA = "always")
+
+gu <- gu %>%
+  mutate(death1 = case_when(
+    DCD_M12NA == 0 & deces_1anNA == 0 ~ "0",
+    DCD_M12NA == 1 & deces_1anNA == 1 ~ "1",
+    DCD_M12NA == 99 & deces_1anNA == 0 ~ "0",
+    DCD_M12NA == 99 & deces_1anNA == 1 ~ "1",
+    DCD_M12NA == 0 & deces_1anNA == 99 ~ "0",
+    DCD_M12NA == 1 & deces_1anNA == 99 ~ "1"
+  ))
+table(gu$death1, useNA = "always")
+
 ##################################################################################
 
-        ### DATASET COMPLETE FOR DEATH
-        
-        gu$DCD_M12na <- gu$DCD_M12
-        gu$DCD_M12na[is.na(gu$DCD_M12)] <- "99"
-        dim(gu)
-        
-        gu2 <- gu[!(gu$DCD_M12na=="99"),]
-        dim(gu2)
+### DATASET COMPLETE FOR DEATH AT 3 YEARS
+
+#gu$death1NA <- gu$death1
+#gu$death1NA[is.na(gu$death1NA)] <- "99"
+#dim(gu)
+
+#gu2 <- gu[!(gu$death1NA=="99"),]
+#dim(gu2)
 
 ##################################################################################
 
 #-FOLLOWUP------------------------------------------------------------------------
 
 library("lubridate")
-library("tidyverse")
-        
 
 # deces_date
 # 30-06-2020
@@ -80,9 +110,9 @@ library("tidyverse")
 
 # CREATE A DAY FOR EVERY ENTRY IN THE DATABASE
 # EVERY ENTRY DAY WILL BE SET TO 30
-gu$june.d <- rep("30", times=102)
-gu$june.m <- rep("06", times=102)
-gu$june.y <- rep("2020", times=102)
+gu$june.d <- rep("30", times=105)
+gu$june.m <- rep("06", times=105)
+gu$june.y <- rep("2020", times=105)
 
 # install.packages("lubridate")
 # IF NECESSARY (WINDOWS): library(lubridate, warn.conflicts = FALSE)
@@ -96,64 +126,108 @@ gu$june = ymd(gu$june)
 table(gu$june)
 str(gu$june)
 
-#-FUP CALCULATED-------------------------------------------------------------------
-
+#-FUP CALUCLATE--------------------------------------------------------------------
 # FUP 2020
 
 # FUP.20 = as.Date(gu$june, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y") 
 
 # FUP DEATH
-FUP.D = as.Date(gu$deces_date, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y")
+# FUP.D = as.Date(gu$deces_date, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y")
 
 # FUP LAST FOLLOWUP
-FUP.LF = as.Date(gu$dateder_nouvelles, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y")
+# FUP.LF = as.Date(gu$dateder_nouvelles, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y")
 
-table(gu$date_diaginitial)
-str(gu$date_diaginitial)
+# table(gu$date_diaginitial)
+# str(gu$date_diaginitial)
 
-# FOLLOW-UP DATES CALCULATED AS INCLUSION + 3 or 1 YEARS
 gu$date3ans = (as.Date(gu$date_diaginitial) %m+% years(3))
 gu$date1an = (as.Date(gu$date_diaginitial) %m+% years(1))
 
-# FUP 3 ANS
 # suivi à trois ans et suivi jusqu'au décès
 gu$fup3 = (as.Date(gu$date3ans, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y"))
 gu$fupd = (as.Date(gu$deces_date, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y"))
 gu$fup1 = (as.Date(gu$date1an, "%d/%m/%Y") - as.Date(gu$date_diaginitial, "%d/%m/%Y"))
 
+library("tidyverse")
 
-gu2 <- gu2 %>%
-  mutate(follow = case_when(
-    DCD_M12 == "1" ~ fupd,
-    DCD_M12 == "0" ~ fup3
-  ))
-table(gu2$follow, useNA = "always")
+########
+# TIME #
+########
 
-# definition of a binary event 
-gu2$fupdNA <- gu2$fupd
-gu2$fupdNA[is.na(gu2$fupdNA)] <- "2000"
-gu2$fupdNA = as.numeric(gu2$fupdNA)
-gu2$death3 = if_else(gu2$fupdNA <= 1096, "1", "0") 
-table(gu2$death3)
-str(gu2$death3)
+# FOLLOW UP ACCORDING TO DEATH STATUS
 
-#gu2 <- gu2 %>% 
-#  mutate(follow = case_when(
-#    DCD_M12 == "1" ~ FUP.D,
-#    DCD_M12 == "0" & (as.Date(gu2$dateder_nouvelles) < (as.Date(gu2$june)) ~ FUP.LF,
-#    DCD_M12 == "0" ~ FUP.20 
-#  ))
+gu$fupd.n = as.numeric(gu$fupd)
+gu$fup3.n = as.numeric(gu$fup3)
+
+gu <- gu %>%
+	mutate(follow = case_when(
+	deces_3ans == "1" & (fupd.n < fup3.n) ~ fupd,
+	deces_3ans == "0" ~ fup3
+	))
+table(gu$follow, useNA = "always")
+
+#########
+# EVENT #
+#########
+
+# DEATH AT 3 YEARS ACCORDING TO THE LENGHT OF THE FOLLOW UP 
+
+# 1st CASE: THE MISSING INFORMATION IS CONSIDERED AS PATIENT HAVE NOT DIED
+
+gu$fupdNA <- gu$fupd.n
+gu$fupdNA[is.na(gu$fupdNA)] <- 2000
+gu$death3.all = if_else(gu$fupdNA <= 1096, "1", "0")
+# 0  1 
+# 91 14 
+
+# WARNING !
+# THE FOLLOW UP TIME WILL BE 
+
+# time = follow3.all
+
+table(gu$follow, useNA = "always")
+gu$follow3.all <- gu$follow
+gu$follow3.all[is.na(gu$follow3.all)] <- 1096
+table(gu$follow3.all, useNA = "always")
+# 13   35   37   44   58   77  108  311  445  486  589  668  928  994 1095 1096 <NA> 
+# 1    1    1    1    1    1    1    1    1    1    1    1    1    1   13   78    0 
+
+#---------------------------------------------------------------------------------
+
+# 2nd CASE: THE MISSING INFORMATION LEAD TO EXCLUSION OF THE PATIENT
+
+# status
+table(gu$deces_3ans, useNA = "always")
+str(gu$deces_3ans)
+
+gu$deces_3ansNA <- gu$deces_3ans
+gu$deces_3ansNA[is.na(gu$deces_3ansNA)] <- "99"
+
+# time
+table(gu$follow, useNA = "always")
+# 13   35   37   44   58   77  108  311  445  486  589  668  928  994 1095 1096 <NA> 
+# 1    1    1    1    1    1    1    1    1    1    1    1    1    1   13   62   16
+
+# THIS LEAD TO THE CREATION OF A SMALLER BASE
+
+
+# !!! do not run if missing = not dead !!!
+gu <- gu[!(gu$deces_3ansNA == "99"),]
+dim(gu)
+# !!! do not run if missing = not dead !!!
+
+##################################################################################
 
 # type_atteinte_rein
 
 gu2 <- gu2 %>%
-  mutate(type_atteinte_rein = case_when(
-    type_atteinte_rein == "3" ~ "0",
-    type_atteinte_rein == "0" ~ "0", # scler
-    type_atteinte_rein == "1" ~ "1", # focal
-    type_atteinte_rein == "2" ~ "2" # cellul
-  ))
-table(gu2$type_atteinte_rein)
+		mutate(type_atteinte_rein = case_when(
+		type_atteinte_rein == "3" ~ "0",
+		type_atteinte_rein == "0" ~ "0", # scler
+		type_atteinte_rein == "1" ~ "1", # focal
+		type_atteinte_rein == "2" ~ "2" # cellul
+		))
+table(gu$type_atteinte_rein)
 
 # follow up death 3 y
 
@@ -162,29 +236,29 @@ gu2 <- gu2 %>%
     death3 == "1" ~ fupd,
     death3 == "0" ~ fup3
   ))
-table(gu2$followup3)
-
+table(gu$followup3)
+  
 ##################################################################################
 
 #-VAR-TRANSFORMATION-------------------------------------------------------------
 
-gu2$taille = as.numeric(as.character(gu2$taille))
-gu2$poids = as.numeric(as.character(gu2$poids))
-gu2$IMC = gu2$poids/((gu2$taille)^2)
+gu$taille = as.numeric(as.character(gu$taille))
+gu$poids = as.numeric(as.character(gu$poids))
+gu$IMC = gu$poids/((gu$taille)^2)
 
-gu2$hta = as.numeric(as.character(gu2$hta))
-gu2$antiMBG_taux = as.numeric(as.character(gu2$antiMBG_taux))
-gu2$C3 = as.numeric(as.character(gu2$C3))
-gu2$C4 = as.numeric(as.character(gu2$C4))
-gu2$CRP = as.numeric(as.character(gu2$CRP))
-gu2$age_diag = as.numeric(as.character(gu2$age_diag))
-gu2$type_atteinte_rein = as.factor(gu2$type_atteinte_rein)
-gu2$tt_etude_4classes = as.factor(gu2$tt_etude_4classes)
-gu2$groups = as.factor(gu2$groups)
-gu2$sex = as.factor(gu2$sex)
-gu2$diabete = as.factor(gu2$diabete)
-gu2$ESRD_M12 = as.factor(gu2$ESRD_M12)
-gu2$type_atteinte_rein = as.factor(gu2$type_atteinte_rein)
+gu$hta = as.numeric(as.character(gu$hta))
+gu$antiMBG_taux = as.numeric(as.character(gu$antiMBG_taux))
+gu$C3 = as.numeric(as.character(gu$C3))
+gu$C4 = as.numeric(as.character(gu$C4))
+gu$CRP = as.numeric(as.character(gu$CRP))
+gu$age_diag = as.numeric(as.character(gu$age_diag))
+gu$type_atteinte_rein = as.factor(gu$type_atteinte_rein)
+gu$tt_etude_4classes = as.factor(gu$tt_etude_4classes)
+gu$groups = as.factor(gu$groups)
+gu$sex = as.factor(gu$sex)
+gu$diabete = as.factor(gu$diabete)
+gu$ESRD_M12 = as.factor(gu$ESRD_M12)
+gu$type_atteinte_rein = as.factor(gu$type_atteinte_rein)
 
 ##################################################################################
 
@@ -194,41 +268,41 @@ gu2$type_atteinte_rein = as.factor(gu2$type_atteinte_rein)
 library("finalfit")
 
 ### IMPUTATION DATASET
-gu2$time = gu2$follow
-gu2$status = gu2$DCD_M12
+gu$time = gu$follow
+gu$status = gu$DCD_M12
 
 gu.toimput = subset(gu2, select = c(status, age_diag, sex, diabete, hta, IMC, ESRD_M12, 
-                                    tt_etude_4classes, antiMBG_taux,
-                                    type_atteinte_rein, C3, C4, CRP, time, groups))
+                                   tt_etude_4classes, antiMBG_taux,
+                                   type_atteinte_rein, C3, C4, CRP, time, groups))
 
 gu.toimput %>%
-  missing_plot()
-
+	missing_plot()
+	
 # Looking for pattern of missingness
 
 explanatory = c("age_diag", "sex", "diabete", "hta", "IMC", "ESRD_M12", 
-                "tt_etude_4classes", "antiMBG_taux",
-                "type_atteinte_rein", "C3", "C4", "CRP", "groups")
-
+                                   "tt_etude_4classes", "antiMBG_taux",
+                                   "type_atteinte_rein", "C3", "C4", "CRP", "groups")
+                                   
 gu.toimput$status.f = as.factor(gu.toimput$status) 
 str(gu.toimput$status.f)                                  
 dependent = "status.f"
 
 gu.toimput %>%
-  missing_pattern(dependent, explanatory)
+	missing_pattern(dependent, explanatory)
 
 # Check for association between missing and observed data
 
 gu.toimput %>%
-  missing_pairs(dependent, explanatory)
-
+	missing_pairs(dependent, explanatory)
+	
 gu.toimput %>%
-  missing_pairs(dependent, explanatory, position = "fill")
-
+	missing_pairs(dependent, explanatory, position = "fill")
+	
 # MISSING COMPARE
 
 explanatory = c("age_diag", "sex", "diabete", "hta", "IMC", "ESRD_M12", "tt_etude_4classes", "antiMBG_taux", "type_atteinte_rein", "C3", "C4", "CRP")
-
+                                   
 gu.toimput$status.f = as.factor(gu.toimput$status) 
 str(gu.toimput$status.f)                                  
 dependent = "status.f"
@@ -237,8 +311,8 @@ table(gu.toimput$status.f, useNA = "always")
 library("knitr")
 
 gu.toimput %>%
-  missing_compare(dependent, explanatory) %>%
-  knitr::kable(row.names = FALSE, align = c("l", "l", "r", "r", "r"))
+	missing_compare(dependent, explanatory) %>%
+	knitr::kable(row.names = FALSE, align = c("l", "l", "r", "r", "r"))
 
 #-IMPUTATION CHECK FOR DEATH AT 3 YEARS-------------------------------------------
 
@@ -246,10 +320,12 @@ install.packages("finalfit")
 library("finalfit")
 
 ### IMPUTATION DATASET
-gu2$time = gu2$followup3
-gu2$status = gu2$death3
+gu$time = gu$follow
+gu$time = as.numeric(gu$time)
+gu$status = gu$deces_3ans
+gu$status = as.factor(gu$status)
 
-gu.toimput = subset(gu2, select = c(status, age_diag, sex, diabete, hta, IMC, ESRD_M12, 
+gu.toimput = subset(gu, select = c(status, age_diag, sex, diabete, hta, IMC, ESRD_M12, 
                                     tt_etude_4classes, antiMBG_taux,
                                     type_atteinte_rein, C3, C4, CRP, time, groups))
 
@@ -262,11 +338,7 @@ explanatory = c("age_diag", "sex", "diabete", "hta", "IMC", "ESRD_M12",
                 "tt_etude_4classes", "antiMBG_taux",
                 "type_atteinte_rein", "C3", "C4", "CRP", "groups")
 
-gu.toimput$status.f = as.factor(gu.toimput$status) 
-str(gu.toimput$status.f)                                  
-dependent = "status.f"
-
-gu.toimput$time = as.numeric(gu.toimput$time)
+dependent = "status"
 
 gu.toimput %>%
   missing_pattern(dependent, explanatory)
@@ -282,17 +354,27 @@ gu.toimput %>%
 # MISSING COMPARE
 
 explanatory = c("age_diag", "sex", "diabete", "hta", 
-                "IMC", "ESRD_M12", 
+              "IMC", "ESRD_M12", 
                 "tt_etude_4classes", 
                 "antiMBG_taux", "type_atteinte_rein", "C3", "C4", "CRP")
 str(gu.toimput)
 
-install.packages("naniar")
+# library("knitr")
+
+# gu %>%
+#  missing_compare(dependent.gutn, explanatory.gutn) %>%
+#  knitr::kable(row.names = FALSE, align = c("l", "l", "r", "r", "r"))
+
+# MCAR TEST BY naniar
+
+# install.packages("naniar")
 library("naniar")
-gutn <- subset(gu.toimput, select = c("age_diag", "hta", "IMC", "antiMBG_taux", "CRP"))
+
+gutn <- subset(gu.toimput, select = c("age_diag", "hta", "IMC", "antiMBG_taux", 
+                                      "CRP"))
+# note: only continous variables
 str(gutn)
-mcar_test(gutn)
-# 0.275 data is missing completely at random
+mcar_test(gutn) # 0.138 data is missing completely at random
 
 gu.toimput$status.f = as.factor(gu.toimput$status) 
 str(gu.toimput$status.f)   
@@ -301,11 +383,6 @@ gu.toimput$status.f = if_else(gu.toimput$status.f == "0", "1", "2")
 dependent = "status.f"
 table(gu.toimput$status.f, useNA = "always")
 
-library("knitr")
-
-gu.toimput %>%
-  missing_compare(dependent, explanatory) %>%
-  knitr::kable(row.names = FALSE, align = c("l", "l", "r", "r", "r"))
 
 #-TEST----------------------------------------------------------------------------
 
@@ -326,13 +403,13 @@ chisq.test(gu.toimput$type_atteinte_reinNA, gu.toimput$status.f, correct = FALSE
 
 
 # RUN THE CODE BELOW FOR FOLLOW UP 
-gu2$time = gu2$follow
-gu2$status = gu2$death3
+gu$time = gu$follow
+gu$status = gu$death3
 
 ### IMPUTATION DATASET
-gu3 = subset(gu2, select = c(status, age_diag, sex, diabete, hta, IMC, 
-                             tt_etude_4classes, antiMBG_taux,
-                             type_atteinte_rein, time))
+gu3 = subset(gu, select = c(status, age_diag, sex, diabete, hta, IMC, 
+                                   tt_etude_4classes, antiMBG_taux,
+                                   type_atteinte_rein, time))
 summary(gu3)
 
 
@@ -346,7 +423,7 @@ library("survival")
 
 cox.fit <- coxph(Surv(time, status=="1") ~  age_diag + sex + diabete + hta + 
                    IMC + tt_etude_4classes + antiMBG_taux +
-                   type_atteinte_rein, data = gu3)
+                 type_atteinte_rein, data = gu3)
 
 # In coxph.fit(X, Y, istrat, offset, init, control, weights = weights,  :
 # Loglik converged before variable  6,7,8,10 ; coefficient may be infinite. 
@@ -433,16 +510,18 @@ imp.gu.new <- as.mids(imp.gu.dat)
 
 ##################################################################################
 
-### IMPUTATION
+### IMPUTATION WITHOUT THE IMPUTATION OF CUMULATIVE HAZARD 
+
 library(mice)
 
 gu.imputed <- mice(gu.toimput, m=20, maxit=10, meth='pmm', seed=210586,
-                   print = FALSE)
-
-
+                    print = FALSE)
+                    
+               
 ##################################################################################
 
 ### COX UNIVARIATE WITH IMPUTATION
+
 library(survival)
 
 # age diag
@@ -451,11 +530,15 @@ summary(pool(cox.agediag))
 est.VAR.age <- pool(cox.agediag)
 summary(est.VAR.age, conf.int = TRUE, exponentiate = TRUE)
 
+#--------------------------------------------------
+
 # sexe
 cox.sexe = with(imp.gu.new, coxph(Surv(time, status=="1") ~ sex))
 summary(pool(cox.sexe))
 est.VAR.sex <- pool(cox.sexe)
 summary(est.VAR.sex, conf.int = TRUE, exponentiate = TRUE)
+
+#--------------------------------------------------
 
 # tt_etude_4classes
 cox.tt = with(imp.gu.new, coxph(Surv(time, status=="1") ~ tt_etude_4classes))
@@ -464,9 +547,12 @@ est.VAR.tt <- pool(cox.tt)
 summary(est.VAR.tt, conf.int = TRUE, exponentiate = TRUE)
 cox.tt = with(imp.gu.new, coxph(Surv(time, status=="1") ~ tt_etude_4classes))
 cox.tte = with(imp.gu.new, coxph(Surv(time, status=="1") ~ 1))
+
 # install.packages("mitml")
 library("mitml")
 D1(cox.tt, cox.tte)
+
+#--------------------------------------------------
 
 # antiMBG_taux
 cox.anti = with(imp.gu.new, coxph(Surv(time, status=="1") ~ antiMBG_taux))
@@ -474,25 +560,32 @@ summary(pool(cox.anti))
 est.VAR.anti <- pool(cox.anti)
 summary(est.VAR.anti, conf.int = TRUE, exponentiate = TRUE)
 
+#--------------------------------------------------
+
 # type_atteinte_rein
 cox.type = with(imp.gu.new, coxph(Surv(time, status=="1") ~ type_atteinte_rein))
 summary(pool(cox.type))
 est.VAR.type <- pool(cox.type)
 summary(est.VAR.type, conf.int = TRUE, exponentiate = TRUE)
+
 cox.typee = with(imp.gu.new, coxph(Surv(time, status=="1") ~ 1))
 D1(cox.type, cox.typee)
 
+#--------------------------------------------------
+
 # C3
-cox.C3 = with(gu.imputed, coxph(Surv(time, status=="1") ~ C3))
-summary(pool(cox.C3))
-est.VAR.C3 <- pool(cox.C3)
-summary(est.VAR.C3, conf.int = TRUE, exponentiate = TRUE)
+#cox.C3 = with(gu.imputed, coxph(Surv(time, status=="1") ~ C3))
+#summary(pool(cox.C3))
+#est.VAR.C3 <- pool(cox.C3)
+#summary(est.VAR.C3, conf.int = TRUE, exponentiate = TRUE)
 
 # C4
-cox.C4 = with(gu.imputed, coxph(Surv(time, status=="1") ~ C4))
-summary(pool(cox.C4))
-est.VAR.C4 <- pool(cox.C4)
-summary(est.VAR.C4, conf.int = TRUE, exponentiate = TRUE)
+#cox.C4 = with(gu.imputed, coxph(Surv(time, status=="1") ~ C4))
+#summary(pool(cox.C4))
+#est.VAR.C4 <- pool(cox.C4)
+#summary(est.VAR.C4, conf.int = TRUE, exponentiate = TRUE)
+
+#--------------------------------------------------
 
 # CRP
 cox.CRP = with(imp.gu.new, coxph(Surv(time, status=="1") ~ CRP))
@@ -500,11 +593,15 @@ summary(pool(cox.CRP))
 est.VAR.CRP <- pool(cox.CRP)
 summary(est.VAR.CRP, conf.int = TRUE, exponentiate = TRUE)
 
+#--------------------------------------------------
+
 # diabete
 cox.dia = with(imp.gu.new, coxph(Surv(time, status=="1") ~ diabete))
 summary(pool(cox.dia))
 est.VAR.dia <- pool(cox.dia)
 summary(est.VAR.dia, conf.int = TRUE, exponentiate = TRUE)
+
+#--------------------------------------------------
 
 # hta
 cox.hta = with(imp.gu.new, coxph(Surv(time, status=="1") ~ hta))
@@ -512,11 +609,15 @@ summary(pool(cox.hta))
 est.VAR.hta <- pool(cox.hta)
 summary(est.VAR.hta, conf.int = TRUE, exponentiate = TRUE)
 
+#--------------------------------------------------
+
 # groups2
-cox.group = with(imp.gu.new, coxph(Surv(time, status=="1") ~ groups2))
-summary(pool(cox.group))
-est.VAR.group <- pool(cox.group)
-summary(est.VAR.group, conf.int = TRUE, exponentiate = TRUE)
+#cox.group = with(imp.gu.new, coxph(Surv(time, status=="1") ~ groups2))
+#summary(pool(cox.group))
+#est.VAR.group <- pool(cox.group)
+#summary(est.VAR.group, conf.int = TRUE, exponentiate = TRUE)
+
+#--------------------------------------------------
 
 # IMC
 cox.imc = with(imp.gu.new, coxph(Surv(time, status=="1") ~ IMC))
@@ -528,14 +629,15 @@ cox.imc <- coxph(Surv(time, status=="1") ~ pspline(IMC, df = 2), data = gu2)
 termplot(cox.imc, se=TRUE, col.term=1, col.se=1)
 
 #---------------------------------------------------------------------------------
-# cox multivarie
-# cox multivare for death at 12th month of follow up 
-# this analysis is the principal analysis 
+
+# COX MULTIVARIATE
+# cox multivare for death 3rd year follow up 
 
 cox.multi = with(gu.imputed, coxph(Surv(time, status=="1") ~ age_diag + 
-                                     #type_atteinte_rein 
-                                     #+ groups
-                                     + tt_etude_4classes))
+									#type_atteinte_rein 
+									#+ groups
+									+ tt_etude_4classes))
+
 summary(pool(cox.multi))
 est.VAR.imc <- pool(cox.multi)
 summary(est.VAR.imc, conf.int = TRUE, exponentiate = TRUE)
@@ -558,7 +660,7 @@ library("tidycmprsk")
 install.packages("condSURV")
 library("condSURV")
 
-survfit(Surv(gu2$time, gu2$status==1) ~ 1, 24) # at 24 months 
+survfit(Surv(gu$time, gu$status==1) ~ 1, 24) # at 24 months 
 
 survfit2(Surv(time, status==1) ~ 1, data = gu2) %>% 
   ggsurvfit() +
@@ -573,10 +675,10 @@ survfit2(Surv(time, status==1) ~ 1, data = gu2) %>%
 library(survival)
 install.packages("survminer")
 library("survminer")
-str(gu2$time)
-gu2$time = as.numeric(gu2$time)
-str(gu2$status)
-gu2$status = as.factor(gu2$status)
+str(gu$time)
+gu$time = as.numeric(gu$time)
+str(gu$status)
+gu$status = as.factor(gu$status)
 
 death.fit <- surv_fit(Surv(time, status == 1) ~ 1, data = gu2#, group.by = "groups"
 )
@@ -595,14 +697,14 @@ install.packages("ggplot2")
 library("ggplot2")
 
 autoplot(km.death) +
-  labs(x = "\n Survival Time (Days) ", y = "Survival Probabilities \n", 
-       title = "Survival Times Of \n Patients \n") + 
-  theme(plot.title = element_text(hjust = 0.5), 
-        axis.title.x = element_text(face="bold", colour="#FF7A33", size = 12),
-        axis.title.y = element_text(face="bold", colour="#FF7A33", size = 12),
-        legend.title = element_text(face="bold", size = 10))
+labs(x = "\n Survival Time (Days) ", y = "Survival Probabilities \n", 
+ title = "Survival Times Of \n Patients \n") + 
+ theme(plot.title = element_text(hjust = 0.5), 
+ axis.title.x = element_text(face="bold", colour="#FF7A33", size = 12),
+ axis.title.y = element_text(face="bold", colour="#FF7A33", size = 12),
+ legend.title = element_text(face="bold", size = 10))
 
-gu2$time
+gu$time
 10651/365.25 # 29 ans de suivi 
 
 install.packages("rms")
@@ -624,10 +726,10 @@ survplot(fit  = km.death,
          n.risk   = TRUE,                         # show number at risk
          ## srt.n.risk = 0, sep.n.risk = 0.056, adj.n.risk = 1,
          ## y.n.risk = 0, cex.n.risk = 0.6
-)
+         )
 
-mean(gu2$time)
-median(gu2$time)
+mean(gu$time)
+median(gu$time)
 
 # incidence
 
@@ -639,11 +741,11 @@ library(ggplot2)
 #https://cran.r-project.org/web/packages/casebase/vignettes/plotabsRisk.html
 
 smooth.death <- absoluteRisk(object = km.death, 
-                             newdata = gu2[c(1,600),],
-                             type = survival)
-
+                                     newdata = gu2[c(1,600),],
+                                     type = survival)
+                                     
 # http://dwoll.de/rexrepos/posts/survivalKM.html
-
+                                     
 plot(km.death, main=expression(paste("KM cumulative incidence")),
      fun=function(x) { 1- x },
      #xscale = 400,
@@ -652,79 +754,3 @@ plot(km.death, main=expression(paste("KM cumulative incidence")),
      ylim=c(0,0.5),
      xlab="Time", ylab="Cumulative incidence", lwd=2, col=1:3)
 legend(x="topright", col=1:3, lwd=2, legend=LETTERS[1:3])
-
-##################################################################################
-##################################################################################
-##################################################################################
-
-fullmodel <- glm( ~ , 
-                  data = gu, family = binomial)
-
-performance::check_collinearity(fit)
-
-glmtoolbox::hltest(fit)
-
-# PSEUDO-R2
-mod <- glm(Y ~ X, data = lg, family="binomial")
-nullmod <- glm(Y ~ 1, data = lg, family="binomial")
-1-logLik(mod)/logLik(nullmod)
-
-# 'log Lik.' 0.5329728 (df=11)
-
-### ACCURACY OF THE COMPLETE MODEL BY BOOTSTRAPPING
-
-performance_accuracy(
-  cmod.lg,
-  method = c(#"cv"#, #USE CROSSVALIDATION
-    "boot" #USE BOOTSTRAP
-  ), 
-  k = 5,
-  n = 1000,
-  verbose = TRUE)
-
-p1 <- predict(mod, train, type = 'response') 
-head(p1, n=30)
-
-### MISCLASSIFICATION ERROR ON TRAIN DATA
-pred1 <- ifelse(p1>0.5, 1, 0)
-tab1 <- table(Predicted = pred1, Actual = train$compl.s)
-tab1
-#         Actual
-#Predicted   0   1
-#        0  20   7
-#        1  19 105
-
-### MISCLASSIFICATION ERROR RATE 
-1 - sum(diag(tab1))/sum(tab1)
-# 0.1721854 ==> 17%
-
-### MISCLASSIFICATION ON TEST DATA
-p2 <- predict(mod.lg, test, type = 'response')
-pred2 <- ifelse(p2>0.5, 1, 0)
-tab2 <- table(Predicted = pred2, Actual = test$compl.s)
-tab2
-
-
-### GOODNESS-OF-FIT 
-pvalue = 1-pchisq(172 - 118, df=(150-140) #, lower.tail = F #specify lower tail to get extreme values or substract -1
-)
-
-### SHRINKED MODEL 
-
-rest.mod <- glm(DEP ~ VAE, data = gu, family = "binomial")
-summary(rest.mod)
-AIC(rest.mod)
-
-p1.r <- predict(rest.mod, train, type = 'response')
-pred1.rest <- ifelse(p1.r>0.5, 1, 0)
-rest.tab1 <- table(Predicted = pred1.rest, Actual = train$compl.s)
-rest.tab1
-1 - sum(diag(rest.tab1))/sum(rest.tab1)
-#  ==> misclassification = 23%
-
-p2.r <- predict(rest.mod, test, type = 'response')
-pred2.rest <- ifelse(p2.r>0.5, 1, 0)
-rest.tab2 <- table(Predicted = pred2.rest, Actual = test$compl.s)
-rest.tab2
-1 - sum(diag(rest.tab2))/sum(rest.tab2)
-#  ==> misclassification = 28% (compared to 34% of the full model)
