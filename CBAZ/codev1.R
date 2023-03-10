@@ -1,5 +1,3 @@
-library("ciTools")
-
 setwd("/Users/damianocerasuolo/Desktop/UBRC/22_23_CONSULT_MAC/Bazille_C/Steatose")
 
 library("readxl")
