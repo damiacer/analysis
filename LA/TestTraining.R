@@ -14,6 +14,10 @@ library("dplyr")
 #install.packages("randomForest")
 library("randomForest")
 
+################################################################################
+################################################################################
+################################################################################
+
 my_data <- la
 
 la$Delta_P_F_sup20 # class variable
@@ -29,8 +33,15 @@ my_data = subset(my_data, select = c(Delta_P_F_sup20, Vrec_VteaPEEP15, Age,
                                      vivant_j28
                                      ))
 
-summary(my_data)
 names(my_data)[1] <- "Class"
+
+str(my_data$Class)
+my_data$Class = as.factor(my_data$Class)
+
+#levels(my_data$Class) <- c("first_class", "second_class")
+my_data$Class = if_else(my_data$Class == "0", "noevent", "event")
+table(my_data$Class)
+str(my_data$Class)
 
 #fit_rf<-randomForest(Class~.,
 #        data=my_data,
@@ -38,7 +49,6 @@ names(my_data)[1] <- "Class"
 #        prOximity=TRUE,
 #        na.action=na.roughfix)
 
-my_data$Class = as.factor(my_data$Class)
 
 set.seed(21051986)
 ind <- createDataPartition(my_data$Class, p = 2/3, list = FALSE)
@@ -55,17 +65,7 @@ ctrl <- trainControl(method = "repeatedcv",
 
 grid <- data.frame(mtry = seq(1,3,1))
 
-table(my_data$Class)
-
-my_data <- my_data %>% 
-  mutate(Class = case_when(
-    Class == "0" ~ "no",
-    Class == "1" ~ "yes"
-  ))
-
-table(my_data$Class)
-
-set.seed(1537)
+set.seed(21051986)
 rf_mod <- train(Class ~ Vrec_VteaPEEP15, 
                 data = train,
                 method = "rf",
@@ -120,3 +120,145 @@ roc_train <- function(object, best_only = TRUE, ...) {
 temp <- roc_train(rf_mod)
 
 plot_data_ROC <- data.frame(Model='Random Forest', sens = temp$sensitivities, spec=1-temp$specificities)
+plot(plot_data_ROC)
+
+auc.1 <- abs(sum(diff(1-temp$specificities)*(head(temp$sensitivities,-1)+tail(temp$sensitivities,-1)))/2)
+
+# [1] 0.5802469
+
+#-------------------------------------------------------------------------------
+
+#Build SVM
+library("kernlab")
+set.seed(21051986)
+svm_mod <- train(Class ~ ., 
+                 data = train,
+                 method = "svmRadial",
+                 metric = "ROC",
+                 na.action = na.omit,
+                 trControl = ctrl)
+
+svmClasses <- predict(svm_mod, test)
+
+#ROC curve into df
+temp <- roc_train(svm_mod)
+plot_data_ROC <- rbind(plot_data_ROC, data.frame(Model='Support Vector Machine', sens = temp$sensitivities, spec=1-temp$specificities))
+
+#AUC of roc curve for SVM
+auc.2 <- abs(sum(diff(1-temp$specificities) * (head(temp$sensitivities,-1)+tail(temp$sensitivities,-1)))/2)
+
+# [1] 0.8271605
+
+#-------------------------------------------------------------------------------
+
+#Plotting final data 
+#Check ggplot
+
+####ROC of held-out samples
+q <- ggplot(data=plot_data_ROC, aes(x=spec, y=sens, group = Model, colour =  Model)) 
+q <- q + geom_path() + geom_abline(intercept = 0, slope = 1) + xlab("False Positive Rate (1-Specificity)") + ylab("True Positive Rate (Sensitivity)") 
+q + theme(axis.line = element_line(), axis.text=element_text(color='black'), 
+          axis.title = element_text(colour = 'black'),     legend.text=element_text(), legend.title=element_text())
+
+####ROC of testing set
+rf.probs <- predict(rf_mod, test,type="prob")
+pr <- prediction(rf.probs$event, factor(test$Class, levels = c("noevent", "event"), ordered = TRUE))
+pe <- performance(pr, "tpr", "fpr")
+roc.data <- data.frame(Model='Random Forest',fpr=unlist(pe@x.values),     tpr=unlist(pe@y.values))
+
+svm.probs <- predict(svm_mod, test,type="prob")
+pr <- prediction(svm.probs$event, factor(test$Class, levels = c("noevent","event"), ordered = TRUE))
+pe <- performance(pr, "tpr", "fpr")
+roc.data <- rbind(roc.data, data.frame(Model='Support Vector Machine',fpr=unlist(pe@x.values), tpr=unlist(pe@y.values)))
+
+q <- ggplot(data=roc.data, aes(x=fpr, y=tpr, group = Model, colour = Model)) 
+q <- q + geom_line() + geom_abline(intercept = 0, slope = 1) + xlab("False     Positive Rate (1-Specificity)") + ylab("True Positive Rate (Sensitivity)") 
+q + theme(axis.line = element_line(), axis.text=element_text(color='black'), 
+          axis.title = element_text(colour = 'black'), legend.text=element_text(), legend.title=element_text())
+
+####AUC of hold out samples
+data.frame(Rf = auc.1, Svm = auc.2)
+
+###AUC of testing set. Source is  from Max Kuhns 2016 UseR! code here: https://github.com/topepo/useR2016
+test_pred <- data.frame(Class = factor(test$Class, levels = c("noevent", "event"), ordered = TRUE))
+test_pred$Rf <- predict(rf_mod, test, type = "prob")[, "event"]
+test_pred$Svm <- predict(svm_mod, test, type = "prob")[, "event"]
+
+get_auc <- function(pred, ref){
+  auc(roc(ref, pred, levels = rev(levels(ref))))
+}
+
+#AUC sim comp
+apply(test_pred[, -1], 2, get_auc, ref = test_pred$Class) 
+
+################################################################################
+################################################################################
+################################################################################
+
+library("caret")
+library("MLeval")
+
+#data(Sonar)
+
+my_data = la
+
+my_data = subset(my_data, select = c(Delta_P_F_sup20, Vrec_VteaPEEP15, Age,
+                                     Homme, IMC, covid01, SOFA, IGSII, charlsonscore,
+                                     SpO2_sup96p100, FEVG_sup50, Pneumothorax, 
+                                     hypotension_arterielle, 
+                                     necessiteNO, necessiteAlmitrine, necessiteECMO, 
+                                     vivant_j28
+))
+
+summary(my_data)
+names(my_data)[1] <- "Class"
+
+str(my_data$Class)
+my_data$Class = as.factor(my_data$Class)
+
+levels(my_data$Class) <- c("first_class", "second_class")
+table(my_data$Class)
+
+# Split data 
+# https://stackoverflow.com/questions/70075400/roc-curve-of-the-testing-dataset
+
+a <- createDataPartition(my_data$Class, p=0.8, list=FALSE)
+train <- my_data[ a, ]
+test <- my_data[ -a, ]
+
+myControl = trainControl(
+  method = "cv",
+  summaryFunction = twoClassSummary,
+  classProbs = TRUE,
+  verboseIter = FALSE,
+)
+
+model_knn = train(
+  Class ~ .,
+  train,
+  method = "knn",
+  metric = "ROC",
+  tuneLength = 10,
+  trControl = trainControl(
+    classProbs = TRUE,
+    method = "cv",
+    number = 10,
+    summaryFunction = twoClassSummary))
+
+pred <- predict(model_knn, newdata=test, type="prob")
+ROC <- evalm(data.frame(pred, test$Class, Group = "KNN"))
+
+# ***MLeval: Machine Learning Model Evaluation***
+#  Input: data frame of probabilities of observed labels
+#Group column exists.
+#Observations: 7
+#Number of groups: 1
+#Observations per group: 7
+#Positive: second_class
+#Negative: first_class
+#Group: KNN
+#Positive: 2
+#Negative: 5
+#***Performance Metrics***
+#  KNN Optimal Informedness = 0.4
+#KNN AUC-ROC = 0.7
