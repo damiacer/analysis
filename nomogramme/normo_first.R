@@ -97,6 +97,8 @@ no <- no %>%
     ind == "3K" | ind == "4Autre" ~ "3AutreK"
   ))
 
+no$CFA = as.numeric(as.factor(no$CFA))
+
 #-LINEAR------------------------------------------------------------------------
 # DEPENDENT VARIABLE: Nb_total_ovo_matures
 # INDEPENDENT VARIABLEs: Agedebutdestim + Nombredestim + ind + nbredovorecueillis
@@ -116,13 +118,13 @@ quantile(no$Nbre_ovo_matures)
 no$cut3 = if_else(no$Nbre_ovo_matures <= 3, "1", "0")
 no$cut5 = if_else(no$Nbre_ovo_matures >= 5, "1", "0")
 no$cut10 = if_else(no$Nbre_ovo_matures >= 10, "1", "0")
-no$cut10 = if_else(no$Nbre_ovo_matures >= 15, "1", "0")
+no$cut15 = if_else(no$Nbre_ovo_matures >= 15, "1", "0")
 
 #-NOMOGRAMS---------------------------------------------------------------------
-install.packages("PASWR")
+#install.packages("PASWR")
 require("PASWR")
 
-install.packages("rms")
+#install.packages("rms")
 require("rms")
 
 #-CUT-10
@@ -149,6 +151,35 @@ cut3base.t <- datadist(cut3base)
 options(datadist = "cut3base.t")
 
 fit <- lrm(formula = cut3 ~ Age_debut_de_stim + ind2 + 
+             IMC + AMH + CFA, data = no)
+
+plot(nomogram(fit, fun = function(x)plogis(x)))
+
+#-CUT-5
+
+cut5base = subset(no, select = c("cut5", "Age_debut_de_stim",  
+                                 "ind2", "IMC",
+                                 "AMH", "CFA"))
+
+cut5base.t <- datadist(cut5base)
+options(datadist = "cut5base.t")
+
+fit <- lrm(formula = cut5 ~ Age_debut_de_stim + ind2 + 
+             IMC + AMH + CFA, data = no)
+
+plot(nomogram(fit, fun = function(x)plogis(x)))
+
+
+#-CUT-15
+
+cut15base = subset(no, select = c("cut15", "Age_debut_de_stim",  
+                                  "ind2", "IMC",
+                                  "AMH", "CFA"))
+
+cut15base.t <- datadist(cut15base)
+options(datadist = "cut15base.t")
+
+fit <- lrm(formula = cut15 ~ Age_debut_de_stim + ind2 + 
              IMC + AMH + CFA, data = no)
 
 plot(nomogram(fit, fun = function(x)plogis(x)))
