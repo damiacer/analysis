@@ -1,0 +1,143 @@
+---
+title: "MERP"
+output: html_document
+date: "2023"
+author: "damiano.cerasuolo [at] unicaen.fr"
+---
+
+### **ROC curve for Vrec**
+
+#### ROC 1
+
+![](P:/CONSULTATION/Lhermitte_Amaury/IMGs/1.png)
+
+#### Youden's Index
+
+```
+      threshold   specificity   sensitivity 
+    195.4318182   0.3103448     0.9230769 
+```
+
+------------------------------------------------------------------------
+
+#### ROC 2 and smoothed ROC
+
+Youden J Statistics and AUC showed in the picture.
+
+![](P:/CONSULTATION/Lhermitte_Amaury/IMGs/2.png)
+
+```
+auc(roc)
+Area under the curve: 0.5517 (0.4096-0.7756, DeLong)
+```
+
+------------------------------------------------------------------------
+
+### ROC curve with a machine learning approach
+
+Dataset contains the following variables.
+
+```
+[1] "Class"                  "Vrec_VteaPEEP15"        "Age"                   
+[4] "Homme"                  "IMC"                    "covid01"               
+[7] "SOFA"                   "IGSII"                  "charlsonscore"         
+[10] "SpO2_sup96p100"         "FEVG_sup50"             "Pneumothorax"          
+[13] "hypotension_arterielle" "necessiteNO"            "necessiteAlmitrine"    
+[16] "necessiteECMO"          "vivant_j28"         
+```
+
+**Methodology note:** `repeatedcv` (*repeated cross validation*) is the method used for training the data in all the approaches. This method performs repetitions of the cross validation (in other terms, it splits data at each cross validation) which are not performed when method is set as `cv`. Repeating a cross validation with exactly the same splitting will yield exactly the same result for every repetition (assuming that the model is trained in a deterministic manner), which is not only inefficient, but also dangerous when it comes to comparing the validation results for different model algorithms in a statistical manner.
+
+#### 1. Random Forest (*training data*)
+
+```
+auc.1 <- abs(sum(diff(1-temp$specificities)*(head(temp$sensitivities,-1)+tail(temp$sensitivities,-1)))/2)
+
+# AUC = 0.4277778
+```
+
+**Methodology note:** the random forest algorithm is an extension of the bagging method^[Bagging (bootstrap aggregating): a random sample of data in a training set is selected with replacement. This means that the individual data points can be chosen more than once. After several data samples are generated, these models are then trained independently, and depending on the type of task (i.e. regression or classification) the average or majority of those predictions yield a more accurate estimate.] as it utilizes both bagging and feature randomness to create an uncorrelated forest of decision trees. Feature randomness (known as feature bagging or “the random subspace method”) generates a random subset of features, which ensures low correlation among decision trees. This is a key difference between decision trees and random forests. While decision trees consider all the possible feature splits, random forests only select a subset of those features. Random forest makes it easy to evaluate variable importance, or contribution, to the model, but may require bigger data sets.
+
+#### 2. Support Vector Machine (*training data*)
+
+```
+auc.2 <- abs(sum(diff(1-temp$specificities) * (head(temp$sensitivities,-1)+tail(temp$sensitivities,-1)))/2)
+
+# [1] 0.5888889
+```
+
+#### 1 and 2. Random Forest + Support Vector Machine (*testing data*)
+
+Final *Areas under the curve* for the machine learning methods.
+
+```
+           Rf       Svm 
+    0.6944444 0.5000000 
+```
+
+Comparison plot.
+
+![](P:/CONSULTATION/Lhermitte_Amaury/IMGs/3.png)
+
+#### 3. K-nearest neighbors^[Model evaluation only. AUC is printed at the bottom line.]
+
+```
+***MLeval: Machine Learning Model Evaluation***
+Input: data frame of probabilities of observed labels
+Group column exists.
+Observations: 7
+Number of groups: 1
+Observations per group: 7
+Positive: second_class
+Negative: first_class
+Group: KNN
+Positive: 5
+Negative: 2
+
+***Performance Metrics***
+KNN Optimal Informedness = 0.4
+KNN AUC-ROC = 0.6
+```
+
+#### 4. GLM and GLM-SVM comparison^[Results may differ to the different data partition. Data partition for the GLM is 0.6, while it is equal to 2/3 for other methods.]
+
+```
+> glm.ROC = roc(response = testset$Class,
++                 predictor = glm.probs$ev)
+
+Setting levels: control = noev, case = ev
+Setting direction: controls < cases
+
+> plot(glm.ROC, type="S", col="red") 
+> auc(glm.ROC)
+
+Area under the curve: 0.5818
+
+
+> svm.ROC = roc(response = testset$Class,
++                 predictor = svm.probs$ev)
+
+Setting levels: control = noev, case = ev
+Setting direction: controls < cases
+
+> plot(svm.ROC, add=TRUE, col="green") 
+> auc(svm.ROC)
+
+Area under the curve: 0.4364
+```
+
+Comparison plot^[Sensitivity *and* specificity are plotted. ROC plots usually display **Se** and **(1-Sp)**.].
+
+![](P:/CONSULTATION/Lhermitte_Amaury/IMGs/4_1.png)
+
+----
+
+### **ROC curve for R/I**
+
+#### ROC and smoothed ROC
+
+![](P:/CONSULTATION/Lhermitte_Amaury/IMGs/RI_1.png)
+
+```
+Area under the curve: 0.512 (0.329-0.6949, DeLong)
+```
