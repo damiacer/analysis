@@ -365,6 +365,7 @@ x = la$R_I_ratio
 
 roc.23 = roc(y, x)
 auc(roc.23)
+ci.auc(roc.23)
 
 par(xaxs = "i", yaxs = "i", xpd = FALSE, cex.axis = 1.5, cex.lab = 1.5)
 plot.roc(roc.23 , legacy.axes = TRUE, identity = F, col = "red", lwd = 1,
@@ -981,3 +982,35 @@ t.test(la$compliance, la$Delta_P_F_sup20, conf.level = 0.95)
 
 #Pplat decreased post-ARM
 table(la$Pplat decreased post)
+
+#-------------------------------------------------------------------------------
+
+install.packages("ROCit")
+library("ROCit")
+
+# variable binaire = Delta_P_F_sup20 (y)  
+# variable qualitative = Vrec_VteaPEEP15 (x)
+
+str(la$Delta_P_F_sup20)
+la$Delta_P_F_sup20 = as.factor(la$Delta_P_F_sup20)
+str(la$Vrec_VteaPEEP15)
+la$Vrec_VteaPEEP15 = as.numeric(as.character(la$Vrec_VteaPEEP15))
+
+#chargement des packages
+
+y = la$Delta_P_F_sup20
+x = la$Vrec_VteaPEEP15
+
+
+logistic.model <- glm(as.factor(Delta_P_F_sup20)~Vrec_VteaPEEP15,
+                      data = la,family = "binomial")
+class <- logistic.model$y
+score <- logistic.model$fitted.values
+# -------------------------------------------------------------
+measure <- measureit(score = score, class = class,
+                     measure = c("PPV", "NPV", "SENS", "SPEC"))
+names(measure)
+#> [1] "Cutoff" "Depth"  "TP"     "FP"     "TN"     "FN"     "ACC"    "SENS"  
+#> [9] "FSCR"
+plot(measure$PPV~measure$Cutoff, type = "l")
+plot(measure$NPV~measure$Cutoff, type = "l")
