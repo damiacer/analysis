@@ -105,10 +105,10 @@ no$CFA = as.numeric(as.factor(no$CFA))
 
 require("cutoff")
 
-no.cut = subset(no, select = c("Nbre_ovo_matures", "IMC"))
+no.cut = subset(no, select = c("Nbre_ovo_matures", "IMC", "Age_debut_de_stim"))
 no.cut = as.data.frame(no.cut)
 
-linear(data = no.cut, y = 'Nbre_ovo_matures', x = 'IMC', cut.numb = 2,
+linear(data = no.cut, y = 'Nbre_ovo_matures', x = c("IMC", "Age_debut_de_stim"), cut.numb = 2,
        n.per = 0.05,
        adjust = 1)
 
@@ -129,10 +129,9 @@ no$cut3 = as.factor(no$cut3)
 model_glm = glm(cut3 ~ Age_debut_de_stim + ind2 + IMC + AMH + 
                   CFA, data = no, family = "binomial")
 
-#a function which allows use to make predictions based on different 
-# probability cutoffs.
+#a function which allows use to make predictions based on different probability cutoffs.
 
 get_logistic_pred = function(mod, data, res = "y", pos = 1, neg = 0, cut = 0.5) {
   probs = predict(mod, newdata = data, type = "response")
   ifelse(probs > cut, pos, neg)
-}
+}²
