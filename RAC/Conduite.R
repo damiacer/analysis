@@ -4,13 +4,35 @@ require("tidyverse")
 require("lubridate")
 require("here")
 
+setwd("P:/CONSULTATION/Rat_AnneChristine/Conduite/DATA")
+
+#-------------------------------------------------------------------------------
+#-ON PC
+
+c0 <- read_excel("conduite0.xlsx", na = "NA")
+c3 <- read_excel("conduite3.xlsx", na = "NA")
+c5 <- read_excel("conduite5.xlsx", na = "NA")
+c7 <- read_excel("conduite7.xlsx", na = "NA")
+a0 <- read_excel("DMO_Annee0.xls", na = "NA")
+a3 <- read_excel("DMO_Annee3.xls", na = "NA")
+a4 <- read_excel("DMO_Annee4.xls", na = "NA")
+a5 <- read_excel("DMO_Annee5.xls", na = "NA")
+a6 <- read_excel("DMO_Annee6.xls", na = "NA")
+a7 <- read_excel("DMO_Annee7.xls", na = "NA")
+a8 <- read_excel("DMO_Annee8.xls", na = "NA")
+a9 <- read_excel("DMO_Annee9.xls", na = "NA")
+a10 <- read_excel("DMO_Annee10.xls", na = "NA")
+pro <- read_excel("DMO_Protheses.xls", na = "NA")
+
+#-------------------------------------------------------------------------------
+#-ON MACBOOK
 
 c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
                       "conduite0.xlsx"))
 dim(c0)
 
 c3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                     "conduite3.xlsx"))
+                      "conduite3.xlsx"))
 dim(c3)
 
 c5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
@@ -42,7 +64,7 @@ a10 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristin
 pro <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
                        "DMO_Protheses.xls"))
 
-#-VISIT VARIABLE------------------------------------------------------------------
+#-VISIT VARIABLE----------------------------------------------------------------
 # REPLACE VARIABLES
 
 a0$visit.0 = a0$VISIT
@@ -67,13 +89,17 @@ a8$visit.8 = a8$VISIT
 a8$IdCohorte = a8$IDCOHORTE
 a8 = subset(a8, select = -c(IDCOHORTE, VISIT))
 
+a9$visit.9 = a9$VISIT
 a9$IdCohorte = a9$IDCOHORTE 
+a9 = subset(a9, select = -c(IDCOHORTE, VISIT))
 
-#-MERGE---------------------------------------------------------------------------
-#-LIST TO MERGE-------------------------------------------------------------------
-df_list = list(a0.v, a3.v, a4.v, a5.v, a6.v, a7.v, a8.v, a9.v, a10.v, pro.v)
+a10$visit.10 = rep("10", times = 462)
 
-#-ACTUAL MERGE-------------------------------------------------------------------
+#-MERGE-------------------------------------------------------------------------
+#-LIST TO MERGE-----------------------------------------------------------------
+df_list = list(a0.v, a3.v, a4.v, a5.v, a6.v, a7.v, a8.v, a9.v, a10.v)
+
+#-ACTUAL MERGE------------------------------------------------------------------
 #library(tidyverse)
 all.v <- df_list %>% reduce(full_join, by='IdCohorte')
 dim(all.v)
