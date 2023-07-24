@@ -6,8 +6,7 @@ require("here")
 
 setwd("P:/CONSULTATION/Rat_AnneChristine/Conduite/DATA")
 
-#-------------------------------------------------------------------------------
-#-ON PC
+#-ON PC-------------------------------------------------------------------------
 
 c0 <- read_excel("conduite0.xlsx", na = "NA")
 c3 <- read_excel("conduite3.xlsx", na = "NA")
@@ -24,8 +23,7 @@ a9 <- read_excel("DMO_Annee9.xls", na = "NA")
 a10 <- read_excel("DMO_Annee10.xls", na = "NA")
 pro <- read_excel("DMO_Protheses.xls", na = "NA")
 
-#-------------------------------------------------------------------------------
-#-ON MACBOOK
+#-ON MACBOOK--------------------------------------------------------------------
 
 c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
                       "conduite0.xlsx"))
@@ -311,8 +309,7 @@ print(descriptive, showAllLevels = T, quote = TRUE, noSpaces = T)
 descriptive2 = CreateTableOne(vars = vars2, factorVars = fvars2, data = baseline)
 print(descriptive2, showAllLevels = T, quote = TRUE, noSpaces = T)
 
-#----
-#----
+#-BIVARIATE---------------------------------------------------------------------
 
 vars1 = c("ArticIncl", "SEXE", "AGE", "ORIGINEG", "EDUCATION", 
          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
@@ -412,7 +409,6 @@ fvars4 = c("HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_
            "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
            "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
 
-#----
 
 desbygroup_1 = CreateTableOne(vars = vars1, factorVars = fvars1, data = baseline,
                               test = FALSE, strata = "ArticIncl")
@@ -429,3 +425,44 @@ print(desbygroup_3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 desbygroup_4 = CreateTableOne(vars = vars4, factorVars = fvars4, data = baseline,
                               test = FALSE, strata = "ArticIncl")
 print(desbygroup_4, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+#-MIXED-LINEAR------------------------------------------------------------------
+
+require(lme4)
+
+# y = difficultés d'utilisation de la voiture (c0-3-5-7)
+# x = caractéristiques du patient 
+
+modmix1 = lmer(y ~ x + (1 | patientid), data = database)
+
+#-estimate-of-the-random-effects------------------------------------------------
+#random intercept explanation: https://m-clark.github.io/mixed-models-with-R/random_intercepts.html
+
+ranef(modmix1)$patientid %>% head(5)
+
+coef(modmix1)$patientid %>% head(5)
+
+#If we did not allow occasion to vary, it is constant (fixed effect) for al
+#the patients. We can be interested in these effects, and under LME4, we can 
+#evaluate them by the bootstraping function "bootMer". 
+#alternatively, we can use the "metTools" package in the following way:
+
+require(merTools)
+
+#for model predictions (with new data)
+predictInterval(modmix1)
+
+#mean, meadian and sd of the random effects estimates
+
+REsim(modmix1)
+
+#plot thje interval estimates 
+plotREsim(REsim(modmix1))
+
+#The  plot is of the estimated random effects for each student and their interval 
+#estimate (a modified version of the plot produced by that last line of code10).
+#The random effects are normally distributed with a mean of zero, shown by the 
+#horizontal line. Intervals that do not include zero are in bold.
+
+#prediction
+predict(modmix1)
