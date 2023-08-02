@@ -23,6 +23,19 @@ a9 <- read_excel("DMO_Annee9.xls", na = "NA")
 a10 <- read_excel("DMO_Annee10.xls", na = "NA")
 pro <- read_excel("DMO_Protheses.xls", na = "NA")
 
+
+a0c <- read_excel("Items_OAKQOL_A0.xlsx",  na = "")
+a3c <- read_excel("Items_OAKHQOL_A3.xls", na = "")
+a5c <- read_excel("Items_OAKHQOL_A5.xlsx", na = "")
+a7c <- read_excel("Items_OAKHQOL_A7.xlsx", na = "")
+
+#-MERGING-----------------------------------------------------------------------
+
+C0M <- merge(c0, a0c, by.x = "IdCohorte", by.y = "IdCohorte")
+C3M <- merge(c3, a3c, by.x = "IdCohorte", by.y = "IdCohorte")
+C5M <- merge(c5, a5c, by.x = "IdCohorte", by.y = "IDCOHORTE")
+C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
+
 #-ON MACBOOK--------------------------------------------------------------------
 
 c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
