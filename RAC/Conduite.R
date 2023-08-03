@@ -62,6 +62,9 @@ C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 #-FINAL-DATASETS----------------------------------------------------------------
 
 dim(C0M)
+dim(C3M)
+dim(C5M)
+dim(C7M)
 dim(c0)
 dim(a0c)
 
@@ -429,6 +432,153 @@ desbygroup_4 = CreateTableOne(vars = vars4, factorVars = fvars4, data = baseline
                               test = FALSE, strata = "ArticIncl")
 print(desbygroup_4, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
+#-VARS-TO-INCLUDE---------------------------------------------------------------
+
+# AMIQUAL_Q09
+# AMIQUAL_Q10    
+# AMIQUAL_Q11
+# AMIQUAL_Q24    
+
+# SEXE
+# AGE
+# EDUCATION
+# MARITAL
+# BMI
+# ArticIncl (a0)
+
+## MAQ ==> MAQ_TOT ?
+# MAQ_L                MAQ_L_MET            MAQ_LssM            
+# MAQ_LssM_MET         MAQ_P                MAQ_P_MET           
+# MAQ_PMOD             MAQ_PMOD_MET         MAQ_PINT            
+# MAQ_PINT_MET         MAQ_TOT              MAQ_TOTssM          
+# MAQ_TOT_MET          MAQ_TOTssM_MET   
+
+# womacNorm (douleur, capacités fonctionnels Sinon "womac")
+# scordoulNorm (douleur ?)
+# ScoGlob (is GHQ28) (or MH?)
+
+# comorbidity (a3)
+# FCI01_1, COMMORB04, COMMORB07, COMMORB08, COMMORB09,
+# FCI06_1, COMMORB10, FCI08, FCI09_1, 
+# COMMORB14, COMMORB42, FCI12, COMMORB30, FCI14_1
+#, FCI15_1, COMMORB40, FCI17_1, COMMORB43
+
+# scores (a3)
+# KELL_HD
+# KELL_HG
+# EXT_FT_D
+# SCH_FT_D
+# EXT_FT_G
+# SCH_FT_G
+
+# Score_FemoP_GD         
+# Score_FemoP_GG
+# Score_FemoP           
+# Score_Osteo_T_GD
+# Score_Osteo_T_GG
+# Score_Osteo_T 
+
+# scores (a3)
+#HANCHEDMO             
+#HANCHETSCORE
+#HANCHEZSCORE
+#FEMURDMO              
+#FEMURTSCORE
+#FEMURZSCORE            
+
+#-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE----------------------------------------
+
+co0 = subset(C0M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24", "BMI",
+                             "MAQ_TOT", "womacNorm", "scordoulNorm", "ScoGlob",
+                             "SEXE", "AGE", "EDUCATION", "MARITAL"))
+
+co0ses = subset(co0, select = c("IdCohorte", "SEXE", "AGE", "EDUCATION", "MARITAL"))
+
+co3 = subset(C3M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT",
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+co5 = subset(C5M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT", 
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+co7 = subset(C7M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT", 
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+coa0 = subset(a0, select = c("IdCohorte", "ArticIncl"))
+
+coa3 = subset(a3, select = c("IdCohorte", "KELL_HD", "KELL_HG", "EXT_FT_D", "SCH_FT_D", "EXT_FT_G",
+                             "SCH_FT_G", "HANCHEDMO", "HANCHETSCORE", "HANCHEZSCORE", "FEMURDMO",
+                             "FEMURTSCORE", "FEMURZSCORE", "Score_FemoP_GD", "Score_FemoP_GG",
+                             "Score_FemoP", "Score_Osteo_T_GD", "Score_Osteo_T_GG", "Score_Osteo_T", 
+                             "FCI01_1", "COMMORB04", "COMMORB07", "COMMORB08", "COMMORB09",
+                             "FCI06_1", "COMMORB10", "FCI08", "FCI09_1", 
+                             "COMMORB14", "COMMORB42", "FCI12", "COMMORB30", "FCI14_1",
+                             "FCI15_1", "COMMORB40", "FCI17_1", "COMMORB43"))
+
+#-MISSING DATA ANALYSIS---------------------------------------------------------
+
+C0M$AMIQUAL_Q09miss[is.na(C0M$AMIQUAL_Q09)] <- 99 
+table(C0M$AMIQUAL_Q09miss)
+dim(C0M)
+
+C3M$AMIQUAL_Q09miss[is.na(C3M$AMIQUAL_Q09)] <- 99 
+table(C3M$AMIQUAL_Q09miss)
+dim(C3M)
+
+C5M$AMIQUAL_Q09miss[is.na(C5M$AMIQUAL_Q09)] <- 99 
+table(C5M$AMIQUAL_Q09miss)
+dim(C5M)
+
+C7M$AMIQUAL_Q09miss[is.na(C7M$AMIQUAL_Q09)] <- 99 
+table(C7M$AMIQUAL_Q09miss)
+dim(C7M)
+
+#-MERGING-THE-NEW-DATASETS------------------------------------------------------
+#-LIST TO MERGE-----------------------------------------------------------------
+dim(co0)
+dim(co3)
+dim(co5)
+dim(co7)
+dim(coa3)
+
+df_list3 = list(co3, co0ses)
+df_list5 = list(co5, co0ses)
+df_list7 = list(co7, co0ses)
+
+co3 <- df_list3 %>% reduce(full_join, by='IdCohorte')
+co5 <- df_list5 %>% reduce(full_join, by='IdCohorte')
+co7 <- df_list7 %>% reduce(full_join, by='IdCohorte')
+
+#-ADD THE COUNT VARIABLE TO DATASETS--------------------------------------------
+
+co0$time <- rep("1", times = "878")
+co3$time <- rep("2", times = "878")
+co5$time <- rep("3", times = "878")
+co7$time <- rep("4", times = "878")
+
+#-ACTUAL MERGE------------------------------------------------------------------
+co0357 <- rbind(co0, co3, co5, co7)
+dim(co0357)
+
+#-ACTUAL MERGE------------------------------------------------------------------
+#library(tidyverse)
+dim(coa3)
+#lignes 3512
+#colonnes 
+19+15 # 33 car ID cohorte is not repeated
+df_listF = list(co0357, coa3)
+codb <- df_listF %>% reduce(full_join, by='IdCohorte')
+dim(codb)
+View(codb)
+
+
+#FINAL DATASET------------------------------------------------------------------
+###
+  summary(codb)
+###
+
 #-MIXED-LINEAR------------------------------------------------------------------
 
 require(lme4)
@@ -470,48 +620,19 @@ plotREsim(REsim(modmix1))
 #prediction
 predict(modmix1)
 
-#-VARS-TO-INCLUDE---------------------------------------------------------------
+#-MODEL-------------------------------------------------------------------------
+require(lme4)
+require(nlme)
+mod1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + (1 | IdCohorte), data = codb)
+summary(mod1)
 
-# SEXE
-# AGE
-# EDUCATION
-# MARITAL
-# BMI
-# ArticIncl (a0)
+m1 <- lme(AMIQUAL_Q09 ~ AGE + SEXE, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m1)
 
-## MAQ ==> MAQ_TOT ?
-# MAQ_L                MAQ_L_MET            MAQ_LssM            
-# MAQ_LssM_MET         MAQ_P                MAQ_P_MET           
-# MAQ_PMOD             MAQ_PMOD_MET         MAQ_PINT            
-# MAQ_PINT_MET         MAQ_TOT              MAQ_TOTssM          
-# MAQ_TOT_MET          MAQ_TOTssM_MET   
+m2 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+            scordoulNorm + ScoGlob + EDUCATION + MARITAL, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m2)
 
-# womacNorm (douleur, capacités fonctionnels Sinon "womac")
-# scordoulNorm (douleur ?)
-# ScoGlob (is GGQ28) (or MH?)
-
-# comorbidity (a3)
-# FCI01_1 + COMMORB04 + COMMORB07 + COMMORB08 + COMMORB09 +
-# FCI06_1 + COMMORB10 + FCI08 + FCI09_1 + 
-# COMMORB14 + COMMORB42 + FCI12 + COMMORB30 + FCI14_1
-# + FCI15_1 + COMMORB40 + FCI17_1 + COMMORB43
-
-# KELL_HD
-# KELL_HG
-# EXT_FT_D
-# SCH_FT_D
-# EXT_FT_G
-# SCH_FT_G
-
-#Score_FemoP_GD         Score_FemoP_GG         Score_FemoP           
-#[115] Score_Osteo_T_GD       Score_Osteo_T_GG       Score_Osteo_T 
-
-# scores (a3)
-#HANCHEDMO             
-#HANCHETSCORE
-#HANCHEZSCORE
-#FEMURDMO              
-#FEMURTSCORE
-#FEMURZSCORE            
-
-#-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE
+m2.1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+            scordoulNorm + ScoGlob + EDUCATION + MARITAL + (1 | IdCohorte), data=codb)
+summary(m2.1)
