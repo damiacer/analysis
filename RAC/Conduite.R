@@ -4,9 +4,9 @@ require("tidyverse")
 require("lubridate")
 require("here")
 
-setwd("P:/CONSULTATION/Rat_AnneChristine/Conduite/DATA")
-
 #-ON PC-------------------------------------------------------------------------
+
+setwd("P:/CONSULTATION/Rat_AnneChristine/Conduite/DATA")
 
 c0 <- read_excel("conduite0.xlsx", na = "NA")
 c3 <- read_excel("conduite3.xlsx", na = "NA")
@@ -23,11 +23,34 @@ a9 <- read_excel("DMO_Annee9.xls", na = "NA")
 a10 <- read_excel("DMO_Annee10.xls", na = "NA")
 pro <- read_excel("DMO_Protheses.xls", na = "NA")
 
-
 a0c <- read_excel("Items_OAKQOL_A0.xlsx",  na = "")
 a3c <- read_excel("Items_OAKHQOL_A3.xls", na = "")
 a5c <- read_excel("Items_OAKHQOL_A5.xlsx", na = "")
 a7c <- read_excel("Items_OAKHQOL_A7.xlsx", na = "")
+
+#-ON MACBOOK--------------------------------------------------------------------
+
+c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite0.xlsx"))
+c3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite3.xlsx"))
+c5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite5.xlsx"))
+c7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite7.xlsx"))
+
+a0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee0.xls"))
+a3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee3.xls"))
+a4 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee4.xls"))
+a5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee5.xls"))
+a6 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee6.xls"))
+a7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee7.xls"))
+a8 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee8.xls"))
+a9 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee9.xls"))
+a10 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee10.xls"))
+pro <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Protheses.xls"))
+
+a0c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKQOL_A0.xlsx"))
+a3c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A3.xls"))
+a5c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A5.xlsx"))
+a7c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A7.xlsx"))
+
 
 #-MERGING-----------------------------------------------------------------------
 
@@ -36,44 +59,11 @@ C3M <- merge(c3, a3c, by.x = "IdCohorte", by.y = "IdCohorte")
 C5M <- merge(c5, a5c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 
-#-ON MACBOOK--------------------------------------------------------------------
+#-FINAL-DATASETS----------------------------------------------------------------
 
-c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "conduite0.xlsx"))
+dim(C0M)
 dim(c0)
-
-c3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "conduite3.xlsx"))
-dim(c3)
-
-c5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "conduite5.xlsx"))
-dim(c5)
-
-c7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "conduite7.xlsx"))
-dim(c7)
-
-a0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee0.xls"))
-a3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee3.xls"))
-a4 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee4.xls"))
-a5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee5.xls"))
-a6 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee6.xls"))
-a7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee7.xls"))
-a8 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee8.xls"))
-a9 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                      "DMO_Annee9.xls"))
-a10 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                       "DMO_Annee10.xls"))
-pro <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", 
-                       "DMO_Protheses.xls"))
+dim(a0c)
 
 #-VISIT VARIABLE----------------------------------------------------------------
 # REPLACE VARIABLES
@@ -135,7 +125,7 @@ c0 = subset(c0, select = c("IdCohorte", "SEXE", "AGE", "ORIGINEG", "EDUCATION",
                            "Hremarques", "Hremarques2", "Hremarques3", "Hremarques4", "Hremarques5", 
                            "Hremarques6", "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
                            "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
-              
+            
 )
 
 #a3$visit.3 = a3$VISIT
@@ -248,51 +238,51 @@ vars = c("ArticIncl", "SEXE", "AGE", "ORIGINEG", "EDUCATION",
          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
          "Econdens_G_rotI", "Econdens_G_rotE",  
          "Edesaxation_D", "Edesaxation_G") 
-          
+
 vars2 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
-         "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
-         "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
-         "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
-         "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
-         "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
-         "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
-         "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
-         "Hbassin_face", 
-         "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position", 
-         "HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
-         "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
-         "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
-         "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
-         "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
-         "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
-         "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
-         "Hgeodes_HG_tete", 
-         "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
-         "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL"
+          "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+          "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+          "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+          "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+          "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+          "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+          "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+          "Hbassin_face", 
+          "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position", 
+          "HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+          "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+          "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+          "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+          "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+          "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+          "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+          "Hgeodes_HG_tete", 
+          "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+          "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL"
 )
 
 fvars = c("ArticIncl", "SEXE", "ORIGINEG", "EDUCATION", 
-           "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
-           "STATUTPROF", "TEMPSPARTIEL1",  
-           "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
-           "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
-           "REVENU", "SOCIALE", "PENSION", 
-           "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
-           "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
-           "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
-           "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image", 
-           "Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
-           "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
-           "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
-           "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
-           "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
-           "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
-           "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
-           "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
-           "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
-           "Econdens_G_rotI", "Econdens_G_rotE",
-           "Edesaxation_D", "Edesaxation_G") 
-            
+          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
+          "STATUTPROF", "TEMPSPARTIEL1",  
+          "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
+          "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
+          "REVENU", "SOCIALE", "PENSION", 
+          "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+          "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+          "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+          "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image", 
+          "Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+          "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+          "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+          "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+          "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+          "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+          "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+          "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+          "Econdens_G_rotI", "Econdens_G_rotE",
+          "Edesaxation_D", "Edesaxation_G") 
+
 fvars2 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
            "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
            "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
@@ -313,7 +303,7 @@ fvars2 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil",
            "Hgeodes_HG_tete",  
            "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
            "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL"
-  )
+)
 
 
 descriptive = CreateTableOne(vars = vars, factorVars = fvars, data = baseline)
@@ -325,36 +315,36 @@ print(descriptive2, showAllLevels = T, quote = TRUE, noSpaces = T)
 #-BIVARIATE---------------------------------------------------------------------
 
 vars1 = c("ArticIncl", "SEXE", "AGE", "ORIGINEG", "EDUCATION", 
-         "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
-         "TAILLE", "BMI", "Delai_1ersymp",  
-         "Delai_diag", "PF", "RP", "BP", "MH", "RE", "SF", "VT", "GH", 
-         "HT", "PCS", "MCS", "AP", "SM", "D", "SS", "AS", "SQ12", "SQ22", 
-         "SQ23", "scorfonc", "scordoul", "scorraid", "scorfoncNorm", "scordoulNorm", 
-         "scorraidNorm", "womac", "womacNorm", "MAQ_L", "MAQ_L_MET", "MAQ_LssM", 
-         "MAQ_LssM_MET", "MAQ_P", "MAQ_P_MET", "MAQ_PMOD", "MAQ_PMOD_MET", 
-         "MAQ_PINT", "MAQ_PINT_MET", "MAQ_TOT", "MAQ_TOTssM", "MAQ_TOT_MET", 
-         "MAQ_TOTssM_MET", "SomatBr", "AnxiBr", "DysSociaBr", "HumDeprBr", 
-         "ScoGlobBr", "Somat", "Anxi", "DysSocia", "HumDepr", "ScoGlob", 
-         "STATUTPROF",  "TEMPSPARTIEL1",  
-         "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE",  
-         "INVALIDECAUSE", "CATEGINVALIDE", "JOURSPERDUS", 
-         "REVENU", "SOCIALE", "PENSION", 
-         "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
-         "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
-         "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
-         "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
-         
+          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
+          "TAILLE", "BMI", "Delai_1ersymp",  
+          "Delai_diag", "PF", "RP", "BP", "MH", "RE", "SF", "VT", "GH", 
+          "HT", "PCS", "MCS", "AP", "SM", "D", "SS", "AS", "SQ12", "SQ22", 
+          "SQ23", "scorfonc", "scordoul", "scorraid", "scorfoncNorm", "scordoulNorm", 
+          "scorraidNorm", "womac", "womacNorm", "MAQ_L", "MAQ_L_MET", "MAQ_LssM", 
+          "MAQ_LssM_MET", "MAQ_P", "MAQ_P_MET", "MAQ_PMOD", "MAQ_PMOD_MET", 
+          "MAQ_PINT", "MAQ_PINT_MET", "MAQ_TOT", "MAQ_TOTssM", "MAQ_TOT_MET", 
+          "MAQ_TOTssM_MET", "SomatBr", "AnxiBr", "DysSociaBr", "HumDeprBr", 
+          "ScoGlobBr", "Somat", "Anxi", "DysSocia", "HumDepr", "ScoGlob", 
+          "STATUTPROF",  "TEMPSPARTIEL1",  
+          "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE",  
+          "INVALIDECAUSE", "CATEGINVALIDE", "JOURSPERDUS", 
+          "REVENU", "SOCIALE", "PENSION", 
+          "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+          "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+          "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+          "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
+
 vars2 = c("Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
-         "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
-         "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
-         "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
-         "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
-         "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
-         "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
-         "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
-         "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
-         "Econdens_G_rotI", "Econdens_G_rotE",  
-         "Edesaxation_D", "Edesaxation_G") 
+          "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+          "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+          "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+          "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+          "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+          "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+          "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+          "Econdens_G_rotI", "Econdens_G_rotE",  
+          "Edesaxation_D", "Edesaxation_G") 
 
 vars3 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
           "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
@@ -379,27 +369,27 @@ vars4 = c("HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_g
           "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
 
 fvars1 = c("ArticIncl", "SEXE", "ORIGINEG", "EDUCATION", 
-          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
-          "STATUTPROF", "TEMPSPARTIEL1",  
-          "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
-          "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
-          "REVENU", "SOCIALE", "PENSION", 
-          "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
-          "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
-          "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
-          "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
+           "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
+           "STATUTPROF", "TEMPSPARTIEL1",  
+           "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
+           "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
+           "REVENU", "SOCIALE", "PENSION", 
+           "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+           "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+           "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+           "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
 
 fvars2 = c("Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
-          "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
-          "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
-          "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
-          "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
-          "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
-          "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
-          "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
-          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
-          "Econdens_G_rotI", "Econdens_G_rotE",
-          "Edesaxation_D", "Edesaxation_G") 
+           "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+           "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+           "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+           "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+           "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+           "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+           "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+           "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+           "Econdens_G_rotI", "Econdens_G_rotE",
+           "Edesaxation_D", "Edesaxation_G") 
 
 fvars3 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
            "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
@@ -479,3 +469,49 @@ plotREsim(REsim(modmix1))
 
 #prediction
 predict(modmix1)
+
+#-VARS-TO-INCLUDE---------------------------------------------------------------
+
+# SEXE
+# AGE
+# EDUCATION
+# MARITAL
+# BMI
+# ArticIncl (a0)
+
+## MAQ ==> MAQ_TOT ?
+# MAQ_L                MAQ_L_MET            MAQ_LssM            
+# MAQ_LssM_MET         MAQ_P                MAQ_P_MET           
+# MAQ_PMOD             MAQ_PMOD_MET         MAQ_PINT            
+# MAQ_PINT_MET         MAQ_TOT              MAQ_TOTssM          
+# MAQ_TOT_MET          MAQ_TOTssM_MET   
+
+# womacNorm (douleur, capacités fonctionnels Sinon "womac")
+# scordoulNorm (douleur ?)
+# ScoGlob (is GGQ28) (or MH?)
+
+# comorbidity (a3)
+# FCI01_1 + COMMORB04 + COMMORB07 + COMMORB08 + COMMORB09 +
+# FCI06_1 + COMMORB10 + FCI08 + FCI09_1 + 
+# COMMORB14 + COMMORB42 + FCI12 + COMMORB30 + FCI14_1
+# + FCI15_1 + COMMORB40 + FCI17_1 + COMMORB43
+
+# KELL_HD
+# KELL_HG
+# EXT_FT_D
+# SCH_FT_D
+# EXT_FT_G
+# SCH_FT_G
+
+#Score_FemoP_GD         Score_FemoP_GG         Score_FemoP           
+#[115] Score_Osteo_T_GD       Score_Osteo_T_GG       Score_Osteo_T 
+
+# scores (a3)
+#HANCHEDMO             
+#HANCHETSCORE
+#HANCHEZSCORE
+#FEMURDMO              
+#FEMURTSCORE
+#FEMURZSCORE            
+
+#-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE
