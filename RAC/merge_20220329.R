@@ -1,807 +1,712 @@
-getwd()
-setwd("P:/CONSULTATION/Rat_AnneChristine/DMO_Fichiers_Excel_20220316/TablesExcel") # ON PC
-setwd("/Users/damianocerasuolo/Desktop/UBRC/21_22_CONSULT_MAC/Rat_AnneChristine/DMO_Fichiers_Excel_20220316/TablesExcel")
-#-------------------------------------------------------------------------------
-#install.packages("readxl")
-library("readxl")
-#install.packages("dplyr")
-library("dplyr")
-#install.packages("plyr")
-library("plyr")
-#-------------------------------------------------------------------------------
-# ON MERGING DATAFRAMES:  https://stackoverflow.com/questions/15162197/combine-
-# rbind-data-# frames-and-create-column-with-name-of-original-data-frames
+require("readxl")
+require("tidyverse")
+#require("plyr")
+require("lubridate")
+require("here")
 
-a0 <- read_excel("DMO_Annee0.xls", na="NA")
-a3 <- read_excel("DMO_Annee3.xls", na="NA")
-#a03 <- rbind.fill(a0, a3)
-a4 <- read_excel("DMO_Annee4.xls", na="NA")
-a5 <- read_excel("DMO_Annee5.xls", na="NA")
-a6 <- read_excel("DMO_Annee6.xls", na="NA")
-a7 <- read_excel("DMO_Annee7.xls", na="NA")
-a8 <- read_excel("DMO_Annee8.xls", na="NA")
-a9 <- read_excel("DMO_Annee9.xls", na="NA")
-a10 <- read_excel("DMO_Annee10.xls", na="NA")
-pro <- read_excel("DMO_Protheses.xls", na="NA")
+#-ON PC-------------------------------------------------------------------------
 
-#full<-do.call(rbind.fill, list(df1 = a0, df2 = a3, df3 = a4, df4 = a5, df5 = a6,
-#                                df6 = a7, df7 = a8, df8 = a9, df9 = a10)) #working
-#dim(full)
-dim(a0)
-dim(a3)
-dim(a4)
-dim(a5)
-dim(a6)
-dim(a7)
-dim(a8)
-dim(a9)
-dim(a10)
-878+747+631+675+573+547+520+466+462
+setwd("P:/CONSULTATION/Rat_AnneChristine/Conduite/DATA")
 
-#-------------------------------------------------------------------------------
-names(a0)
-table(a0$ArticIncl) # articulation d'inclusion
-#-------------------------------------------------------------------------------
+c0 <- read_excel("conduite0.xlsx", na = "NA")
+c3 <- read_excel("conduite3.xlsx", na = "NA")
+c5 <- read_excel("conduite5.xlsx", na = "NA")
+c7 <- read_excel("conduite7.xlsx", na = "NA")
+a0 <- read_excel("DMO_Annee0.xls", na = "NA")
+a3 <- read_excel("DMO_Annee3.xls", na = "NA")
+a4 <- read_excel("DMO_Annee4.xls", na = "NA")
+a5 <- read_excel("DMO_Annee5.xls", na = "NA")
+a6 <- read_excel("DMO_Annee6.xls", na = "NA")
+a7 <- read_excel("DMO_Annee7.xls", na = "NA")
+a8 <- read_excel("DMO_Annee8.xls", na = "NA")
+a9 <- read_excel("DMO_Annee9.xls", na = "NA")
+a10 <- read_excel("DMO_Annee10.xls", na = "NA")
+pro <- read_excel("DMO_Protheses.xls", na = "NA")
+
+a0c <- read_excel("Items_OAKQOL_A0.xlsx",  na = "")
+a3c <- read_excel("Items_OAKHQOL_A3.xls", na = "")
+a5c <- read_excel("Items_OAKHQOL_A5.xlsx", na = "")
+a7c <- read_excel("Items_OAKHQOL_A7.xlsx", na = "")
+
+#-ON MACBOOK--------------------------------------------------------------------
+
+c0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite0.xlsx"))
+c3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite3.xlsx"))
+c5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite5.xlsx"))
+c7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "conduite7.xlsx"))
+
+a0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee0.xls"))
+a3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee3.xls"))
+a4 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee4.xls"))
+a5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee5.xls"))
+a6 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee6.xls"))
+a7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee7.xls"))
+a8 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee8.xls"))
+a9 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee9.xls"))
+a10 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Annee10.xls"))
+pro <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "DMO_Protheses.xls"))
+
+a0c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKQOL_A0.xlsx"))
+a3c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A3.xls"))
+a5c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A5.xlsx"))
+a7c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A7.xlsx"))
+
+
+#-MERGING-----------------------------------------------------------------------
+
+C0M <- merge(c0, a0c, by.x = "IdCohorte", by.y = "IdCohorte")
+C3M <- merge(c3, a3c, by.x = "IdCohorte", by.y = "IdCohorte")
+C5M <- merge(c5, a5c, by.x = "IdCohorte", by.y = "IDCOHORTE")
+C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
+
+#-FINAL-DATASETS----------------------------------------------------------------
+
+dim(C0M)
+dim(C3M)
+dim(C5M)
+dim(C7M)
+dim(c0)
+dim(a0c)
+
+#-VISIT VARIABLE----------------------------------------------------------------
 # REPLACE VARIABLES
 
-a0$visit.0 = a0$VISIT
-a0 = subset(a0, select = -c(VISIT))
-
-a3$visit.3 = a3$VISIT
-a3 = subset(a3, select = -c(VISIT))
-
-a4$visit.4 = a4$VISIT
-a4 = subset(a4, select = -c(VISIT))
-
-a5$visit.5 = a5$VISIT
-a5 = subset(a5, select = -c(VISIT))
-
-a6$visit.6 = a6$VISIT
-a6 = subset(a6, select = -c(VISIT))
-
-a7$visit.7 = a7$VISIT
-a7 = subset(a7, select = -c(VISIT))
-
-a8$visit.8 = a8$VISIT
-a8$IdCohorte = a8$IDCOHORTE
-a8 = subset(a8, select = -c(IDCOHORTE, VISIT))
-
-a9$IdCohorte = a9$IDCOHORTE 
-a9$visit.9 = a9$VISIT
-a9 = subset(a9, select = -c(IDCOHORTE, VISIT))
-
-a10$visit.10 = rep(10, times = 462)
-#-------------------------------------------------------------------------------
-### DATE OF THE VISIT 
-# create the date of the visit 3 adding 3 years to the inclusion date
-# notes: this variable will be created 
-
-library(lubridate)
-
-pro$inclusion3 = (as.Date(pro$date_inclusion) %m+% years(3))
-table(pro$inclusion3, pro$date_inclusion)
-#-------------------------------------------------------------------------------
-### FIRST EVENT CHECK
-## RECODE THE BINARY EVENT VARIABLE IN ORDER TO HAVE 0s WHERE THE EVENT DIDN'T HAPPEN
-str(pro$PROTH_GD) # THE VARIABLES ARE NUMERIC
-
-pro$PROTH_GD[is.na(pro$PROTH_GD)] <- 0
-table(pro$PROTH_GD)
-
-pro$PROTH_GG[is.na(pro$PROTH_GG)] <- 0
-pro$PROTH_HD[is.na(pro$PROTH_HD)] <- 0
-pro$PROTH_HG[is.na(pro$PROTH_HG)] <- 0
-#------------------------------------------------
-# EVENT DATE AFTER THE INCLUSION DATE 
-# ONLY INCIDENT CASES 
-
-pro <- pro %>%
-  mutate(DTPROTH_GD.i = case_when(
-    as.Date(DTPROTH_GD) > as.Date(inclusion3) ~ as.Date(DTPROTH_GD)
-  ))
-
-pro <- pro %>% 
-  mutate(DTPROTH_GG.i = case_when(
-    as.Date(DTPROTH_GG) > as.Date(inclusion3) ~ as.Date(DTPROTH_GG)
-  ))
-
-pro <- pro %>%
-  mutate(DTPROTH_HD.i = case_when(
-    as.Date(DTPROTH_HD) > as.Date(inclusion3) ~ as.Date(DTPROTH_HD)
-  ))
-
-pro <- pro %>%
-  mutate(DTPROTH_HG.i = case_when(
-    as.Date(DTPROTH_HG) > as.Date(inclusion3) ~ as.Date(DTPROTH_HG)
-  ))
-
-
-## FIRST EVENT
-
-pro <- pro %>%
-  mutate(first = case_when(
-    # LA DATE DE LA prothese genou droit EST INFERIEURE AUX AUTRES PROTHESES
-    as.Date(DTPROTH_GD.i) < as.Date(DTPROTH_GG.i) | 
-      as.Date(DTPROTH_GD.i) < as.Date(DTPROTH_HD.i) | 
-      as.Date(DTPROTH_GD.i) < as.Date(DTPROTH_HG.i) ~ "pro.gd",
-    # LA DATE DE LA prothese genou gauche EST INFERIEURE AUX AUTRES PROTHESES
-    as.Date(DTPROTH_GG.i) < as.Date(DTPROTH_GD.i) |
-      as.Date(DTPROTH_GG.i) < as.Date(DTPROTH_HD.i) |
-      as.Date(DTPROTH_GG.i) < as.Date(DTPROTH_HG.i) ~ "pro.gg",
-    # LA DATE DE LA prothese de hanche droite EST INFERIEURE AUX AUTRES PROTHESES
-    as.Date(DTPROTH_HD.i) < as.Date(DTPROTH_GD.i) |
-      as.Date(DTPROTH_HD.i) < as.Date(DTPROTH_GG.i) |
-      as.Date(DTPROTH_HD.i) < as.Date(DTPROTH_HG.i) ~ "pro.hd",
-    # LA DATE DE LA prothese de hance gauche EST INFERIEURE AUX AUTRES PROTHESES 
-    as.Date(DTPROTH_HG.i) < as.Date(DTPROTH_GD.i) |
-      as.Date(DTPROTH_HG.i) < as.Date(DTPROTH_GG.i) |
-      as.Date(DTPROTH_HG.i) < as.Date(DTPROTH_HD.i) ~ "pro.hg"))
-
-table(pro$first)
-# before having taken into account the inclusion date
-# pro.gd pro.gg pro.hd pro.hg 
-# 35     20     19     11      = 85 first events 
-
-# after having taken into account the inclusion date
-#pro.gd pro.gg pro.hd pro.hg 
-#31     19     17     10 
-
-# ONLY INCIDENT EVENTS
-#pro.gd pro.gg pro.hd 
-#28     17      6 
-
-################################################################################
-                                                                               #
-                                                                               #
-                                                                               #
-
-    ## FIRST EVENT - SECOND CODE
-    # FOUR SEPARETES CODES FOR FOUR ART 
-    # DATES TRANSFORMED IN NUMERIC
-    pro$DTPROTH_GD.in = as.numeric(pro$DTPROTH_GD.i)
-    pro$DTPROTH_GG.in = as.numeric(pro$DTPROTH_GG.i)
-    pro$DTPROTH_HD.in = as.numeric(pro$DTPROTH_HD.i)
-    pro$DTPROTH_HG.in = as.numeric(pro$DTPROTH_HG.i)
-    
-    pro <- pro %>%
-      mutate(first.gd = case_when(
-        # LA DATE DE LA prothese genou droit EST INFERIEURE AUX AUTRES PROTHESES
-        DTPROTH_GD.in < DTPROTH_GG.in | 
-          DTPROTH_GD.in < DTPROTH_HD.in | 
-          DTPROTH_GD.in < DTPROTH_HG.in ~ "pro.gd"
-      ))
-    table(pro$first.gd)
-    table(pro$first.gd, pro$first)
-    
-    pro <- pro %>%
-      mutate(first.gg = case_when(
-        # LA DATE DE LA prothese genou gauche EST INFERIEURE AUX AUTRES PROTHESES
-        DTPROTH_GG.in < DTPROTH_GD.in |
-          DTPROTH_GG.in < DTPROTH_HD.in |
-          DTPROTH_GG.in < DTPROTH_HG.in ~ "pro.gg"
-      ))
-    table(pro$first.gg)
-    table(pro$first.gg, pro$first)
-    
-    pro <- pro %>%
-      mutate(first.hd = case_when(
-        # LA DATE DE LA prothese de hanche droite EST INFERIEURE AUX AUTRES PROTHESES
-        DTPROTH_HD.in < DTPROTH_GD.in |
-          DTPROTH_HD.in < DTPROTH_GG.in |
-          DTPROTH_HD.in < DTPROTH_HG.in ~ "pro.hd"
-      ))
-    table(pro$first.hd)
-    table(pro$first.hd, pro$first)
-    
-    pro <- pro %>% 
-      mutate(first.hg = case_when(
-        # LA DATE DE LA prothese de hance gauche EST INFERIEURE AUX AUTRES PROTHESES 
-        DTPROTH_HG.in < DTPROTH_GD.in |
-          DTPROTH_HG.in < DTPROTH_GG.in |
-          DTPROTH_HG.in < DTPROTH_HD.in ~ "pro.hg"
-        ))
-    table(pro$first.hg)
-    table(pro$first.hg, pro$first)
-
-                                                                               #
-                                                                               #
-################################################################################
-
-#------------------------------------------------
-# verifying that there is no HANCHE GAUCHE event in the data
-
-pro$PROTH_HG.n = as.numeric(pro$PROTH_HG)
-pro$inclusion3.n = as.numeric(pro$inclusion3)
-
-hanche.g <- pro %>%
-  select(PROTH_GD, PROTH_GG, PROTH_HD, PROTH_HG.n, inclusion3.n) %>%
-  filter(PROTH_HG.n > inclusion3.n)
-dim(hanche.g)
-View(hanche.g)
-# there is no incident event for the HANCHE GAUCHE
-
-pro = subset(pro, select = -c(inclusion3.n, PROTH_HG.n))
-
-#------------------------------------------------
-### EVENT DATE
-
-str(pro$DTPROTH_GD)
-
-pro <- pro %>%
-  mutate(event.date = case_when(
-    PROTH_GD == 1 & first == "pro.gd" ~ as.Date(DTPROTH_GD.i),
-    PROTH_GG == 1 & first == "pro.gg" ~ as.Date(DTPROTH_GG.i),
-    PROTH_HD == 1 & first == "pro.hd" ~ as.Date(DTPROTH_HD.i), 
-    PROTH_HG == 1 & first == "pro.hg" ~ as.Date(DTPROTH_HG.i)
-  ))
-
-str(pro$event.date)
-table(pro$event.date)
-
-#------------------------------------------------
-### EVENT AS BINARY VARIABLE 
-
-pro <- pro %>% 
-  mutate(event.bin = case_when(
-    PROTH_GD == 1 & first == "pro.gd" ~ "1",
-    PROTH_GG == 1 & first == "pro.gg" ~ "1",
-    PROTH_HD == 1 & first == "pro.hd" ~ "1",
-    PROTH_HG == 1 & first == "pro.hg" ~ "1"
-                                 ))
-table(pro$event.bin)
-pro$event.bin[is.na(pro$event.bin)] <- "0"
-#   0   1 
-# 842  36 first events, while 793 have no event at all ? 
-
-################################################################################
-                                                                               #
-                                                                               #
-                                                                               #
-
-pro <- pro %>%
-  mutate(event.sum = case_when(
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 1 ~ "all events",
-    
-    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 1 ~ "one event HG",
-    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 0 ~ "one event HD",
-    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "one event GG",
-    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 0 ~ "one event GD",
-    
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "two events",
-    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 0 ~ "two events",
-    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 0 & PROTH_HG == 1 ~ "two events",
-
-    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 0 ~ "two events",
-    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "two events",
-    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "two events",
-    
-    PROTH_GD == 0 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "two events",
-  
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "thee events",
-    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events",
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "thee events",
-    
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 0 ~ "thee events",
-    PROTH_GD == 1 & PROTH_GG == 0 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events",
-    PROTH_GD == 1 & PROTH_GG == 1 & PROTH_HD == 0 & PROTH_HG == 1 ~ "thee events",
-    
-    PROTH_GD == 0 & PROTH_GG == 1 & PROTH_HD == 1 & PROTH_HG == 1 ~ "thee events"
-  ))
-
-table(pro$event.sum)
-
-pro <- pro %>%
-  mutate(event.date = case_when(
-    event.sum == "one event HG" ~ as.Date(DTPROTH_HG),
-    event.sum == "one event HD" ~ as.Date(DTPROTH_HD),
-    event.sum == "one event GG" ~ as.Date(DTPROTH_GG),
-    event.sum == "one event gd" ~ as.Date(DTPROTH_GD)
-  ))
-
-table(pro$event.date)
-
-# INCIDENT EVENTS
-
-pro <- pro %>%
-  mutate(event.incident = case_when(
-    event.date < inclusion3 ~ "not_incid",
-    event.date > inclusion3 ~ "incident"
-  ))
-
-table(pro$event.incident)
-str(pro$event.incident)
-
-# INCIDENT DATE
-
-pro <- pro %>%
-  mutate(event.date.i = case_when(
-    event.incident == "incident" ~ event.date
-  ))
-
-table(pro$event.date.i, pro$event.date)
-
-# verifying the dates 
-# rdb$e.b.i = if_else(rdb$event.n < rdb$inclusion.n, "1", "0")
-
-pro$event.date.iN = as.numeric(pro$event.date.i)
-pro$event.date.N = as.numeric(pro$event.date)
-
-pro$eventi01 = if_else(pro$event.date.iN == ' ', "0", "1")
-table(pro$eventi01) #95 == as var 'event.incident'
-
-pro$event01 = if_else(pro$event.date.N == ' ', "0", "1")
-table(pro$event01) #133
-
-pro <- pro %>%
-  mutate(eventd01 = case_when(
-    event.date.i != "" ~ "1",
-    
-  ))
-                                                                               #
-                                                                               #
-                                                                               #
-################################################################################
-
-#------------------------------------------------
-
-### NUMBER OF MULTIPLE EVENT
-
-pro <- pro %>%
-  mutate(multiple = case_when(
-    (PROTH_GD + PROTH_GG + PROTH_HD + PROTH_HG) == 4 ~ "4",
-    (PROTH_GD + PROTH_GG + PROTH_HD + PROTH_HG) == 3 ~ "3",
-    (PROTH_GD + PROTH_GG + PROTH_HD + PROTH_HG) == 2 ~ "2",
-    (PROTH_GD + PROTH_GG + PROTH_HD + PROTH_HG) == 1 ~ "1",
-    (PROTH_GD + PROTH_GG + PROTH_HD + PROTH_HG) == 0 ~ "0"
-  ))
-
-table(pro$multiple)
-table(pro$multiple, pro$first)
-
-
-
-
-
-
-
-#-------------------------------------------------------------------------------
-## LAST VISIT FOLLOW UP 
-
-all.v <- all.v %>% mutate(last = case_when(
-  visit.3 == "lost" ~ visit.0d, 
-  visit.4 == "lost" ~ visit.3d,
-  visit.5 == "lost" ~ visit.4d,
-  visit.6 == "lost" ~ visit.5d,
-  visit.7 == "lost" ~ visit.6d,
-  visit.8 == "lost" ~ visit.7d,
-  visit.9 == "lost" ~ visit.8d,
-  visit.10 == "lost" ~ visit.9d,
-  visit.10 == "10" ~ visit.10d
-)) 
-
-table(all.v$last)
-#-------------------------------------------------------------------------------
-### SELECT THE VARIABLES NEEDED TO CALCULATE THE FOLLOW-UP 
-all.v.small = subset(all.v, select = c(IdCohorte, last))
-
-# LIST TO MERGE
-df_list.2 = list(pro, all.v.small)
-
-# MERGE
-pro.f <- df_list.2 %>% reduce(full_join, by='IdCohorte')
-dim(pro)
-dim(pro.f)
-#-------------------------------------------------------------------------------
-### CALUCULATE THE FOLLOW UP 
-# AS FOLLOWS: 
-# to the last visit for patients not having the event
-# to the event, for patients having the event
-
-pro.f$event.bin = as.factor(pro$event.bin)
-
-pro.f <- pro.f %>%
-  mutate(fup = case_when(
-    event.bin == "1" ~ (as.Date(DTPROTH_GD.i) - as.Date(date_inclusion)),
-    event.bin == "1" ~ (DTPROTH_GG.in - as.Date(date_inclusion)),
-    event.bin == "1" ~ (as.Date(DTPROTH_HD.i) - as.Date(date_inclusion)),
-    event.bin == "1" ~ (as.Date(DTPROTH_HG.i) - as.Date(date_inclusion)),
-    event.bin == "0" ~ (as.Date(last) - as.Date(date_inclusion))
-  ))
-
-table(pro.f$fup)
-#-------------------------------------------------------------------------------
-### DATABASE TO MERGE WITH OTHER DATABASES CONTAINING PATIENTS CHARACTERISTICS
-pro.merge = subset(pro.f, select = c(IdCohorte, fup, event.bin, event.date, first, last,
-                                     PROTH_GD, PROTH_GG, PROTH_HD, PROTH_HG,
-                                     DTPROTH_GD.i, DTPROTH_GG.i, DTPROTH_HD.i, DTPROTH_HG.i, 
-                                     date_inclusion))
-
-### SAVE DATA
-write.table(pro.merge, file = "prothesis.csv", sep = "\t", row.names = TRUE)
-procsv <- read.csv2("prothesis.csv", header = TRUE, na.string="NA", sep = "\t")
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-### CRITERE DE JUGEMENT PRINCIPAL 
-### SURVIE A LA POSE DE LA PROTHESE 
-library("survival")
-library("survminer")
-install.packages("ranger")
-library("ranger")
-library("ggplot2")
-library("ggfortify")
-
-str(pro.merge$event.bin)
-str(pro.merge$fup)
-pro.merge$followup = as.numeric(as.character(pro.merge$fup))
-pro.merge$event.binaire = as.numeric(as.character(pro.merge$event.bin))
-
-# follow up in months
-pro.merge <- pro.merge %>% 
-  mutate(followup.months = round(followup/30.417, digit=0))
-
-KM.pro = with(pro.merge, Surv(followup, event.bin))
-head(KM.pro, 100)
-
-KM.pro.fit = survfit(Surv(followup.months, event.binaire) ~ 1, data = pro.merge)
-summary(KM.pro.fit, times = c(1, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120*(1:10)))
-autoplot(KM.pro.fit)
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-### UNIVARIATE ON THE INCLUSION BASE
-### SELECT THE VARIABLES NEEDED TO CALCULATE THE FOLLOW-UP 
+#a0$visit.0 = a0$VISIT
+a0 = subset(a0, select = c("IdCohorte", "ArticIncl"))
 names(a0)
-names(pro.merge)
-
-# LIST TO MERGE
-data.univ = list(pro.merge, a0)
-
-# MERGE
-baseline <- data.univ %>% reduce(full_join, by='IdCohorte')
-
-# VARIABLE AGE AT BASELINE
-baseline$age = as.numeric(as.character((as.Date(baseline$date_inclusion) - 
-                                          as.Date(baseline$DTNAISS))/365.25))
-
-# VAR TRANSFORMATION BEFORE DESCRIPTIVE AND UNIVARIATE 
-library("tableone")
-dput(names(baseline))
-
-baseline$followup.descriptive = as.numeric(as.character(baseline$fup))
-baseline$event.binaire = as.numeric(as.character(baseline$event.bin))
-
-# FACTORIAL TRANSFORMATION FUNCTION
-f <- function(x){
-  result = as.factor(x)
-  return(result)
-}
-
-baseline$SEXE = f(baseline$SEXE)
-baseline$EDUCATION = f(baseline$EDUCATION)
-baseline$MARITAL <- f(baseline$MARITAL)
-baseline$COMMUNE2 = f(baseline$COMMUNE2)
-baseline$PROFESSION = f(baseline$PROFESSION)
-baseline$RETRAITE = f(baseline$RETRAITE)
-baseline$ArticIncl = f(baseline$ArticIncl)
-
-baseline.var <- c("followup.descriptive", "event.bin", 
-                  "PROTH_GD", "PROTH_GG", "PROTH_HD", "PROTH_HG", "SEXE", "age", 
-                  "EDUCATION", "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
-                  "ArticIncl", "QC_G_ARTHR", "QC_G_DROITE", "QC_G_GAUCHE", "QC_H_ARTHR", 
-                  "QC_H_DROITE", "QC_H_GAUCHE", "QC_SYMPT_MOIS", "QC_SYMPT_ANNEE", 
-                  "QC_DIAG_MOIS", "EKL_GD_FT", "EKL_GG_FT", "SKL_GD_FT", 
-                  "SKL_GG_FT", "HKL_HD", "HKL_HG", "EOsteoD_condylI", "EOsteoG_condylI", 
-                  "EOsteoD_condylE", "EOsteoG_condylE", "EOsteoD_platI", "EOsteoG_platI", 
-                  "EOsteoD_platE", "EOsteoG_platE", "Score_Osteo_GD", "Score_Osteo_GG", 
-                  "Score_Osteo", "SOsteoD_condylI", "SOsteoG_condylI", "SOsteoD_condylE", 
-                  "SOsteoG_condylE", "SOsteoD_platI", "SOsteoG_platI", "SOsteoD_platE", 
-                  "SOsteoG_platE", "Score_Schuss_GD", "Score_Schuss_GG", "Score_Schuss", 
-                  "EOsteoD_trochlI", "EOsteoG_trochlI", "EOsteoD_trochlE", "EOsteoG_trochlE", 
-                  "EOsteoD_rotuleI", "EOsteoG_rotuleI", "EOsteoD_rotuleE", "EOsteoG_rotuleE", 
-                  "Score_FemoP_GD", "Score_FemoP_GG", "Score_FemoP", "Score_Osteo_T_GD", 
-                  "Score_Osteo_T_GG", "Score_Osteo_T", "HOsteo_HD_cotyle_E", "HOsteo_HG_cotyle_E", 
-                  "HOsteo_HD_cotyle_Int", "HOsteo_HG_cotyle_Int", "HOsteo_HD_cotyle_Inf", 
-                  "HOsteo_HG_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HG_tete_S", 
-                  "HOsteo_HD_tete_I", "HOsteo_HG_tete_I", "Score_Osteo_HD", "Score_Osteo_HG", 
-                  "Score_Osteo_H", "EPincement_GD_FT", "Epincement_GG_FT", "SPincement_GD_FT", 
-                  "Spincement_GG_FT", "Pincement_Max_grade_GD", "Pincement_Max_grade_GG", 
-                  "Pincement_Max_grade_G", "HPincement_HD_grade", "HPincement_HG_grade", 
-                  "Pincement_Max_grade_H")
-
-baseline.catvar <- c("event.bin", "PROTH_GD", "PROTH_GG", "PROTH_HD", 
-                     "PROTH_HG", "SEXE", "EDUCATION", "MARITAL", 
-                     "COMMUNE2", "PROFESSION", "RETRAITE", "ArticIncl")
-
-descriptive = CreateTableOne(vars = baseline.var, data = baseline, 
-                             factorVars = baseline.catvar)
-print(descriptive, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
-
-univariate = CreateTableOne(vars = baseline.var, data = baseline, 
-                            factorVars = baseline.catvar, test = TRUE,
-                            strata = "event.bin")
-print(univariate, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
-
-
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-
-# COX UNIVARIATE
-
-covariates <- c("SEXE", "age", 
-                  "EDUCATION", 
-                #"MARITAL", 
-                "COMMUNE2", "PROFESSION", "RETRAITE", 
-                  "ArticIncl", 
-                "QC_G_ARTHR", 
-                #"QC_G_DROITE", "QC_G_GAUCHE", "QC_H_ARTHR", 
-                  "QC_H_DROITE", "QC_H_GAUCHE", "QC_SYMPT_MOIS", "QC_SYMPT_ANNEE", 
-                  "QC_DIAG_MOIS", "EKL_GD_FT", "EKL_GG_FT", "SKL_GD_FT", 
-                  "SKL_GG_FT", "HKL_HD", "HKL_HG", "EOsteoD_condylI", "EOsteoG_condylI", 
-                  "EOsteoD_condylE", "EOsteoG_condylE", "EOsteoD_platI", "EOsteoG_platI", 
-                  "EOsteoD_platE", "EOsteoG_platE", "Score_Osteo_GD", "Score_Osteo_GG", 
-                  "Score_Osteo", "SOsteoD_condylI", "SOsteoG_condylI", "SOsteoD_condylE", 
-                  "SOsteoG_condylE", "SOsteoD_platI", "SOsteoG_platI", "SOsteoD_platE", 
-                  "SOsteoG_platE", "Score_Schuss_GD", "Score_Schuss_GG", "Score_Schuss", 
-                  "EOsteoD_trochlI", "EOsteoG_trochlI", "EOsteoD_trochlE", "EOsteoG_trochlE", 
-                  "EOsteoD_rotuleI", "EOsteoG_rotuleI", "EOsteoD_rotuleE", "EOsteoG_rotuleE", 
-                  "Score_FemoP_GD", "Score_FemoP_GG", "Score_FemoP", "Score_Osteo_T_GD", 
-                  "Score_Osteo_T_GG", "Score_Osteo_T", "HOsteo_HD_cotyle_E", "HOsteo_HG_cotyle_E", 
-                  "HOsteo_HD_cotyle_Int", "HOsteo_HG_cotyle_Int", "HOsteo_HD_cotyle_Inf", 
-                  "HOsteo_HG_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HG_tete_S", 
-                  "HOsteo_HD_tete_I", "HOsteo_HG_tete_I", "Score_Osteo_HD", "Score_Osteo_HG", 
-                  "Score_Osteo_H", "EPincement_GD_FT", "Epincement_GG_FT", "SPincement_GD_FT", 
-                  #"Spincement_GG_FT", "Pincement_Max_grade_GD", 
-                "Pincement_Max_grade_GG", 
-                  "Pincement_Max_grade_G" 
-                #, "HPincement_HD_grade", "HPincement_HG_grade", "Pincement_Max_grade_H"
-                )
-
-
-univ_formulas <- sapply(covariates,
-                        function(x) as.formula(paste('Surv(followup.descriptive, event.bin==1)~', x)))
-
-univ_models <- lapply(univ_formulas, function(x){coxph(x, data = baseline)})
-# Extract data 
-univ_results <- lapply(univ_models,
-                       function(x){ 
-                         x <- summary(x)
-                         p.value<-signif(x$wald["pvalue"], digits=2)
-                         wald.test<-signif(x$wald["test"], digits=2)
-                         beta<-signif(x$coef[1], digits=2);#coeficient beta
-                         HR <-signif(x$coef[2], digits=2);#exp(beta)
-                         HR.confint.lower <- signif(x$conf.int[,"lower .95"], 2)
-                         HR.confint.upper <- signif(x$conf.int[,"upper .95"],2)
-                         HR <- paste0(HR, " (", 
-                                      HR.confint.lower, "-", HR.confint.upper, ")")
-                         res<-c(beta, HR, wald.test, p.value)
-                         names(res)<-c("beta", "HR (95% CI for HR)", "wald.test", 
-                                       "p.value")
-                         return(res)
-                         #return(exp(cbind(coef(x),confint(x))))
-                       })
-res <- t(as.data.frame(univ_results, check.names = FALSE))
-as.data.frame(res)
-
-#-------------------------------------------------------------------------------
-
-# UNIVARIATE BY COX FORMULA
-
-cox <- function(x){
-  result = coxph(Surv(baseline$followup.descriptive, baseline$event.bin==1) ~ x)
-  return(summary(result))
-}
-
-cox(baseline$SEXE)
-sex <- coxph(Surv(baseline$followup.descriptive, baseline$event.bin==1) ~ baseline$SEXE)
-summary(sex)
-
-cox(baseline$age)
-cox(baseline$EDUCATION)
-cox(baseline$MARITAL)
-cox(baseline$COMMUNE2)
-
-cox(baseline$PROFESSION)
-cox(baseline$RETRAITE)
-cox(baseline$ArticIncl)
-cox(baseline$QC_G_ARTHR)
-cox(baseline$QC_G_DROITE)
-cox(baseline$QC_G_GAUCHE)
-
-cox(baseline$QC_H_ARTHR)
-cox(baseline$QC_H_DROITE)
-cox(baseline$QC_H_GAUCHE)
-
-cox(baseline$QC_SYMPT_MOIS)
-cox(baseline$QC_SYMPT_ANNEE)
-cox(baseline$QC_DIAG_MOIS)
-cox(baseline$EKL_GD_FT)
-
-cox(baseline$EKL_GG_FT)
-cox(baseline$SKL_GD_FT)
-
-cox(baseline$SKL_GG_FT)
-cox(baseline$HKL_HD)
-cox(baseline$HKL_HG)
-
-cox(baseline$EOsteoD_condylI)
-cox(baseline$EOsteoG_condylI)
-cox(baseline$EOsteoD_condylE)
-cox(baseline$EOsteoG_condylE) 
-cox(baseline$EOsteoD_platI) 
-cox(baseline$EOsteoG_platI)
-
-cox(baseline$EOsteoD_platE)
-cox(baseline$EOsteoG_platE) 
-cox(baseline$Score_Osteo_GD) 
-cox(baseline$Score_Osteo_GG)
-cox(baseline$Score_Osteo)
-
-cox(baseline$SOsteoD_condylI)
-cox(baseline$SOsteoG_condylI)
-cox(baseline$SOsteoD_condylE)
-cox(baseline$SOsteoG_condylE)
-
-cox(baseline$SOsteoD_platI)
-cox(baseline$SOsteoG_platI)
-cox(baseline$SOsteoD_platE)
-cox(baseline$SOsteoG_platE)
-cox(baseline$Score_Schuss_GD)
-
-cox(baseline$Score_Schuss_GG)
-
-cox(baseline$Score_Schuss)
-
-cox(baseline$EOsteoD_trochlI)
-cox(baseline$EOsteoG_trochlI)
-cox(baseline$EOsteoD_trochlE)
-cox(baseline$EOsteoG_trochlE)
-
-cox(baseline$EOsteoD_rotuleI)
-cox(baseline$EOsteoG_rotuleI)
-cox(baseline$EOsteoD_rotuleE)
-cox(baseline$EOsteoG_rotuleE)
-
-cox(baseline$Score_FemoP_GD)
-cox(baseline$Score_FemoP_GG)
-cox(baseline$Score_FemoP)
-
-cox(baseline$Score_Osteo_T_GD)
-cox(baseline$Score_Osteo_T_GG)
-cox(baseline$Score_Osteo_T)
-
-cox(baseline$HOsteo_HD_cotyle_E)
-cox(baseline$HOsteo_HG_cotyle_E)
-
-cox(baseline$HOsteo_HD_cotyle_Int)
-cox(baseline$HOsteo_HG_cotyle_Int)
-cox(baseline$HOsteo_HD_cotyle_Inf)
-cox(baseline$HOsteo_HG_cotyle_Inf)
-
-cox(baseline$HOsteo_HD_tete_S)
-cox(baseline$HOsteo_HG_tete_S)
-cox(baseline$HOsteo_HD_tete_I)
-cox(baseline$HOsteo_HG_tete_I)
-
-cox(baseline$Score_Osteo_HD)
-
-cox(baseline$Score_Osteo_HG)
-cox(baseline$Score_Osteo_H)
-
-cox(baseline$EPincement_GD_FT)
-cox(baseline$Epincement_GG_FT)
-cox(baseline$SPincement_GD_FT)
-cox(baseline$Spincement_GG_FT)
-cox(baseline$Pincement)
-
-cox(baseline$Max_grade_GD)
-cox(baseline$Pincement_Max_grade_GG)
-cox(baseline$Pincement_Max_grade_G)
-cox(HPincement_HD_grade)
-cox(HPincement_HG_grade)
-cox(Pincement_Max_grade_H)
-
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-
-### THE MULTILINE DATABASE FOR THE FRAILTY MODEL
-
-names(pro.merge)
-library(tidyr)
-library(here)
-
-all.id <- subset(all.v, select = c(IdCohorte, 
-                                  visit.0d, 
-                                  visit.3d, 
-                                  visit.4d, 
-                                  visit.5d, 
-                                  visit.6d, 
-                                  visit.7d, 
-                                  visit.8d, 
-                                  visit.9d,
-                                  visit.10d))
-names(all.id)
-
-all.id <- as_tibble(all.id)
-
-all.idlong <- all.id %>%
-  pivot_longer(!IdCohorte, names_to = "visitID", values_to = "visitDATE")
-dim(all.idlong)
-View(all.idlong)
-names(all.idlong)
-
-all.idlong$ID[all.idlong$visitID == "visit.0d"] <- "1"
-all.idlong$ID[all.idlong$visitID == "visit.3d"] <- "2"
-all.idlong$ID[all.idlong$visitID == "visit.4d"] <- "3"
-all.idlong$ID[all.idlong$visitID == "visit.5d"] <- "4"
-all.idlong$ID[all.idlong$visitID == "visit.6d"] <- "5"
-all.idlong$ID[all.idlong$visitID == "visit.7d"] <- "6"
-all.idlong$ID[all.idlong$visitID == "visit.8d"] <- "7"
-all.idlong$ID[all.idlong$visitID == "visit.9d"] <- "8"
-all.idlong$ID[all.idlong$visitID == "visit.10d"] <- "9"
-
-all.idlong <- subset(all.idlong, select = -c(visitID)) 
-                                   
-### INCIDENT EVENT TO THE FRAILTY MODEL 
-
-event.base = subset(pro, select = c(IdCohorte, 
-                                    #date_inclusion,
-                                    DTPROTH_GD, #PROTH_GD,
-                                    DTPROTH_GG, #PROTH_GG,
-                                    DTPROTH_HD, #PROTH_HD,
-                                    DTPROTH_HG #, PROTH_HG
-                                    ))
-
-event.base.long = event.base %>%
-  pivot_longer(!IdCohorte, names_to = "protype", values_to = "protdate")
-View(event.base.long)
-
-ID.INCL = subset(all.v, select = c(IdCohorte, date_inclusion))
-
-list.inclpro = list(ID.INCL, event.base.long)
-incidentbase = list.inclpro %>% reduce(full_join, by = "IdCohorte")
-
-incidentbase$date_inclusion = as.Date(incidentbase$date_inclusion)
-incidentbase$protdate = as.Date(incidentbase$protdate)
-dim(incidentbase)
-
-event.incident = incidentbase %>%
-  filter(protdate > date_inclusion)
-dim(event.incident)
-
-#event.base.inc <- event.base %>% 
-#  select(IdCohorte, date_inclusion,
-#         DTPROTH_GD, PROTH_GD,
-#         DTPROTH_GG, PROTH_GG,
-#         DTPROTH_HD, PROTH_HD,
-#         DTPROTH_HG, PROTH_HG) %>%
-#  filter(DTPROTH_GD > date_inclusion | date_inclusion)
-
-### MERGING
-# DATABASE LIST
-frailist = list(all.idlong, event.base)
-
-# MERGE
-library(tidyverse)
-frailbase <- frailist %>% reduce(full_join, by='IdCohorte')
-dim(frailbase)
-dim(event.base)
-dim(all.idlong)
-names(frailbase)
-View(frailbase)
-
-#-------------------------------------------------------------------------------
-
-### THE INCIDENT EVENT IS STORED IN THE event.incident base 
-### THE MULTIPLE LINE FOR PATIENT BASE IS THE frailbase
-### THE NEXT STEP IS TO REPLACE THE EVENT INTO A VISIT, IF NEEDED
-### OR, BETTER, TO ASSOCIATE IT WITH THE PROPER ID
-
-
-score = a3$FCI01_1 + a3$COMMORB04 + a3$COMMORB07 + a3$COMMORB08 + a3$COMMORB09 +
-  a3$FCI06_1 + a3$COMMORB10 + a3$FCI08 + a3$FCI09_1 + 
-  a3$COMMORB14 + a3$COMMORB42 + a3$FCI12 + a3$COMMORB30 + a3$FCI14_1
-  + a3$FCI15_1 + a3$COMMORB40 + a3$FCI17_1 + a3$COMMORB43
-
-table(score, a3$FCI01_1)
+dim(a0)
+
+c0 = subset(c0, select = c("IdCohorte", "SEXE", "AGE", "ORIGINEG", "EDUCATION", 
+                           "MARITAL", "COMMUNE", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
+                           "TAILLE", "BMI", "Delai_1ersymp",  
+                           "Delai_diag", "PF", "RP", "BP", "MH", "RE", "SF", "VT", "GH", 
+                           "HT", "PCS", "MCS", "AP", "SM", "D", "SS", "AS", "SQ12", "SQ22", 
+                           "SQ23", "scorfonc", "scordoul", "scorraid", "scorfoncNorm", "scordoulNorm", 
+                           "scorraidNorm", "womac", "womacNorm", "MAQ_L", "MAQ_L_MET", "MAQ_LssM", 
+                           "MAQ_LssM_MET", "MAQ_P", "MAQ_P_MET", "MAQ_PMOD", "MAQ_PMOD_MET", 
+                           "MAQ_PINT", "MAQ_PINT_MET", "MAQ_TOT", "MAQ_TOTssM", "MAQ_TOT_MET", 
+                           "MAQ_TOTssM_MET", "SomatBr", "AnxiBr", "DysSociaBr", "HumDeprBr", 
+                           "ScoGlobBr", "Somat", "Anxi", "DysSocia", "HumDepr", "ScoGlob", 
+                           "STATUTPROF", "METIER1", "METIER2", "TEMPSPARTIEL1", "TEMPSPARTIEL2", 
+                           "DTARRETD1", "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
+                           "INVALIDECAUSE", "CATEGINVALIDE", "JOURSPERDUS", 
+                           "CONSSITPROF", "REVENU", "SOCIALE", "PENSION", 
+                           "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+                           "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+                           "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+                           "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image", 
+                           "Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+                           "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+                           "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+                           "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+                           "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+                           "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+                           "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+                           "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+                           "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+                           "Econdens_G_rotI", "Econdens_G_rotE", "Eautres_patho_D", "Eautres_patho_G", 
+                           "Eautres_ano_D", "Eautres_ano_G", "Edesaxation_D", "Edesaxation_G", 
+                           "Eremarques", "Eremarques2", "Eremarques3", "Eremarques4", "date_lecture", 
+                           "date_RX", "S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
+                           "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+                           "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+                           "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+                           "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+                           "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+                           "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+                           "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+                           "Sremarques", "Sremarques2", "Sremarques3", "Sremarques4", "Hbassin_face", 
+                           "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position", 
+                           "HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+                           "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+                           "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+                           "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+                           "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+                           "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+                           "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+                           "Hgeodes_HG_tete", "Hautres_patho_HD", "Hautres_patho_HG", "Hautres_ano_bassin", 
+                           "Hremarques", "Hremarques2", "Hremarques3", "Hremarques4", "Hremarques5", 
+                           "Hremarques6", "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+                           "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
+            
+)
+
+#a3$visit.3 = a3$VISIT
+#a3 = subset(a3, select = -c(VISIT))
+
+#a4$visit.4 = a4$VISIT
+#a4 = subset(a4, select = -c(VISIT))
+
+#a5$visit.5 = a5$VISIT
+#a5 = subset(a5, select = -c(VISIT))
+
+#a6$visit.6 = a6$VISIT
+#a6 = subset(a6, select = -c(VISIT))
+
+#a7$visit.7 = a7$VISIT
+#a7 = subset(a7, select = -c(VISIT))
+
+#a8$visit.8 = a8$VISIT
+#a8$IdCohorte = a8$IDCOHORTE
+#a8 = subset(a8, select = -c(IDCOHORTE, VISIT))
+
+#a9$visit.9 = a9$VISIT
+#a9$IdCohorte = a9$IDCOHORTE 
+#a9 = subset(a9, select = -c(IDCOHORTE, VISIT))
+
+#a10$visit.10 = rep("10", times = 462)
+
+#-MERGE-------------------------------------------------------------------------
+#-LIST TO MERGE-----------------------------------------------------------------
+dim(a0)
+dim(c0)
+df_list = list(a0, c0)
+
+#-ACTUAL MERGE------------------------------------------------------------------
+#library(tidyverse)
+baseline <- df_list %>% reduce(full_join, by='IdCohorte')
+dim(baseline)
+
+#-VAR-RECODE--------------------------------------------------------------------
+
+baseline <- baseline %>%
+  mutate(HFx_profil = case_when(
+    HFx_profil == "HD only" ~ "HD only",
+    HFx_profil == "NON" ~ "NON",
+    HFx_profil == "oiui" ~ "OUI",
+    HFx_profil == "OUI" ~ "OUI"
+  ))
+
+baseline <- baseline %>%
+  mutate(HPinc_HD_topo = case_when(
+    HPinc_HD_topo == "global" ~ "global",
+    HPinc_HD_topo == "Global" ~ "global",
+    HPinc_HD_topo == "GLOBAL" ~ "global",
+    HPinc_HD_topo == "inf" ~ "inf",
+    HPinc_HD_topo  == "Inf" ~ "inf",
+    HPinc_HD_topo == "onf" ~ "inf",
+    HPinc_HD_topo == "post" ~ "post",
+    HPinc_HD_topo == "POST" ~ "post",
+    HPinc_HD_topo == "SE" ~ "SE",
+    HPinc_HD_topo == "SI" ~ "SI",
+    HPinc_HD_topo == "inf/post" ~ "infpost",
+    HPinc_HD_topo == "INF/POST" ~ "infpost"
+  ))
+
+baseline <- baseline %>% 
+  mutate(HPinc_HG_topo = case_when(
+    HPinc_HG_topo == "Glo" ~ "global",
+    HPinc_HG_topo == "global" ~ "global",
+    HPinc_HG_topo == "inf" ~ "inf",
+    HPinc_HG_topo == "INF" ~ "inf",
+    HPinc_HG_topo == "Inf" ~ "inf",
+    HPinc_HG_topo == "inferieur" ~ "inf",
+    HPinc_HG_topo == "INF/POST" ~ "infpost"
+  ))
+
+baseline$Edesaxation_D = if_else(baseline$Edesaxation_D == "0", "0", "1")
+
+#-DESCRIPTIVE-------------------------------------------------------------------
+library(tableone)
+
+# dput(names(baseline))
+
+vars = c("ArticIncl", "SEXE", "AGE", "ORIGINEG", "EDUCATION", 
+         "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
+         "TAILLE", "BMI", "Delai_1ersymp",  
+         "Delai_diag", "PF", "RP", "BP", "MH", "RE", "SF", "VT", "GH", 
+         "HT", "PCS", "MCS", "AP", "SM", "D", "SS", "AS", "SQ12", "SQ22", 
+         "SQ23", "scorfonc", "scordoul", "scorraid", "scorfoncNorm", "scordoulNorm", 
+         "scorraidNorm", "womac", "womacNorm", "MAQ_L", "MAQ_L_MET", "MAQ_LssM", 
+         "MAQ_LssM_MET", "MAQ_P", "MAQ_P_MET", "MAQ_PMOD", "MAQ_PMOD_MET", 
+         "MAQ_PINT", "MAQ_PINT_MET", "MAQ_TOT", "MAQ_TOTssM", "MAQ_TOT_MET", 
+         "MAQ_TOTssM_MET", "SomatBr", "AnxiBr", "DysSociaBr", "HumDeprBr", 
+         "ScoGlobBr", "Somat", "Anxi", "DysSocia", "HumDepr", "ScoGlob", 
+         "STATUTPROF",  "TEMPSPARTIEL1",  
+         "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE",  
+         "INVALIDECAUSE", "CATEGINVALIDE", "JOURSPERDUS", 
+         "REVENU", "SOCIALE", "PENSION", 
+         "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+         "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+         "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+         "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image", 
+         "Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+         "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+         "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+         "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+         "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+         "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+         "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+         "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+         "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+         "Econdens_G_rotI", "Econdens_G_rotE",  
+         "Edesaxation_D", "Edesaxation_G") 
+
+vars2 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
+          "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+          "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+          "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+          "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+          "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+          "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+          "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+          "Hbassin_face", 
+          "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position", 
+          "HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+          "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+          "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+          "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+          "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+          "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+          "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+          "Hgeodes_HG_tete", 
+          "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+          "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL"
+)
+
+fvars = c("ArticIncl", "SEXE", "ORIGINEG", "EDUCATION", 
+          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
+          "STATUTPROF", "TEMPSPARTIEL1",  
+          "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
+          "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
+          "REVENU", "SOCIALE", "PENSION", 
+          "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+          "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+          "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+          "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image", 
+          "Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+          "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+          "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+          "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+          "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+          "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+          "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+          "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+          "Econdens_G_rotI", "Econdens_G_rotE",
+          "Edesaxation_D", "Edesaxation_G") 
+
+fvars2 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
+           "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+           "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+           "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+           "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+           "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+           "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+           "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+           "Hbassin_face", 
+           "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position", 
+           "HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+           "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+           "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+           "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+           "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+           "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+           "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+           "Hgeodes_HG_tete",  
+           "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+           "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL"
+)
+
+
+descriptive = CreateTableOne(vars = vars, factorVars = fvars, data = baseline)
+print(descriptive, showAllLevels = T, quote = TRUE, noSpaces = T)
+
+descriptive2 = CreateTableOne(vars = vars2, factorVars = fvars2, data = baseline)
+print(descriptive2, showAllLevels = T, quote = TRUE, noSpaces = T)
+
+#-BIVARIATE---------------------------------------------------------------------
+
+vars1 = c("ArticIncl", "SEXE", "AGE", "ORIGINEG", "EDUCATION", 
+          "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", "POIDS", 
+          "TAILLE", "BMI", "Delai_1ersymp",  
+          "Delai_diag", "PF", "RP", "BP", "MH", "RE", "SF", "VT", "GH", 
+          "HT", "PCS", "MCS", "AP", "SM", "D", "SS", "AS", "SQ12", "SQ22", 
+          "SQ23", "scorfonc", "scordoul", "scorraid", "scorfoncNorm", "scordoulNorm", 
+          "scorraidNorm", "womac", "womacNorm", "MAQ_L", "MAQ_L_MET", "MAQ_LssM", 
+          "MAQ_LssM_MET", "MAQ_P", "MAQ_P_MET", "MAQ_PMOD", "MAQ_PMOD_MET", 
+          "MAQ_PINT", "MAQ_PINT_MET", "MAQ_TOT", "MAQ_TOTssM", "MAQ_TOT_MET", 
+          "MAQ_TOTssM_MET", "SomatBr", "AnxiBr", "DysSociaBr", "HumDeprBr", 
+          "ScoGlobBr", "Somat", "Anxi", "DysSocia", "HumDepr", "ScoGlob", 
+          "STATUTPROF",  "TEMPSPARTIEL1",  
+          "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE",  
+          "INVALIDECAUSE", "CATEGINVALIDE", "JOURSPERDUS", 
+          "REVENU", "SOCIALE", "PENSION", 
+          "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+          "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+          "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+          "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
+
+vars2 = c("Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+          "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+          "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+          "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+          "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+          "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+          "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+          "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+          "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+          "Econdens_G_rotI", "Econdens_G_rotE",  
+          "Edesaxation_D", "Edesaxation_G") 
+
+vars3 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
+          "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+          "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+          "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+          "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+          "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+          "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+          "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+          "Hbassin_face", 
+          "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position") 
+
+vars4 = c("HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+          "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+          "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+          "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+          "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+          "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+          "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+          "Hgeodes_HG_tete", 
+          "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+          "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
+
+fvars1 = c("ArticIncl", "SEXE", "ORIGINEG", "EDUCATION", 
+           "MARITAL", "COMMUNE2", "PROFESSION", "RETRAITE", 
+           "STATUTPROF", "TEMPSPARTIEL1",  
+           "ARRETCAUSE", "DTMALADIED1", "MALADIECAUSE", "DTINVALIDED1", 
+           "INVALIDECAUSE", "CATEGINVALIDE", "AUTRESITLIB", 
+           "REVENU", "SOCIALE", "PENSION", 
+           "VS_COUPLE", "VS_PROPRIO", "VS_PBARGENT", 
+           "VS_SPORT", "VS_LOISIR", "VS_VACANCES", "VS_HEBERGE", "VS_AIDEFINANCE", 
+           "VS_FAMILLE", "VS_TRAVSOC", "lecteur", "E__genoux_face", "E__genous_schuss", 
+           "E__genoux_profil", "E__genoux_defiles_FP", "Equalite_image") 
+
+fvars2 = c("Equalite_position", "EKL_GD_FT", "EKL_GD_FP", "EKL_GG_FT", "EKL_GG_FP", 
+           "EPincementD_topo", "EpincementG_topo", "EPincement_GD_FT", "EPincement_GD_FP", 
+           "Epincement_GG_FT", "Epincement_GG_FP", "EOsteoD_condylI", "EOsteoD_condylE", 
+           "EOsteoD_platI", "EOsteoD_platE", "EOsteoD_trochlI", "EOsteoD_trochlE", 
+           "EOsteoD_rotuleI", "EOsteoD_rotuleE", "EOsteoG_condylI", "EOsteoG_condylE", 
+           "EOsteoG_platI", "EOsteoG_platE", "EOsteoG_trochlI", "EOsteoG_trochlE", 
+           "EOsteoG_rotuleI", "EOsteoG_rotuleE", "Econdens_D_condI", "Econdens_D_condE", 
+           "Econdens_D_platI", "Econdens_D_platE", "Econdens_D_rotI", "Econdens_D_rotE", 
+           "Econdens_G_condI", "Econdens_G_condE", "Econdens_G_platI", "Econdens_G_platE", 
+           "Econdens_G_rotI", "Econdens_G_rotE",
+           "Edesaxation_D", "Edesaxation_G") 
+
+fvars3 = c("S__genoux_face", "S__genous_schuss", "S__genoux_profil", 
+           "S__genoux_defiles_FP", "Squalite_image", "Squalite_position", 
+           "SKL_GD_FT", "SKL_GG_FT", "SPincementD_topo", "SpincementG_topo", 
+           "SPincement_GD_FT", "Spincement_GG_FT", "SOsteoD_condylI", "SOsteoD_condylE", 
+           "SOsteoD_platI", "SOsteoD_platE", "SOsteoG_condylI", "SOsteoG_condylE", 
+           "SOsteoG_platI", "SOsteoG_platE", "Scondens_D_condI", "Scondens_D_condE", 
+           "Scondens_D_platI", "Scondens_D_platE", "Scondens_G_condI", "Scondens_G_condE", 
+           "Scondens_G_platI", "Scondens_G_platE", "Sdesaxation_D", "Sdesaxation_G", 
+           "Hbassin_face", "HFx_profil", "Hautre", "HQualite_image", "Hqualite_position")
+
+fvars4 = c("HKL_HD", "HKL_HG", "HPinc_HD_topo", "HPinc_HG_topo", "HPincement_HD_grade", 
+           "HPincement_HG_grade", "HOsteo_HD_cotyle_E", "HOsteo_HD_cotyle_Int", 
+           "HOsteo_HD_cotyle_Inf", "HOsteo_HD_tete_S", "HOsteo_HD_tete_I", 
+           "HOsteo_HG_cotyle_E", "HOsteo_HG_cotyle_Int", "HOsteo_HG_cotyle_Inf", 
+           "HOsteo_HG_tete_S", "HOsteo_HG_tete_I", "Hcondens_HD_cotyle", 
+           "Hcondens_HD_tete", "Hcondens_HG_cotyle", "Hcondens_HG_tete", 
+           "Hgeodes_HD_cotyle", "Hgeodes_HD_tete", "Hgeodes_HG_cotyle", 
+           "Hgeodes_HG_tete",  
+           "RGenoux", "RHanches", "RHanchesGenoux", "Arth_radio_GG", 
+           "Arth_radio_GD", "Arth_radio_HG", "Arth_radio_HD", "GKL", "HKL")
+
+
+desbygroup_1 = CreateTableOne(vars = vars1, factorVars = fvars1, data = baseline,
+                              test = FALSE, strata = "ArticIncl")
+print(desbygroup_1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+desbygroup_2 = CreateTableOne(vars = vars2, factorVars = fvars2, data = baseline,
+                              test = FALSE, strata = "ArticIncl")
+print(desbygroup_2, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+desbygroup_3 = CreateTableOne(vars = vars3, factorVars = fvars3, data = baseline,
+                              test = FALSE, strata = "ArticIncl")
+print(desbygroup_3, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+desbygroup_4 = CreateTableOne(vars = vars4, factorVars = fvars4, data = baseline,
+                              test = FALSE, strata = "ArticIncl")
+print(desbygroup_4, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+#-VARS-TO-INCLUDE---------------------------------------------------------------
+
+# AMIQUAL_Q09
+# AMIQUAL_Q10    
+# AMIQUAL_Q11
+# AMIQUAL_Q24    
+
+# SEXE
+# AGE
+# EDUCATION
+# MARITAL
+# BMI
+# ArticIncl (a0)
+
+## MAQ ==> MAQ_TOT ?
+# MAQ_L                MAQ_L_MET            MAQ_LssM            
+# MAQ_LssM_MET         MAQ_P                MAQ_P_MET           
+# MAQ_PMOD             MAQ_PMOD_MET         MAQ_PINT            
+# MAQ_PINT_MET         MAQ_TOT              MAQ_TOTssM          
+# MAQ_TOT_MET          MAQ_TOTssM_MET   
+
+# womacNorm (douleur, capacités fonctionnels Sinon "womac")
+# scordoulNorm (douleur ?)
+# ScoGlob (is GHQ28) (or MH?)
+
+# comorbidity (a3)
+# FCI01_1, COMMORB04, COMMORB07, COMMORB08, COMMORB09,
+# FCI06_1, COMMORB10, FCI08, FCI09_1, 
+# COMMORB14, COMMORB42, FCI12, COMMORB30, FCI14_1
+#, FCI15_1, COMMORB40, FCI17_1, COMMORB43
+
+# scores (a3)
+# KELL_HD
+# KELL_HG
+# EXT_FT_D
+# SCH_FT_D
+# EXT_FT_G
+# SCH_FT_G
+
+# Score_FemoP_GD         
+# Score_FemoP_GG
+# Score_FemoP           
+# Score_Osteo_T_GD
+# Score_Osteo_T_GG
+# Score_Osteo_T 
+
+# scores (a3)
+#HANCHEDMO             
+#HANCHETSCORE
+#HANCHEZSCORE
+#FEMURDMO              
+#FEMURTSCORE
+#FEMURZSCORE            
+
+#-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE----------------------------------------
+
+co0 = subset(C0M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24", "BMI",
+                             "MAQ_TOT", "womacNorm", "scordoulNorm", "ScoGlob",
+                             "SEXE", "AGE", "EDUCATION", "MARITAL"))
+
+co0ses = subset(co0, select = c("IdCohorte", "SEXE", "AGE", "EDUCATION", "MARITAL"))
+
+co3 = subset(C3M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT",
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+co5 = subset(C5M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT", 
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+co7 = subset(C7M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
+                             "BMI", "MAQ_TOT", 
+                             "womacNorm", "scordoulNorm", "ScoGlob"))
+
+coa0 = subset(a0, select = c("IdCohorte", "ArticIncl"))
+
+coa3 = subset(a3, select = c("IdCohorte", "KELL_HD", "KELL_HG", "EXT_FT_D", "SCH_FT_D", "EXT_FT_G",
+                             "SCH_FT_G", "HANCHEDMO", "HANCHETSCORE", "HANCHEZSCORE", "FEMURDMO",
+                             "FEMURTSCORE", "FEMURZSCORE", "Score_FemoP_GD", "Score_FemoP_GG",
+                             "Score_FemoP", "Score_Osteo_T_GD", "Score_Osteo_T_GG", "Score_Osteo_T", 
+                             "FCI01_1", "COMMORB04", "COMMORB07", "COMMORB08", "COMMORB09",
+                             "FCI06_1", "COMMORB10", "FCI08", "FCI09_1", 
+                             "COMMORB14", "COMMORB42", "FCI12", "COMMORB30", "FCI14_1",
+                             "FCI15_1", "COMMORB40", "FCI17_1", "COMMORB43"))
+
+#-MISSING DATA ANALYSIS---------------------------------------------------------
+
+C0M$AMIQUAL_Q09miss[is.na(C0M$AMIQUAL_Q09)] <- 99 
+table(C0M$AMIQUAL_Q09miss)
+dim(C0M)
+
+C3M$AMIQUAL_Q09miss[is.na(C3M$AMIQUAL_Q09)] <- 99 
+table(C3M$AMIQUAL_Q09miss)
+dim(C3M)
+
+C5M$AMIQUAL_Q09miss[is.na(C5M$AMIQUAL_Q09)] <- 99 
+table(C5M$AMIQUAL_Q09miss)
+dim(C5M)
+
+C7M$AMIQUAL_Q09miss[is.na(C7M$AMIQUAL_Q09)] <- 99 
+table(C7M$AMIQUAL_Q09miss)
+dim(C7M)
+
+#-MERGING-THE-NEW-DATASETS------------------------------------------------------
+#-LIST TO MERGE-----------------------------------------------------------------
+dim(co0)
+dim(co3)
+dim(co5)
+dim(co7)
+dim(coa3)
+
+df_list3 = list(co3, co0ses)
+df_list5 = list(co5, co0ses)
+df_list7 = list(co7, co0ses)
+
+co3 <- df_list3 %>% reduce(full_join, by='IdCohorte')
+co5 <- df_list5 %>% reduce(full_join, by='IdCohorte')
+co7 <- df_list7 %>% reduce(full_join, by='IdCohorte')
+
+#-ADD THE COUNT VARIABLE TO DATASETS--------------------------------------------
+
+co0$time <- rep("1", times = "878")
+co3$time <- rep("2", times = "878")
+co5$time <- rep("3", times = "878")
+co7$time <- rep("4", times = "878")
+
+#-ACTUAL MERGE------------------------------------------------------------------
+co0357 <- rbind(co0, co3, co5, co7)
+dim(co0357)
+
+#-ACTUAL MERGE------------------------------------------------------------------
+#library(tidyverse)
+dim(coa3)
+#lignes 3512
+#colonnes 
+19+15 # 33 car ID cohorte is not repeated
+df_listF = list(co0357, coa3)
+codb <- df_listF %>% reduce(full_join, by='IdCohorte')
+dim(codb)
+View(codb)
+
+
+#FINAL DATASET------------------------------------------------------------------
+###
+summary(codb)
+###
+
+#-MIXED-LINEAR------------------------------------------------------------------
+
+require(lme4)
+
+# y = difficultés d'utilisation de la voiture (c0-3-5-7)
+# x = caractéristiques du patient 
+
+modmix1 = lmer(y ~ x + (1 | patientid), data = database)
+
+#-estimate-of-the-random-effects------------------------------------------------
+#random intercept explanation: https://m-clark.github.io/mixed-models-with-R/random_intercepts.html
+
+ranef(modmix1)$patientid %>% head(5)
+
+coef(modmix1)$patientid %>% head(5)
+
+#If we did not allow occasion to vary, it is constant (fixed effect) for al
+#the patients. We can be interested in these effects, and under LME4, we can 
+#evaluate them by the bootstraping function "bootMer". 
+#alternatively, we can use the "metTools" package in the following way:
+
+require(merTools)
+
+#for model predictions (with new data)
+predictInterval(modmix1)
+
+#mean, meadian and sd of the random effects estimates
+
+REsim(modmix1)
+
+#plot thje interval estimates 
+plotREsim(REsim(modmix1))
+
+#The  plot is of the estimated random effects for each student and their interval 
+#estimate (a modified version of the plot produced by that last line of code10).
+#The random effects are normally distributed with a mean of zero, shown by the 
+#horizontal line. Intervals that do not include zero are in bold.
+
+#prediction
+predict(modmix1)
+
+#-VAR-LIST----------------------------------------------------------------------
+
+# "IdCohorte"       
+
+# DEPENDENT VARIABLES 
+# "AMIQUAL_Q09"      "AMIQUAL_Q10"     
+# "AMIQUAL_Q11"      "AMIQUAL_Q24"      
+
+# INDEPENDENT VARIABLES TO INCLUDE IN THE MODEL (x)
+# "BMI" (x) 
+# "MAQ_TOT" (x)         
+# "womacNorm" (x) (?)
+# "scordoulNorm" (x) (?)
+# "ScoGlob" (x)       
+# "SEXE" (x)
+# "AGE" (x)             
+# "EDUCATION" (x)
+# "MARITAL" (x)
+# "time" (not dependent, but grouping variable)
+
+# INDEPEDENT VARIABLES NOT TO INCLUDE IN THE MODEL
+# "KELL_HD"          "KELL_HG"          "EXT_FT_D"        
+# "SCH_FT_D"         "EXT_FT_G"         "SCH_FT_G"        
+# "HANCHEDMO"        "HANCHETSCORE"     "HANCHEZSCORE"    
+# "FEMURDMO"         "FEMURTSCORE"      "FEMURZSCORE"     
+# "Score_FemoP_GD"   "Score_FemoP_GG"   "Score_FemoP"     
+# "Score_Osteo_T_GD" "Score_Osteo_T_GG" "Score_Osteo_T"   
+
+# COMORBIDITY SCORE (x)
+# "FCI01_1"          "COMMORB04"        "COMMORB07"       
+# "COMMORB08"        "COMMORB09"        "FCI06_1"         
+# "COMMORB10"        "FCI08"            "FCI09_1"         
+# "COMMORB14"        "COMMORB42"        "FCI12"           
+# "COMMORB30"        "FCI14_1"          "FCI15_1"         
+# "COMMORB40"        "FCI17_1"          "COMMORB43" 
+
+#-NEW-VARS----------------------------------------------------------------------
+
+codb$score_comorb = (codb$FCI01_1 + codb$COMMORB04 + codb$COMMORB07 + codb$COMMORB08 + codb$COMMORB09 +
+  codb$FCI06_1 + codb$COMMORB10 + codb$FCI08 + codb$FCI09_1 + 
+  codb$COMMORB14 + codb$COMMORB42 + codb$FCI12 + codb$COMMORB30 + codb$FCI14_1
++ codb$FCI15_1 + codb$COMMORB40 + codb$FCI17_1 + codb$COMMORB43)
+str(codb$score_comorb)
+#codb$score_comorb = as.factor(codb$score_comorb)
+#table(codb$score_comorb, useNA = "always")
+
+codb <- codb %>% 
+  mutate(score_comorbCL = case_when(
+    score_comorb == 1 ~ "1",
+    score_comorb == 2 ~ "2",
+    score_comorb == 3 ~ "3",
+    score_comorb >= 4 ~ "4" # four or more
+  ))
+table(codb$score_comorbCL, useNA = "always") # 676  missing values
+
+#-MODEL-------------------------------------------------------------------------
+require(lme4)
+require(nlme)
+mod1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + (1 | IdCohorte), data = codb)
+summary(mod1)
+
+m1 <- lme(AMIQUAL_Q09 ~ AGE + SEXE, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m1)
+
+# MODEL Q09
+
+m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+            scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+          random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q09)
+
+# MODEL Q10
+m_q10 <- lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q10)
+
+# MODEL Q11
+
+m_q11 <- lme(AMIQUAL_Q11 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q11)
+
+# MODEL Q24
+
+m_q24 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q24)
