@@ -576,7 +576,7 @@ View(codb)
 
 #FINAL DATASET------------------------------------------------------------------
 ###
-  summary(codb)
+summary(codb)
 ###
 
 #-MIXED-LINEAR------------------------------------------------------------------
@@ -620,6 +620,61 @@ plotREsim(REsim(modmix1))
 #prediction
 predict(modmix1)
 
+#-VAR-LIST----------------------------------------------------------------------
+
+# "IdCohorte"       
+
+# DEPENDENT VARIABLES 
+# "AMIQUAL_Q09"      "AMIQUAL_Q10"     
+# "AMIQUAL_Q11"      "AMIQUAL_Q24"      
+
+# INDEPENDENT VARIABLES TO INCLUDE IN THE MODEL (x)
+# "BMI" (x) 
+# "MAQ_TOT" (x)         
+# "womacNorm" (x) (?)
+# "scordoulNorm" (x) (?)
+# "ScoGlob" (x)       
+# "SEXE" (x)
+# "AGE" (x)             
+# "EDUCATION" (x)
+# "MARITAL" (x)
+# "time" (not dependent, but grouping variable)
+
+# INDEPEDENT VARIABLES NOT TO INCLUDE IN THE MODEL
+# "KELL_HD"          "KELL_HG"          "EXT_FT_D"        
+# "SCH_FT_D"         "EXT_FT_G"         "SCH_FT_G"        
+# "HANCHEDMO"        "HANCHETSCORE"     "HANCHEZSCORE"    
+# "FEMURDMO"         "FEMURTSCORE"      "FEMURZSCORE"     
+# "Score_FemoP_GD"   "Score_FemoP_GG"   "Score_FemoP"     
+# "Score_Osteo_T_GD" "Score_Osteo_T_GG" "Score_Osteo_T"   
+
+# COMORBIDITY SCORE (x)
+# "FCI01_1"          "COMMORB04"        "COMMORB07"       
+# "COMMORB08"        "COMMORB09"        "FCI06_1"         
+# "COMMORB10"        "FCI08"            "FCI09_1"         
+# "COMMORB14"        "COMMORB42"        "FCI12"           
+# "COMMORB30"        "FCI14_1"          "FCI15_1"         
+# "COMMORB40"        "FCI17_1"          "COMMORB43" 
+
+#-NEW-VARS----------------------------------------------------------------------
+
+codb$score_comorb = (codb$FCI01_1 + codb$COMMORB04 + codb$COMMORB07 + codb$COMMORB08 + codb$COMMORB09 +
+  codb$FCI06_1 + codb$COMMORB10 + codb$FCI08 + codb$FCI09_1 + 
+  codb$COMMORB14 + codb$COMMORB42 + codb$FCI12 + codb$COMMORB30 + codb$FCI14_1
++ codb$FCI15_1 + codb$COMMORB40 + codb$FCI17_1 + codb$COMMORB43)
+str(codb$score_comorb)
+#codb$score_comorb = as.factor(codb$score_comorb)
+#table(codb$score_comorb, useNA = "always")
+
+codb <- codb %>% 
+  mutate(score_comorbCL = case_when(
+    score_comorb == 1 ~ "1",
+    score_comorb == 2 ~ "2",
+    score_comorb == 3 ~ "3",
+    score_comorb >= 4 ~ "4" # four or more
+  ))
+table(codb$score_comorbCL, useNA = "always") # 676  missing values
+
 #-MODEL-------------------------------------------------------------------------
 require(lme4)
 require(nlme)
@@ -629,10 +684,29 @@ summary(mod1)
 m1 <- lme(AMIQUAL_Q09 ~ AGE + SEXE, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
 summary(m1)
 
-m2 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-            scordoulNorm + ScoGlob + EDUCATION + MARITAL, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
-summary(m2)
+# MODEL Q09
 
-m2.1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-            scordoulNorm + ScoGlob + EDUCATION + MARITAL + (1 | IdCohorte), data=codb)
-summary(m2.1)
+m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+            scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+          random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q09)
+
+# MODEL Q10
+m_q10 <- lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q10)
+
+# MODEL Q11
+
+m_q11 <- lme(AMIQUAL_Q11 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q11)
+
+# MODEL Q24
+
+m_q24 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q24)
