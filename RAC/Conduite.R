@@ -659,9 +659,9 @@ predict(modmix1)
 #-NEW-VARS----------------------------------------------------------------------
 
 codb$score_comorb = (codb$FCI01_1 + codb$COMMORB04 + codb$COMMORB07 + codb$COMMORB08 + codb$COMMORB09 +
-  codb$FCI06_1 + codb$COMMORB10 + codb$FCI08 + codb$FCI09_1 + 
-  codb$COMMORB14 + codb$COMMORB42 + codb$FCI12 + codb$COMMORB30 + codb$FCI14_1
-+ codb$FCI15_1 + codb$COMMORB40 + codb$FCI17_1 + codb$COMMORB43)
+                       codb$FCI06_1 + codb$COMMORB10 + codb$FCI08 + codb$FCI09_1 + 
+                       codb$COMMORB14 + codb$COMMORB42 + codb$FCI12 + codb$COMMORB30 + codb$FCI14_1
+                     + codb$FCI15_1 + codb$COMMORB40 + codb$FCI17_1 + codb$COMMORB43)
 str(codb$score_comorb)
 #codb$score_comorb = as.factor(codb$score_comorb)
 #table(codb$score_comorb, useNA = "always")
@@ -678,18 +678,41 @@ table(codb$score_comorbCL, useNA = "always") # 676  missing values
 #-MODEL-------------------------------------------------------------------------
 require(lme4)
 require(nlme)
-mod1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + (1 | IdCohorte), data = codb)
-summary(mod1)
+# mod1 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + (1 | IdCohorte), data = codb)
+# summary(mod1)
 
-m1 <- lme(AMIQUAL_Q09 ~ AGE + SEXE, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
-summary(m1)
+# m1 <- lme(AMIQUAL_Q09 ~ AGE + SEXE, random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+# summary(m1)
 
 # MODEL Q09
 
+str(codb$time)
+codb$time = as.factor(codb$time)
+codb$SEXE = as.factor(codb$SEXE)
+#codb$ScoGlobFAKE = codb$ScoGlob
+#codb$ScoGlobFAKE[is.na(codb$ScoGlobFAKE)] <- 12.67597
+
+control = lmeControl(msMaxIter = 1000, msMaxEval = 1000)
+
 m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-            scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
-          random = ~1 | IdCohorte, na.action = na.omit, data=codb)
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
 summary(m_q09)
+intervals(m_q09)
+
+# same model but with lmer function (lme4)
+
+m_q09.2 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL +
+                (1 | IdCohorte), na.action = na.omit, data=codb)
+summary(m_q09.2)
+confint(m_q09.2)
+ranef(m_q09.2)$IdCohorte %>% head(5)
+coef(m_q09.2)$IdCohorte %>% head(5)
+
+library(merTools)
+REsim(m_q09.2)
+
 
 # MODEL Q10
 m_q10 <- lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
@@ -710,3 +733,69 @@ m_q24 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
                scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
              random = ~1 | IdCohorte, na.action = na.omit, data=codb)
 summary(m_q24)
+
+#-IMPUTATION VALIDATION---------------------------------------------------------
+
+library('VIM')
+library('magrittr')
+library('mice')
+
+# VISUAL REPRESENTATION OF THE DATABASE 
+md.pattern(codb)
+
+aggr(codb, delimiter = NULL, plot = TRUE)
+aggr(codb, delimiter = NULL, plot = TRUE)
+plot(x = codb, 
+     col = c("red"),
+     numbers = FALSE,
+     prop = FALSE, 
+     varheight = FALSE,
+     only.miss = FALSE, 
+     border = par("fg"),
+)
+
+marginplot(codb[c(3,6)])
+
+# The red box plot on the left shows the distribution of var X 
+# the blue box plot shows the distribution of the remaining datapoints
+# Likewhise for the red box plots at the bottom of the graph
+# if our assumption of MCAR data is correct, then we expect the 
+# red and blue box plots to be very similar
+
+tempData_codb <- mice(codb,m=5,maxit=50,meth='pmm',seed=500)
+
+# m=5 refers to the number of imputed datasets. Five is the default value
+# meth='pmm' refers to the imputation method
+# pmm predictive mean matching as imputation method
+# methods(mice) for a list of the available imputation methods under 'mice'
+summary(tempData_codb)
+
+# check for imputed data as follows
+tempData_codb$imp$QDSA_AVAL
+tempData_codb$meth
+
+codb_completedData <- complete(tempData_codb, 1)
+summary(codb_completedData)
+summary(codb)
+
+names(codb_completedData)
+
+#-IMPUTATION MODELS-------------------------------------------------------------
+
+library(mice)
+cidb.imputed <- mice(codb, m=20, maxit=10, meth='pmm', seed=210586,
+                    print = FALSE)
+summary(cidb.imputed)
+View(cidb.imputed)
+
+m_q09im <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+                                    scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+                                  random = ~ time | IdCohorte, na.action = na.omit, data=codb))
+summary(est <- pool(m_q09im))
+
+
+m_q09im2 <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+                                    scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+                                  random = ~ 1 | IdCohorte, na.action = na.omit, data=codb))
+summary(est <- pool(m_q09im2))
+intervals(pool(m_q09im))
