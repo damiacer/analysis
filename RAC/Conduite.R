@@ -675,6 +675,22 @@ codb <- codb %>%
   ))
 table(codb$score_comorbCL, useNA = "always") # 676  missing values
 
+codb <- codb %>%
+  mutate(EDUCATION.CL = case_when(
+    EDUCATION == 10 ~ "1", # primaire
+    EDUCATION == 21 ~ "2", # secondaire premier cycle
+    EDUCATION == 22 ~ "3", # secondaire deuxieme cycle
+    EDUCATION == 31 | EDUCATION == 32 ~ "4" # sup
+  ))
+table(codb$EDUCATION.CL, useNA = "always")
+
+codb <- codb %>%
+  mutate(MARITAL.CL = case_when(
+    MARITAL == 1 | MARITAL == 2 ~ "1", #vit avec quelqu'un
+    MARITAL >= 3 ~ "2" #vit seul-e
+  ))
+table(codb$MARITAL.CL, useNA = "always")
+
 #-MODEL-------------------------------------------------------------------------
 require(lme4)
 require(nlme)
@@ -694,8 +710,8 @@ codb$SEXE = as.factor(codb$SEXE)
 
 control = lmeControl(msMaxIter = 1000, msMaxEval = 1000)
 
-m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI +  
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL, 
              random = ~ time | IdCohorte, na.action = na.omit, data=codb)
 summary(m_q09)
 intervals(m_q09)
@@ -740,12 +756,21 @@ library('VIM')
 library('magrittr')
 library('mice')
 
-# VISUAL REPRESENTATION OF THE DATABASE 
-md.pattern(codb)
 
-aggr(codb, delimiter = NULL, plot = TRUE)
-aggr(codb, delimiter = NULL, plot = TRUE)
-plot(x = codb, 
+# BASE TO IMPUTE 
+
+codb.toimpute <- subset(codb, select = c("AMIQUAL_Q10", "AMIQUAL_Q09", "AMIQUAL_Q11",
+                                         "AMIQUAL_Q24", "AGE", "SEXE", "BMI",
+                                         "MAQ_TOT", "womacNorm",
+                                           "scordoulNorm", "ScoGlob", "EDUCATION", "MARITAL",
+                                         "score_comorbCL"))
+
+# VISUAL REPRESENTATION OF THE DATABASE 
+md.pattern(codb.toimpute)
+
+aggr(codb.toimpute, delimiter = NULL, plot = TRUE)
+aggr(codb.toimpute, delimiter = NULL, plot = TRUE)
+plot(x = codb.toimpute, 
      col = c("red"),
      numbers = FALSE,
      prop = FALSE, 
@@ -754,7 +779,7 @@ plot(x = codb,
      border = par("fg"),
 )
 
-marginplot(codb[c(3,6)])
+marginplot(codb.toimpute[c(3,6)])
 
 # The red box plot on the left shows the distribution of var X 
 # the blue box plot shows the distribution of the remaining datapoints
@@ -762,7 +787,7 @@ marginplot(codb[c(3,6)])
 # if our assumption of MCAR data is correct, then we expect the 
 # red and blue box plots to be very similar
 
-tempData_codb <- mice(codb,m=5,maxit=50,meth='pmm',seed=500)
+tempData_codb <- mice(codb.toimpute,m=5,maxit=50,meth='pmm',seed=500)
 
 # m=5 refers to the number of imputed datasets. Five is the default value
 # meth='pmm' refers to the imputation method
@@ -776,22 +801,128 @@ tempData_codb$meth
 
 codb_completedData <- complete(tempData_codb, 1)
 summary(codb_completedData)
-summary(codb)
+summary(codb.toimpute)
 
 names(codb_completedData)
+
+#-DATA CHECK FOR IMPUTATION*
+# more here: https://towardsdatascience.com/smart-handling-of-missing-data-in-r-6425f8a559f2
+# more imputation rules: https://gist.github.com/farrajota/a733524a814596b0124d068a55221c29
+
+install.packages("NHANES")
+library(NHANES)
+library(dplyr)
+
+#make a selection
+coch <- subset(codb, select = c("AMIQUAL_Q10", "AMIQUAL_Q09", "AMIQUAL_Q11",
+                                         "AMIQUAL_Q24", "AGE", "SEXE", "BMI",
+                                         "MAQ_TOT", "womacNorm",
+                                         "scordoulNorm", "ScoGlob", "EDUCATION", "MARITAL",
+                                         "score_comorbCL"))
+
+#select 500 random indices
+rand_ind <- sample(1:nrow(coch),500)
+nhanes <- coch[rand_ind,]
+
+# step 2
+
+install.packages("naniar")
+library(naniar)
+
+# Are there missing values in the dataset?
+any_na(codb)
+# How many?
+n_miss(codb)
+prop_miss(codb) # 28.4% of data are missing
+# Which variables are affected?
+codb %>% is.na() %>% colSums()
+
+# Get number of missings per variable (n and %)
+miss_var_summary(coch)
+miss_var_table(coch)
+# Get number of missings per participant (n and %)
+miss_case_summary(coch)
+miss_case_table(coch)
+
+# Which variables contain the most missing variables?
+gg_miss_var(coch)
+
+# Where are missings located?
+vis_miss(coch) + theme(axis.text.x = element_text(angle=80))
+
+# Which combinations of variables occur to be missing together?
+gg_miss_upset(coch)
+
+# TEST FOR THE MISSING VALUES
+
+# add a variable to the dataset that indicates the missingness of BMI per observation
+coch_test <- coch %>%
+  mutate(missing_bmi = is.na(BMI))
+
+# get missing bmi info for 
+missing_bmi_zero <- coch_test %>%
+  filter(AMIQUAL_Q10 == 0) %>%
+  pull(missing_bmi)
+
+# get missing bmi info for 
+missing_bmi_ten <- coch_test %>%
+  filter(AMIQUAL_Q10 == 10) %>%
+  pull(missing_bmi)
+
+#check whether the percentage of missings in bmi differ per level of little interest
+t.test(missing_bmi_zeo, missing_bmi_ten)
+
+#-QUCIK PREDICTION WITH MICE----------------------------------------------------
+
+library("mice")
+pred_mat <- quickpred(codb, mincor = 0.25)
+codb_multimp <- mice(codb, m=10,meth='pmm', seed = 5, predictorMatrix = pred_mat)
+
+#with  
+lm_multimp <- with(codb_multimp, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
+                                       scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+                                     random = ~ time | IdCohorte, na.action = na.omit))
+#pool
+lm_pooled <- pool(lm_multimp)
+#analyse pooled results - does the confidence interval include both directions? 
+summary(lm_pooled, conf.int = TRUE, conf.level = 0.95)
 
 #-IMPUTATION MODELS-------------------------------------------------------------
 
 library(mice)
-cidb.imputed <- mice(codb, m=20, maxit=10, meth='pmm', seed=210586,
+
+codb.toimpute = subset(codb, select = c("AMIQUAL_Q09", "AMIQUAL_Q10", 
+                                        "AMIQUAL_Q11", "AMIQUAL_Q24", "AGE", 
+                                        "SEXE", "BMI",  "time",
+                                        "scordoulNorm", "ScoGlob", 
+                                        "EDUCATION.CL", "MARITAL.CL",
+                                        "score_comorbCL", "IdCohorte"))
+
+cidb.imputed <- mice(codb.toimpute, m=20, maxit=10, meth='pmm', seed=210586,
                     print = FALSE)
 summary(cidb.imputed)
 View(cidb.imputed)
 
-m_q09im <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-                                    scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+m_q09im <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI +  scordoulNorm + 
+                                    ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL, 
                                   random = ~ time | IdCohorte, na.action = na.omit, data=codb))
 summary(est <- pool(m_q09im))
+
+install.packages("broom.mixed")
+library("broom.mixed")
+
+m_q09im2 <- with(cidb.imputed, exp = lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI +  scordoulNorm + 
+                                    ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL
+                                   + (1+time| IdCohorte)))
+summary(est <- pool(m_q09im2))
+
+m_q09im3 <- with(cidb.imputed, exp = lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI +  scordoulNorm + 
+                                           ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL, 
+                                         random = ~ time | IdCohorte, na.action = na.omit))
+
+install.packages("miceadds")
+library("miceadds")
+
 
 
 m_q09im2 <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
