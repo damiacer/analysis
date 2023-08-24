@@ -13,6 +13,26 @@ vt <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Vargeois_Thibaut"
 names(vt)
 dim(vt)
 
+vt <- vt %>%
+  mutate(time_cut = case_when(
+    #Time < 8.1887 ~ "1",
+    Time > 181.0366 ~ "1",
+    Time <= 181.0366 ~ "0"
+  ))
+table(vt$time_cut)
+vt<-vt[!(vt$time_cut=="1"),]
+
+quantile(vt$Time, probs = seq(0,1,0.25))
+
+vt <- vt %>%
+  mutate(time_cutoffs = case_when(
+    Time <= 17.8400 ~ "1",
+    Time > 17.8400 & Time <= 25.1900 ~ "2",
+    Time > 25.1900 & Time <= 38.5975 ~ "3",
+    Time > 38.5975 ~ "4"
+  ))
+table(vt$time_cutoffs, useNA = "always")
+
 #table(vt$Time)
 str(vt$Time)
 
@@ -178,14 +198,15 @@ tab5
 
 exp(tab5)
 
+vt$Sexe = as.factor(vt$Sexe)
 
-
-m6 <- glmer(Answer01 ~ Time + Guidelines +  IHScore + IBScore + 
+m6 <- glmer(Answer01 ~ Time + Sexe + Age + Guidelines +  IHScore + IBScore + 
               fa_moral + fa_eth + re2 + 
               (1|IDTri_or), data = vt, family = "binomial", 
             control = glmerControl(optimizer = "bobyqa",
                                    optCtrl = list(maxfun = 100000) #, nAGQ = 10
             ))
+
 print(m6, corr = F)
 # confidence intervals for the independent variables 
 se <- sqrt(diag(vcov(m6)))
@@ -194,6 +215,35 @@ tab6
 
 exp(tab6)
 
+
+
+m6.1 <- glmer(Answer01 ~ Time + Sexe + Age + Guidelines +  IHScore + IBScore + 
+               re2 + 
+              (1|IDTri_or), data = vt, family = "binomial", 
+            control = glmerControl(optimizer = "bobyqa",
+                                   optCtrl = list(maxfun = 100000) #, nAGQ = 10
+            ))
+
+print(m6.1, corr = F)
+# confidence intervals for the independent variables 
+se <- sqrt(diag(vcov(m6.1)))
+tab6.1 <- (cbind(Est = fixef(m6.1), LL = fixef(m6.1) - 1.96 * se, UL = fixef(m6.1) + 1.96 * se))
+tab6.1
+exp(tab6.1)
+
+m6.t <- glmer(Answer01 ~ time_cutoffs + Sexe + Age + Guidelines +  IHScore + IBScore + 
+                re2 + 
+                (1|IDTri_or), data = vt, family = "binomial", 
+              control = glmerControl(optimizer = "bobyqa",
+                                     optCtrl = list(maxfun = 100000) #, nAGQ = 10
+              ))
+
+print(m6.t, corr = F)
+# confidence intervals for the independent variables 
+se <- sqrt(diag(vcov(m6.1)))
+tab6.t <- (cbind(Est = fixef(m6.t), LL = fixef(m6.t) - 1.96 * se, UL = fixef(m6.t) + 1.96 * se))
+tab6.t
+exp(tab6.t)
 
 
 
@@ -361,3 +411,71 @@ vts$IDf = as.factor(vts$ID)
 set.seed(20)
 tmp <- resample(vts, IDf, replace = TRUE, reps = 100)
 bigdata <- cbind(tmp, vts[tmp$RowID])
+
+#-DESCRIPTIVE BY ANSWER-------------------------------------------------------------------
+
+library(here)
+
+vt_des <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Vargeois_Thibaut", "vata_dataPATIENTS.xlsx"))
+dim(vt_des)
+
+# var recoding
+
+vt_des <- vt_des %>%
+  mutate(AgeCl = case_when(
+    Age < 29 ~ "1",
+    Age >= 29 & Age < 34 ~ "2",
+    Age >= 34 & Age < 42 ~ "3",
+    Age >= 42 ~ "4"
+  ))
+table(vt_des$AgeCl, useNA = "always")
+
+str(vt_des$FamiliarityEthic)
+
+vt_des <- vt_des %>%
+  mutate(fa_eth = case_when(
+    Familiarity_Ethic ==  0 ~ "0",
+    Familiarity_Ethic > 0 & Familiarity_Ethic <= 4 ~ "1",
+    Familiarity_Ethic >= 5 & Familiarity_Ethic <= 8 ~ "2",
+    Familiarity_Ethic >= 9 & Familiarity_Ethic <= 10 ~ "3"
+  ))
+
+table(vt_des$Familiarity_Ethic, useNA = "always")
+table(vt_des$fa_eth, useNA = "always")
+
+vt_des <- vt_des %>%
+  mutate(fa_moral = case_when(
+    Familiarity_MoralPhilo == 0 ~ "0",
+    Familiarity_MoralPhilo > 0 & Familiarity_MoralPhilo <= 4 ~ "1",
+    Familiarity_MoralPhilo >= 5 & Familiarity_MoralPhilo <= 8 ~ "2",
+    Familiarity_MoralPhilo >= 9 & Familiarity_MoralPhilo <= 10 ~ "3",
+  ))
+
+table(vt_des$fa_moral, useNA = "always")
+
+vt_des <- vt_des %>%
+  mutate(re2 = case_when(
+    Religion == 0 ~ "No",
+    Religion > 0 ~ "Yes"
+  ))
+
+vt_des$Answer01 = as.factor(if_else(vt_des$Answer == "NU", "0", "1"))
+
+# table one vars
+
+dput(names(vt_des))
+library(tableone)
+
+variables = c("Guidelines", "AgeCl", "Sexe", "ATCD_MoralStudy", "ATCD_EthicKnowledge", 
+              "fa_eth", "fa_moral", "re2", "IH_Score", 
+              "IB_Score", "UtilitarismeTotal")
+
+factvars = c("Guidelines", "AgeCl", "Sexe", "ATCD_MoralStudy", "ATCD_EthicKnowledge", 
+                         "fa_eth", "fa_moral", "re2")
+
+vt_des1 = CreateTableOne(vars = variables, data = vt_des, factorVars = factvars)
+print(vt_des1, showAllLevels = TRUE, quote = TRUE, noSpaces = TRUE, includeNA = TRUE)  
+
+gu.des4 = CreateTableOne(vars = variables, data = gu, factorVars = qualivar, test = FALSE, includeNA = TRUE, 
+                         strata = "tt_etude_4classes")
+print(gu.des4, showAllLevels = FALSE, quote = TRUE, noSpaces = TRUE)
