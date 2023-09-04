@@ -51,6 +51,20 @@ a3c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristin
 a5c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A5.xlsx"))
 a7c <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Items_OAKHQOL_A7.xlsx"))
 
+s0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Sedentarite_A0.xlsx"))
+s3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Sedentarite_A3.xlsx"))
+s5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Sedentarite_A5.xlsx"))
+s7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Sedentarite_A7.xlsx"))
+
+ai0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Articulations_A0.xlsx"))
+ai3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Articulation_A3.xlsx"))
+ai5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Articulation_A5.xlsx"))
+ai7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Articulation_A7.xlsx"))
+
+co0 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Comorbidites_A0.xls"))
+co3 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Comorbidites_A3.xlsx"))
+co5 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Comorbidites_A5.xlsx"))
+co7 <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", "Rat_AnneChristine", "DATA", "Comorbidites_A7.xlsx"))
 
 #-MERGING-----------------------------------------------------------------------
 
@@ -58,6 +72,20 @@ C0M <- merge(c0, a0c, by.x = "IdCohorte", by.y = "IdCohorte")
 C3M <- merge(c3, a3c, by.x = "IdCohorte", by.y = "IdCohorte")
 C5M <- merge(c5, a5c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
+
+#-MERGING NEW DATA--------------------------------------------------------------
+
+sai0 <- merge(s0, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
+saico0 <- merge(sai0, co0, by.x = "IdCohorte", by.y = "IdCohorte")
+
+sai3 <- merge(s3, ai3, by.x = "IdCohorte", by.y = "IdCohorte")
+saico3 <- merge(sai3, co3, by.x = "IdCohorte", by.y = "IdCohorte")
+
+sai5 <- merge(s5, ai5, by.x = "IDCOHORTE", by.y = "IDCOHORTE")
+saico5 <- merge(sai5, co5, by.x = "IDCOHORTE", by.y = "IDCOHORTE")
+
+sai7 <- merge(s7, ai7, by.x = "IDCOHORTE", by.y = "IDCOHORTE")
+saico7 <- merge(sai7, co7, by.x = "IDCOHORTE", by.y = "IDCOHORTE")
 
 #-FINAL-DATASETS----------------------------------------------------------------
 
@@ -489,22 +517,22 @@ print(desbygroup_4, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 #-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE----------------------------------------
 
 co0 = subset(C0M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24", "BMI",
-                             "MAQ_TOT", "womacNorm", "scordoulNorm", "ScoGlob",
+                             "MAQ_L_MET", "scorfoncNorm", "scordoulNorm", "ScoGlob",
                              "SEXE", "AGE", "EDUCATION", "MARITAL"))
 
 co0ses = subset(co0, select = c("IdCohorte", "SEXE", "AGE", "EDUCATION", "MARITAL"))
 
 co3 = subset(C3M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
-                             "BMI", "MAQ_TOT",
-                             "womacNorm", "scordoulNorm", "ScoGlob"))
+                             "BMI", "MAQ_L_MET",
+                             "scorfoncNorm", "scordoulNorm", "ScoGlob"))
 
 co5 = subset(C5M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
-                             "BMI", "MAQ_TOT", 
-                             "womacNorm", "scordoulNorm", "ScoGlob"))
+                             "BMI", "MAQ_L_MET", 
+                             "scorfoncNorm", "scordoulNorm", "ScoGlob"))
 
 co7 = subset(C7M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24",
-                             "BMI", "MAQ_TOT", 
-                             "womacNorm", "scordoulNorm", "ScoGlob"))
+                             "BMI", "MAQ_L_MET", 
+                             "scorfoncNorm", "scordoulNorm", "ScoGlob"))
 
 coa0 = subset(a0, select = c("IdCohorte", "ArticIncl"))
 
@@ -679,8 +707,8 @@ codb <- codb %>%
   mutate(EDUCATION.CL = case_when(
     EDUCATION == 10 ~ "1", # primaire
     EDUCATION == 21 ~ "2", # secondaire premier cycle
-    EDUCATION == 22 ~ "3", # secondaire deuxieme cycle
-    EDUCATION == 31 | EDUCATION == 32 ~ "4" # sup
+    EDUCATION == 22 ~ "2", # secondaire deuxieme cycle
+    EDUCATION == 31 | EDUCATION == 32 ~ "3" # sup
   ))
 table(codb$EDUCATION.CL, useNA = "always")
 
@@ -710,7 +738,7 @@ codb$SEXE = as.factor(codb$SEXE)
 
 control = lmeControl(msMaxIter = 1000, msMaxEval = 1000)
 
-m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI +  
+m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_L_MET + scorfoncNorm + 
                scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL, 
              random = ~ time | IdCohorte, na.action = na.omit, data=codb)
 summary(m_q09)
@@ -719,8 +747,8 @@ intervals(m_q09)
 # same model but with lmer function (lme4)
 
 m_q09.2 <- lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-               scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL +
-                (1 | IdCohorte), na.action = na.omit, data=codb)
+                  scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL +
+                  (1 | IdCohorte), na.action = na.omit, data=codb)
 summary(m_q09.2)
 confint(m_q09.2)
 ranef(m_q09.2)$IdCohorte %>% head(5)
@@ -761,8 +789,8 @@ library('mice')
 
 codb.toimpute <- subset(codb, select = c("AMIQUAL_Q10", "AMIQUAL_Q09", "AMIQUAL_Q11",
                                          "AMIQUAL_Q24", "AGE", "SEXE", "BMI",
-                                         "MAQ_TOT", "womacNorm",
-                                           "scordoulNorm", "ScoGlob", "EDUCATION", "MARITAL",
+                                         "MAQ_L_MET", "scorfoncNorm",
+                                         "scordoulNorm", "ScoGlob", "EDUCATION.CL", "MARITAL.CL",
                                          "score_comorbCL"))
 
 # VISUAL REPRESENTATION OF THE DATABASE 
@@ -815,10 +843,10 @@ library(dplyr)
 
 #make a selection
 coch <- subset(codb, select = c("AMIQUAL_Q10", "AMIQUAL_Q09", "AMIQUAL_Q11",
-                                         "AMIQUAL_Q24", "AGE", "SEXE", "BMI",
-                                         "MAQ_TOT", "womacNorm",
-                                         "scordoulNorm", "ScoGlob", "EDUCATION", "MARITAL",
-                                         "score_comorbCL"))
+                                "AMIQUAL_Q24", "AGE", "SEXE", "BMI",
+                                "MAQ_L_MET", "scorfoncNorm",
+                                "scordoulNorm", "ScoGlob", "EDUCATION.CL", "MARITAL.CL",
+                                "score_comorbCL"))
 
 #select 500 random indices
 rand_ind <- sample(1:nrow(coch),500)
@@ -893,18 +921,18 @@ library(mice)
 
 codb.toimpute = subset(codb, select = c("AMIQUAL_Q09", "AMIQUAL_Q10", 
                                         "AMIQUAL_Q11", "AMIQUAL_Q24", "AGE", 
-                                        "SEXE", "BMI",  "time",
-                                        "scordoulNorm", "ScoGlob", 
+                                        "SEXE", "BMI",  "time", "MAQ_L_MET",
+                                        "scordoulNorm", "scorfoncNorm", "ScoGlob", 
                                         "EDUCATION.CL", "MARITAL.CL",
                                         "score_comorbCL", "IdCohorte"))
 
 cidb.imputed <- mice(codb.toimpute, m=20, maxit=10, meth='pmm', seed=210586,
-                    print = FALSE)
+                     print = FALSE)
 summary(cidb.imputed)
 View(cidb.imputed)
 
-m_q09im <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI +  scordoulNorm + 
-                                    ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL, 
+m_q09im <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI +  scordoulNorm + scorfoncNorm +
+                                    ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL + MAQ_L_MET, 
                                   random = ~ time | IdCohorte, na.action = na.omit, data=codb))
 summary(est <- pool(m_q09im))
 
@@ -912,8 +940,8 @@ install.packages("broom.mixed")
 library("broom.mixed")
 
 m_q09im2 <- with(cidb.imputed, exp = lmer(AMIQUAL_Q09 ~ AGE + SEXE + BMI +  scordoulNorm + 
-                                    ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL
-                                   + (1+time| IdCohorte)))
+                                            ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL
+                                          + (1+time| IdCohorte)))
 summary(est <- pool(m_q09im2))
 
 m_q09im3 <- with(cidb.imputed, exp = lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI +  scordoulNorm + 
@@ -926,7 +954,7 @@ library("miceadds")
 
 
 m_q09im2 <- with(cidb.imputed, lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ_TOT + womacNorm +
-                                    scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
-                                  random = ~ 1 | IdCohorte, na.action = na.omit, data=codb))
+                                     scordoulNorm + ScoGlob + EDUCATION + MARITAL + score_comorbCL, 
+                                   random = ~ 1 | IdCohorte, na.action = na.omit, data=codb))
 summary(est <- pool(m_q09im2))
 intervals(pool(m_q09im))
