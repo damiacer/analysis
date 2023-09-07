@@ -3,6 +3,9 @@ require("tidyverse")
 #require("plyr")
 require("lubridate")
 require("here")
+require("lme4")
+require("nlme")
+require("merTools")
 
 #-ON PC-------------------------------------------------------------------------
 
@@ -89,6 +92,20 @@ C3M <- merge(c3, a3c, by.x = "IdCohorte", by.y = "IdCohorte")
 C5M <- merge(c5, a5c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 C7M <- merge(c7, a7c, by.x = "IdCohorte", by.y = "IDCOHORTE")
 
+#-MERGING TO CALCULATE THE NUMBER OF THE TOTAL PARTICIPANTS 
+
+n0 = merge(c0, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
+table(n0$ArticIncl)
+
+n3 = merge(c3, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
+table(n3$ArticIncl)
+
+n5 = merge(c5, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
+table(n5$ArticIncl)
+
+n7 = merge(c7, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
+table(n7$ArticIncl)
+
 #-MERGING NEW DATA--------------------------------------------------------------
 
 sai0 <- merge(s0, ai0, by.x = "IdCohorte", by.y = "IdCohorte")
@@ -134,6 +151,50 @@ dim(C7M)
 dim(c0)
 dim(a0c)
 
+#-VARIABLE RECODING BEFORE MERGING----------------------------------------------
+
+C0M <- C0M %>%
+  mutate(comorb_neuro = case_when(
+    FCI08 == "1" & FCI09 == "1" ~ "1",
+    FCI08 == "0" & FCI09 == "1" ~ "1",
+    FCI08 == "1" & FCI09 == "0" ~ "1",
+    FCI08 == "0" & FCI09 == "0" ~ "0",
+  ))
+table(C0M$comorb_neuro)
+
+C0M <- C0M %>%
+  mutate(comorb_psy = case_when(
+    FCI13 == "1" & FCI14 == "1" ~ "1",
+    FCI13 == "1" & FCI14 == "0" ~ "1",
+    FCI13 == "0" & FCI14 == "1" ~ "1",
+    FCI13 == "0" & FCI14 == "0" ~ "0"
+  ))
+table(C0M$comorb_psy)
+
+C0M <- C0M %>%
+  mutate(comorb_sens = case_when(
+    FCI15 == "1" & FCI16 == "1" ~ "1",
+    FCI15 == "1" & FCI16 == "0" ~ "1",
+    FCI15 == "0" & FCI16 == "1" ~ "1",
+    FCI15 == "0" & FCI16 == "0" ~ "0"
+  ))
+
+table(C0M$comorb_sens)
+
+C0M$comorb_diab = C0M$FCI11
+C0M$comorb_dos = C0M$FCI17
+
+str(C0M$Nbre_Art_doul)
+
+C0M <- C0M %>%
+  mutate(Nbre_Art_doulCL = case_when(
+    Nbre_Art_doul == 0 ~ "0",
+    Nbre_Art_doul == 1 ~ "1",
+    Nbre_Art_doul == 2 ~ "2",
+    Nbre_Art_doul == 3 | Nbre_Art_doul == 4 ~ "3ouplus"
+  ))
+table(C0M$Nbre_Art_doulCL)
+
 
 #-BUILDING-DATASETS-FROM-VARS-TO-INCLUDE----------------------------------------
 
@@ -142,9 +203,14 @@ co0 = subset(C0M, select = c("IdCohorte", "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL
                              "MAQ2_NBHREGT", "MAQ2_NBHREGPC"))
 
 # fixed variables
-C0Mses = subset(C0M, select = c("IdCohorte", "ArticIncl", "KL", "Nbre_Art_doul", "FCI01", "FCI02", "FCI03", "FCI04", "FCI05", "FCI06",
-                                "FCI09", "FCI10", "FCI11", "FCI12", "FCI13", "FCI14", "FCI15", "FCI16", "FCI17",
-                                "FCI18", "Groll",
+C0Mses = subset(C0M, select = c("IdCohorte", "ArticIncl", "KL", "Nbre_Art_doul", 
+                                "comorb_neuro",
+                                "comorb_psy",
+                                "comorb_sens",
+                                "comorb_diab",
+                                "comorb_dos",
+                                "Nbre_Art_doulCL",
+                                "Groll",
                                 "EDUCATION", "SEXE", "AGE", "BMI", "PROFESSION", "MARITAL", "RETRAITE"))
 
 
@@ -244,7 +310,14 @@ View(codb)
 #-FINAL DATASET-----------------------------------------------------------------
 ###
 summary(codb)
+dim(codb) #3512   45
 ###
+
+#-EXCLUDING ART 3
+
+codb = codb[!(codb$ArticIncl == 3),]
+dim(codb) #3316 45
+
 
 #-NEW VARS----------------------------------------------------------------------
 
@@ -256,14 +329,14 @@ str(codb$score_comorb)
 #codb$score_comorb = as.factor(codb$score_comorb)
 #table(codb$score_comorb, useNA = "always")
 
-codb <- codb %>% 
-  mutate(score_comorbCL = case_when(
-    score_comorb == 1 ~ "1",
-    score_comorb == 2 ~ "2",
-    score_comorb == 3 ~ "3",
-    score_comorb >= 4 ~ "4" # four or more
-  ))
-table(codb$score_comorbCL, useNA = "always")
+#codb <- codb %>% 
+#  mutate(score_comorbCL = case_when(
+#    score_comorb == 1 ~ "1",
+#    score_comorb == 2 ~ "2",
+#    score_comorb == 3 ~ "3",
+#    score_comorb >= 4 ~ "4" # four or more
+#  ))
+#table(codb$score_comorbCL, useNA = "always")
 
 codb <- codb %>%
   mutate(EDUCATION.CL = case_when(
@@ -281,12 +354,214 @@ codb <- codb %>%
   ))
 table(codb$MARITAL.CL, useNA = "always")
 
+mean(codb$MAQ_L_MET, na.rm = T)
+codb$MAQ_L_METm = codb$MAQ_L_MET*60
+
+codb <- codb %>%
+  mutate(MAQ_L_METmCL = case_when( 
+    MAQ_L_METm < 600 ~ "1",
+    MAQ_L_METm >= 600 & MAQ_L_METm < 1500 ~ "2",
+    MAQ_L_METm >= 1500 ~ "3"
+    ))
+table(codb$MAQ_L_METmCL)
+
+str(codb$KL)
+codb$KL = as.factor(codb$KL)
+
+str(codb$Nbre_Art_doul)
+codb$Nbre_Art_doul = as.factor(codb$Nbre_Art_doul)
+
 #-NEW MODELS--------------------------------------------------------------------
 
 control = lmeControl(msMaxIter = 1000, msMaxEval = 1000)
 
-m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_MET + scorfoncNorm + 
-               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + score_comorbCL + KL,
+m_q09 <- lme(AMIQUAL_Q09 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
              random = ~ time | IdCohorte, na.action = na.omit, data=codb)
 summary(m_q09)
-intervals(m_q09)
+intervals(m_q09#, which = "fixed"
+          )
+
+
+m_q10 <- lme(AMIQUAL_Q10 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q10)
+intervals(m_q10)
+
+
+m_q11 <- lme(AMIQUAL_Q11 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q11)
+intervals(m_q11, which = "fixed")
+
+# Q24
+
+m_q24 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+summary(m_q24)
+intervals(m_q24, which = "fixed")
+
+m_q24e1 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL +                comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+anova.lme(m_q24, m_q24e1)
+
+
+m_q24e2 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+anova.lme(m_q24, m_q24e2)
+
+m_q24e3 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + MAQ_L_METmCL + scorfoncNorm + 
+               scordoulNorm + ScoGlob + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+anova.lme(m_q24, m_q24e3)
+
+
+m_q24e4 <- lme(AMIQUAL_Q24 ~ AGE + SEXE + BMI + MAQ2_NBHREGT + scorfoncNorm + 
+               scordoulNorm + ScoGlob + EDUCATION.CL + MARITAL.CL + 
+               ArticIncl + KL + Nbre_Art_doul +
+               comorb_neuro + comorb_psy + comorb_sens + comorb_diab + comorb_dos,
+             random = ~ time | IdCohorte, na.action = na.omit, data=codb)
+anova.lme(m_q24, m_q24e4)
+
+#####
+
+#-DESCRIPTIVE ANALYSIS----------------------------------------------------------
+
+
+dim(C0M) # 878 277
+
+C0Md <- C0M
+names(C0Md)
+
+C0Md = C0Md[!(C0Md$ArticIncl == 3),]
+dim(C0Md)
+
+
+#-VARIABLE RECODING BEFORE MERGING----------------------------------------------
+
+C0Md <- C0Md %>%
+  mutate(comorb_neuro = case_when(
+    FCI08 == "1" & FCI09 == "1" ~ "1",
+    FCI08 == "0" & FCI09 == "1" ~ "1",
+    FCI08 == "1" & FCI09 == "0" ~ "1",
+    FCI08 == "0" & FCI09 == "0" ~ "0",
+  ))
+table(C0Md$comorb_neuro)
+
+C0Md <- C0Md %>%
+  mutate(comorb_psy = case_when(
+    FCI13 == "1" & FCI14 == "1" ~ "1",
+    FCI13 == "1" & FCI14 == "0" ~ "1",
+    FCI13 == "0" & FCI14 == "1" ~ "1",
+    FCI13 == "0" & FCI14 == "0" ~ "0"
+  ))
+table(C0Md$comorb_psy)
+
+C0Md <- C0Md %>%
+  mutate(comorb_sens = case_when(
+    FCI15 == "1" & FCI16 == "1" ~ "1",
+    FCI15 == "1" & FCI16 == "0" ~ "1",
+    FCI15 == "0" & FCI16 == "1" ~ "1",
+    FCI15 == "0" & FCI16 == "0" ~ "0"
+  ))
+
+table(C0Md$comorb_sens)
+
+C0Md$comorb_diab = C0Md$FCI11
+C0Md$comorb_dos = C0Md$FCI17
+
+str(C0Md$Nbre_Art_doul)
+
+C0Md <- C0Md %>%
+  mutate(Nbre_Art_doulCL = case_when(
+    Nbre_Art_doul == 0 ~ "0",
+    Nbre_Art_doul == 1 ~ "1",
+    Nbre_Art_doul == 2 ~ "2",
+    Nbre_Art_doul == 3 | Nbre_Art_doul == 4 ~ "3ouplus"
+  ))
+table(C0Md$Nbre_Art_doulCL)
+
+C0Md <- C0Md %>%
+  mutate(EDUCATION.CL = case_when(
+    EDUCATION == 10 ~ "1", # primaire
+    EDUCATION == 21 ~ "2", # secondaire premier cycle
+    EDUCATION == 22 ~ "2", # secondaire deuxieme cycle
+    EDUCATION == 31 | EDUCATION == 32 ~ "3" # sup
+  ))
+table(C0Md$EDUCATION.CL, useNA = "always")
+
+C0Md <- C0Md %>%
+  mutate(MARITAL.CL = case_when(
+    MARITAL == 1 | MARITAL == 2 ~ "1", #vit avec quelqu'un
+    MARITAL >= 3 ~ "2" #vit seul-e
+  ))
+table(C0Md$MARITAL.CL, useNA = "always")
+
+mean(C0Md$MAQ_L_MET, na.rm = T)
+C0Md$MAQ_L_METm = C0Md$MAQ_L_MET*60
+
+C0Md <- C0Md %>%
+  mutate(MAQ_L_METmCL = case_when( 
+    MAQ_L_METm < 600 ~ "1",
+    MAQ_L_METm >= 600 & MAQ_L_METm < 1500 ~ "2",
+    MAQ_L_METm >= 1500 ~ "3"
+  ))
+table(C0Md$MAQ_L_METmCL)
+
+str(C0Md$KL)
+C0Md$KL = as.factor(C0Md$KL)
+
+str(C0Md$Nbre_Art_doul)
+C0Md$Nbre_Art_doul = as.factor(C0Md$Nbre_Art_doul)
+
+#-TABLEONE----------------------------------------------------------------------
+
+require(tableone)
+
+dput(names(C0Md))
+
+vars = c("AGE", "SEXE", "BMI", "MAQ2_NBHREGT", "MAQ_L_METmCL", "scorfoncNorm", 
+           "scordoulNorm", "ScoGlob", "EDUCATION.CL", "MARITAL.CL", 
+           "ArticIncl", "KL", "Nbre_Art_doul",
+           "comorb_neuro", "comorb_psy", "comorb_sens", "comorb_diab", "comorb_dos", 
+         "AMIQUAL_Q09", "AMIQUAL_Q10", "AMIQUAL_Q11", "AMIQUAL_Q24")
+
+fact = c("SEXE",  "MAQ_L_METmCL", "EDUCATION.CL", "MARITAL.CL", 
+           "ArticIncl", "KL", "Nbre_Art_doul",
+           "comorb_neuro", "comorb_psy", "comorb_sens", "comorb_diab", "comorb_dos")
+
+tab1 = CreateTableOne(vars = vars, data = C0Md, factorVars = fact)
+print(tab1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
+
+#-QUESTIONS DESCRIPTIVE---------------------------------------------------------
+
+require("doBy")
+summaryBy(AMIQUAL_Q09 ~ time, data = codb, na.rm = TRUE,
+          FUN = list(mean,sd))
+
+summaryBy(AMIQUAL_Q10 ~ time, data = codb, na.rm = TRUE,
+          FUN = list(mean,sd))
+
+summaryBy(AMIQUAL_Q11 ~ time, data = codb, na.rm = TRUE,
+          FUN = list(mean,sd))
+
+summaryBy(AMIQUAL_Q24 ~ time, data = codb, na.rm = TRUE,
+          FUN = list(mean,sd))
