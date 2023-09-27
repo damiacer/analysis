@@ -3,6 +3,10 @@ require("metafor")
 require("here")
 require("readxl")
 
+setwd("P:/CONSULTATION/Gakuba_C")
+
+gk <- read_excel("meta_data.xlsx")
+
 gk <- read_excel(here("Desktop", "UBRC", "22_23_CONSULT_MAC", 
                       "Gakuba_C", "meta_data.xlsx"))
 
@@ -13,6 +17,8 @@ names(gk)
 gk2 = subset(gk, select = c("author", "year", "NACtotal", "CONTRtotal",
                             "NACevents", "CONTRevents", "NAC_sexmale", "NAC_agemead"))
 
+gk2$NAC_agemead = as.numeric(as.character(gk2$NAC_agemead))
+gk2$NAC_sexmale = as.numeric(as.character(gk2$NAC_sexmale))
 
 ai = gk2$NACevents 
 bi = (gk2$NACtotal - gk2$NACevents)
@@ -28,7 +34,7 @@ dat <- escalc(measure="PETO", ai=ai, n1i=n1i, drop00 = TRUE,
 dat
 
 # random-effects model
-res <- rma(yi, vi, data=dat, mods = ~ gk2$NAC_agemead)
+res <- rma(yi, vi, data=dat, mods = ~ gk2$NAC_agemead + gk2$NAC_sexmale)
 predict(res)
 res
 
@@ -61,7 +67,10 @@ dim(gkcomplete)
 #-analysis on complete base
 
 gkcomplete2 = subset(gkcomplete, select = c("author", "year", "NACtotal", "CONTRtotal",
-                            "NACevents", "CONTRevents", "NAC_sexmale", "NAC_agemead"))
+                                            "NACevents", "CONTRevents", "NAC_sexmale", "NAC_agemead"))
+
+gkcomplete2$NAC_agemead = as.numeric(as.character(gkcomplete2$NAC_agemead))
+gkcomplete2$NAC_sexmale = as.numeric(as.character(gkcomplete2$NAC_sexmale))
 
 ai = gkcomplete2$NACevents 
 bi = (gkcomplete2$NACtotal - gkcomplete2$NACevents)
@@ -77,8 +86,7 @@ dat <- escalc(measure="PETO", ai=ai, n1i=n1i, drop00 = TRUE,
 dat
 
 # random-effects model
-res <- rma(yi, vi, data=dat, 
-           mods = ~ gkcomplete2$NAC_agemd)
+res <- rma(yi, vi, data=dat, mods = ~ gkcomplete2$NAC_agemead + gkcomplete2$NAC_sexmale)
 predict(res)
 res
 
@@ -100,18 +108,18 @@ text(-16, -1, pos=4, cex=0.75, bquote(paste(
 # glmm model 
 
 modelglmm1 <- rma.glmm(ai = ai, 
-                   bi = bi, 
-                   ci = ci, 
-                   di = di, 
-                   #n1i = n1i, 
-                   #n2i = n2i,
-                   method = "ML",
-                   model="CM.AL",
-                   measure = "OR",
-                   verbose = FALSE,
-                   #slab=paste(author, ", ", year, sep=""), 
-                   #data = gkcomplete2,
-                   )
+                       bi = bi, 
+                       ci = ci, 
+                       di = di, 
+                       #n1i = n1i, 
+                       #n2i = n2i,
+                       method = "ML",
+                       model="CM.AL",
+                       measure = "OR",
+                       verbose = FALSE,
+                       #slab=paste(author, ", ", year, sep=""), 
+                       #data = gkcomplete2,
+)
 
 modelglmm1
 predict(m3glmm)
