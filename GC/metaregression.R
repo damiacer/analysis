@@ -38,6 +38,8 @@ res <- rma(yi, vi, data=dat, mods = ~ gk2$NAC_agemead + gk2$NAC_sexmale)
 predict(res)
 res
 
+regtest(res)
+
 weights <- paste0(fmtx(weights(res), digits=1), "%")
 weights[weights == "NA%"] <- ""
 options(na.action = "na.pass")
@@ -123,3 +125,60 @@ modelglmm1 <- rma.glmm(ai = ai,
 
 modelglmm1
 predict(m3glmm)
+
+#-thrombosis
+
+gk3 = subset(gk, select = c("author", "year", "NAC_TThrombosis", "Control_TThrombosis",
+                            "NAC_Thrombosis", "Control_Thrombosis", "NAC_sexmale", "NAC_agemead"))
+
+gk3$NAC_agemead = as.numeric(as.character(gk3$NAC_agemead))
+gk3$NAC_sexmale = as.numeric(as.character(gk3$NAC_sexmale))
+
+ai = gk3$NAC_Thrombosis 
+bi = (gk3$NAC_TThrombosis - gk3$NAC_Thrombosis)
+ci = gk3$Control_Thrombosis 
+di = (gk3$Control_TThrombosis - gk3$Control_Thrombosis)
+n1i = gk3$NAC_TThrombosis
+n2i = gk3$Control_TThrombosis
+
+dat <- escalc(measure="PETO", ai=ai, n1i=n1i, drop00 = TRUE,
+              slab=paste(author, ", ", year, sep=""), 
+              ci=ci, n2i=n2i, 
+              data=gk3)
+dat
+
+# random-effects model
+res <- rma(yi, vi, data=dat, mods = ~ gk3$NAC_agemead + gk3$NAC_sexmale)
+predict(res)
+res
+
+regtest(res)
+
+#-haemorrhagic
+
+gk4 = subset(gk, select = c("author", "year", "NACTotalhemorrhagic", "ControlThemorrhagic",
+                            "NAC_hemorrhagic", "Control_hemorrhagic", "NAC_sexmale", "NAC_agemead"))
+
+gk4$NAC_agemead = as.numeric(as.character(gk4$NAC_agemead))
+gk4$NAC_sexmale = as.numeric(as.character(gk4$NAC_sexmale))
+
+ai = gk4$NAC_hemorrhagic 
+bi = (gk4$NACTotalhemorrhagic - gk4$NAC_hemorrhagic)
+ci = gk4$ControlThemorrhagic 
+di = (gk4$ControlThemorrhagic - gk4$ControlThemorrhagic)
+n1i = gk4$NACTotalhemorrhagic
+n2i = gk4$ControlThemorrhagic
+
+dat <- escalc(measure="PETO", ai=ai, n1i=n1i, drop00 = TRUE,
+              slab=paste(author, ", ", year, sep=""), 
+              ci=ci, n2i=n2i, 
+              data=gk4)
+dat
+
+# random-effects model
+res <- rma(yi, vi, data=dat, mods = ~ gk4$NAC_agemead + gk4$NAC_sexmale)
+predict(res)
+res
+
+
+regtest(res)
