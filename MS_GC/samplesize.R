@@ -1,3 +1,5 @@
+# sample size for ketamine and morphine study
+
 x=c(57,50,30,40,12,11,60,100,45,67,44,57,29,14,91,52)
 mean(x)
 sd(x)
