@@ -61,6 +61,9 @@ require("SampleSize4ClinicalTrials")
 ssc_meancomp(design = 2L, ratio = 1, 
 		alpha = 0.05, power = 0.8, sd = 8.448958, theta = 20.625, delta = 15)
 
+# https://cran.r-project.org/web/packages/SampleSize4ClinicalTrials/SampleSize4ClinicalTrials.pdf
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6789074/
+# https://www.youtube.com/watch?v=dNsYwiugubk
 
 ssc_meancomp(design = 2L, ratio = 1, 
 		alpha = 0.05, power = 0.8, sd = 16.76455, theta = 20.625, delta = 10)
