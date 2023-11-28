@@ -1,7 +1,8 @@
 install.packages("randomizeR")
 library("randomizeR")
 
-sample(1:370, 10, replace = F)
+sample(1:25, 10, replace = F)
+# 6 13 4  7 19 18  8 10  3 14
 
 ?sample
 
