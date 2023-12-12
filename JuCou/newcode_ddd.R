@@ -15,6 +15,15 @@ library(survminer)
 library("epitools")
 require("tibble")
 
+library("ggsurvfit")
+library("gtsummary")
+library("tidycmprsk")
+
+install.packages("devtools")
+library("devtools")
+# devtools::install_github("zabore/condsurv")
+library(condsurv)
+
 #-data----
 setwd("C:/Users/cerasuolo-d.CHU-CAEN/Desktop/thèse_Cousin Juliette_AVC_DC/personnes-temps et incidence")
 base <- read_excel("base_263com_2020.xlsx")
@@ -44,6 +53,7 @@ jc2 <- subset(jc, !(jc$Etio_crypto_typique == 1) & !(Etio_crypto_atypique == 1)
 
 #-datasets by year of the event----
 eve2017 <- jc2 %>% filter(year(DATE_EVE) == 2017)
+dim(eve2017)
 eve2018 <- jc2 %>% filter(year(DATE_EVE) == 2018)
 eve2019 <- jc2 %>% filter(year(DATE_EVE) == 2019)
 eve2020 <- jc2 %>% filter(year(DATE_EVE) == 2020)
@@ -85,35 +95,84 @@ all20 <- all20 %>%
     EVENT == "no" ~ as.Date(DATE_EVE.x)
   ))
 
-all20 <- as_tibble(all20)
-all20 <- all20 %>% rename(
+#all20 <- as_tibble(all20)
+#all20 <- all20 %>% rename(
   # new name = old name,
-  "DATE_EVE" = "DATE_EVE.y")
+#  "DATE_EVE" = "DATE_EVE.y")
 
-all20 = subset(all20, select = -c(DATE_EVE.x))
+#all20 = subset(all20, select = -c(DATE_EVE.x))
+
+all20$fup20 = as.Date(all20$fup_end) - as.Date(all20$start)
+str(all20$fup20)
+table(all20$fup20)
+
+#-events in 2020: 23
+#-incidence in 2020----
+
+all20$fup20 = as.numeric(all20$fup20)
+
+all20$pt20 = sum((all20$fup20))
+(all20$pt20/365.25)*12
+
+i20 = (23/4938024)*100000
+i20 # 0.4657734
+
+#-KM curve---
+
+all20$EVENTf = as.factor(if_else(all20$EVENT == "no", "0", "1"))
+all20$fup20M = as.numeric((all20$fup20/365.25)*12)
+km20_fit <- survfit(Surv(fup20M, EVENTf) ~ 1, data = all20)
+summary(km20_fit)
+
+plot(km20_fit) # 
+plot(km20_fit, fun = function(x) 1-x) # survival function
+
+################################################################################
+
+#-all events 
+
+data1721 <- data.frame(num_inclusion = 1:411797, start = as.Date("15/05/2017", "%d/%m/%Y"), DATE_EVE = as.Date("31/12/2021", "%d/%m/%Y"))
+
+all = merge(data1721, jc2, by.x = "num_inclusion", by.y = "num_inclusion", all.x = TRUE, all.y = TRUE)
 
 
+#-create the event 2017-2021---
 
+all$DATE_EVE.yMISS <- as.numeric(all$DATE_EVE.y)
+all$DATE_EVE.yMISS[is.na(all$DATE_EVE.yMISS)] <- 999999
+table(all$DATE_EVE.yMISS)
 
-#-event date is missing 
-all20$missED <- as.numeric(all20$DATE_EVE)
-all20$missED[is.na(all20$DATE_EVE)] <- 999999
-table(all20$missED) # 411774 missing
-
-all20 <- all20 %>%
-  mutate(missEDb = case_when(
-    missED == 999999 ~ "yes", 
-    missED > 999999 ~ "no"
+all <- all %>%
+  mutate(EVENT = case_when(
+    DATE_EVE.yMISS == 999999 ~ "no",
+    DATE_EVE.yMISS > 999999 ~ "yes"
   ))
-table(all20$missEDb)
+
+table(all$EVENT) # event and no event
+
+all <- all %>%
+  mutate(fup_end = case_when(
+    EVENT == "yes" ~ as.Date(DATE_EVE.y),
+    EVENT == "no" ~ as.Date(DATE_EVE.x)
+  ))
+
+all$fup1721 = as.Date(all$fup_end) - as.Date(all$start)
+str(all$fup1721)
+table(all$fup1721)
 
 
-all20$jour = rep("01", times = 411797)
-all20$mois = rep("01", times = 411797)
-all20$year = rep("2020", times = 411797)
+all$pt1721 = sum((all$fup1721))
+(all$pt1721/365.25)*12
 
-require(lubridate)
-all20$DATE_END = as.numeric(paste(all20$year, all20$mois, all20$jour, sep = ""))
-all20$DATE_END = ymd(all20$DATE_END)
+i1721 = (98/22875464)*100000
+i1721 # 0.4284066
 
-all20DATE_EVEall = if_else(all20$missEDb == "yes", as.Date(all20$DATE_EVE), as.Date(all20$DATE_END))
+#-KM curve---
+
+all$EVENTf1721 = as.factor(if_else(all$EVENT == "no", "0", "1"))
+all$fup1721M = as.numeric((all$fup1721/365.25)*12)
+km1721_fit <- survfit(Surv(fup1721M, EVENTf1721) ~ 1, data = all)
+summary(km1721_fit)
+
+plot(km20_fit) 
+plot(km20_fit, fun = function(x) 1-x) # survival function
