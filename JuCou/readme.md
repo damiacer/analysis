@@ -1,4 +1,6 @@
 ## Incidence
+Population totale Caen Métropole : 411,797.
+
 ###### Incidence 2020
 
 I = 23 / 4938024 PM * 100000
