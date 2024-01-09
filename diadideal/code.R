@@ -1,62 +1,120 @@
 #-WORKSPACE----
 getwd()
-setwd("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/DIADIDEAL")
+setwd("P:/CONSULTATION/DIADIDEAL")
 
 #-PACKAGES----
 
 #install.packages("readxl")
 require("readxl")
+require("tidyverse")
+require("tableone")
 
-dd <- read_excel("DIADIDEAL_Export_final_global_2023-11-20.xlsx")
-names(dd)
+di <- read_excel("DIADIDEAL_Export_final_global_2023-11-20.xlsx")
+names(di)
 
-table(dd$MED_IDEL_ARRET_V11_M12, useNA = "always")
-# 1 deces 
-# 1 repli def pour mauvaise compliace au ttt 
-# 1 transfer en HDD --> toutes les données 
-# 2 commence jamais HDD 
-table(dd$MED_IDEL_ARRET_)
+# patients informés 
+# patients ayant signé
+# => patients inclus
+table(di$INCL_CE_SIGN, useNA = "always")
+table(di$CI_CE, useNA = "always")
+#  1 <NA> 
+# 10    0 
 
-# nb seances totales sur les 12 mois 
+# patients ayant fistule arterio veineuse fonctionnelle 
+table(di$CI_FAV_FONCT, useNA = "always")
+#  1 <NA> 
+# 10    0 
 
-table(dd$MED_SEANCE_NB_V1_M2, dd$MED_SEANCE_NB_V2_M3, useNA = "always")
-table(dd$MED_SEANCE_NB_V2_M3, useNA = "always")
-table(dd$MED_SEANCE_NB_V3_M4, useNA = "always")
-table(dd$MED_SEANCE_NB_V4_M5, useNA = "always")
-table(dd$MED_SEANCE_NB_V5_M6, useNA = "always")
-table(dd$MED_SEANCE_NB_V6_M7, useNA = "always")
-table(dd$MED_SEANCE_NB_V7_M8, useNA = "always")
-table(dd$MED_SEANCE_NB_V8_M9, useNA = "always")
-table(dd$MED_SEANCE_NB_V9_M10, useNA = "always")
-table(dd$MED_SEANCE_NB_V10_M11, useNA = "always")
-table(dd$MED_SEANCE_NB_V11_M12, useNA = "always")
-RT_PROG_CAUS
-table(dd$RT_PROG_CAUS_V2_M3_1)
+# Date d installation a domicile de la machine d hemodialyse 
+str(di$TECH_INSTAL_DTE)
+di$TECH_INSTAL_DTE = as.numeric(as.character(di$TECH_INSTAL_DTE))
+table(di$TECH_INSTAL_DTE, useNA = "always")
 
-# cause des replis non programme 
-table(dd$RT_NPROG_CAUS_V2_M3_1, useNA = "always")
-table(dd$RT_NPROG_SEANCE_NB_V2_M3_1, useNA = "always")
+# installation HDD
+di <- di %>%
+  
+  
+  mutate(instHDD = case_when(
+    TECH_INSTAL_DTE > 0 ~ "Y"
+  ))
+table(di$instHDD)
+di$instHDD[is.na(di$instHDD)] <- "N"
 
-# description des pt installés (V0)
-# nb de repli par patient 
-# nb de seance hospitalier par patient a domicile et en centre 
+# N Y 
+# 2 8 
 
-# TRANSP_FRAIS
+# descriptive des patients installés 
 
-table(dd$EQ_Q01_MOBIL_V11_M12)
-table(dd$MED_NEPHR_CONSULT_NB)
-table(dd$MED_NEPHR_CONSULT_NB_V0_M1)
-table(dd$MED_NEPHR_CONSULT_NB_V11_M12)
+did <- di[!(di$instHDD == "N"),] 
+dim(did)
 
-table(dd$MED_NEPHR_CONSULT_V11_M12, useNA = "always")
-table(dd$MED_NEPHR_CONSULT_NB_V10_M11)
+# selectionner les variables pour l'analyse descriptive 
 
-MED_IDEL_ARRET
-table(dd$MED_IDEL_ARRET_V0_M1)
-table(dd$MED_IDEL_ARRET_V11_M12)
+didd = subset(did, select = c(AGE, SEXE, DEMO_DIPLOM, DEMO_ACT_PRO,
+                              ENV_LIEU, 
+                              ENV_DIST_NEPHRO,
+                              ENV_DIST_FORMA,
+                              ENV_DIST_IDEL,
+                              ENV_DIST_MED_TRT,
+                              ENV_CD,
+                              ENV_CD_DIST,
+                              ENV_CD,
+                              ENV_CD_DIST,
+                              CLIN_REN,
+                              CLIN_REN_DTE,
+                              CLIN_REN_LIST,
+                              CLIN_HD_INCID,
+                              CLIN_HD_MOD,
+                              CLIN_HD_DTE,
+                              CLIN_HD_FREQ,
+                              CLIN_HD_DUR_HR,
+                              CLIN_HD_DUR_MIN,
+                              CLIN_HD_DIUR,
+                              COMOR_F,
+                              COMOR_TYPE,
+                              COMOR_TYPE_ATE,
+                              COMOR_ASSOC,
+                              COMOR_ASSOC_IM,
+                              COMOR_ASSOC_ICC,
+                              COMOR_ASSOC_VASC,
+                              COMOR_ASSOC_CEREB_VASC,
+                              COMOR_ASSOC_HEPAT_NSEV,
+                              COMOR_ASSOC_DEMENC,
+                              COMOR_ASSOC_PULM,
+                              COMOR_ASSOC_SYST,
+                              COMOR_ASSOC_ULC,
+                              COMOR_ASSOC_DIAB_SCOMP,
+                              COMOR_ASSOC_DIAB_ACOMP,
+                              COMOR_ASSOC_HEMI,
+                              COMOR_ASSOC_LEUCE,
+                              COMOR_ASSOC_LYMPH,
+                              COMOR_ASSOC_TUM_SMETA,
+                              COMOR_ASSOC_HEPAT_SEV,
+                              COMOR_ASSOC_VIH,
+                              COMOR_ASSOC_TUM_AMETA,
+                              COMOR_ASSOC_SCORE_CALC,
+                              COMOR_AUTONOM,
+                              COMOR_AUTONOM_QUOTI,
+                              COMOR_AUTONOM_DEPLAC,
+                              TECH_DEB_DTE,
+                              TECH_FORMA_NB,
+                              TECH_PRESCR_SEANCE_NB,
+                              TECH_INSTAL_DTE,
+                              TECH_ABORD_TYPE,
+                              TECH_ABORD_LOC,
+                              TECH_ABORD_LOC_PRE,
+                              TECH_ABORD_DTE))
 
-# formation 
-# nb de séances de formation 
-# duree totale de formation 
-# duree moyenne 
-# nb heures minutes pour le cabinet 
+variables <- c("AGE", "SEXE", "DEMO_DIPLOM", "DEMO_ACT_PRO",
+               "ENV_LIEU", "ENV_DIST_NEPHRO",
+               "ENV_DIST_FORMA", "ENV_DIST_IDEL",
+               "ENV_DIST_MED_TRT", "ENV_CAD",
+               "ENV_CAD_DIST", "ENV_CDM",
+               "ENV_CDM_DIST", "ENV_CD",
+               "ENV_CD_DIST")
+
+categorical <- c("SEXE", "DEMO_DIPLOM", "DEMO_ACT_PRO")
+
+
+des1 <- CreateTableOne(vars = variables, data = didd, factorVars = categorical, includeNA = TRUE)
+print(tab.one, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
