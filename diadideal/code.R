@@ -263,20 +263,17 @@ did$RT_PROG_TOT <- rowSums(did[,c("RT_PROG_NB_V0_M1", "RT_PROG_NB_V1_M2", "RT_PR
                                   "RT_PROG_NB_V8_M9" #, "RT_PROG_NB_V9_M10" 
                                   , "RT_PROG_NB_V10_M11", "RT_PROG_NB_V11_M12")], na.rm=TRUE)
 table(did$RT_PROG_TOT, useNA = "always")
+table(did$StudySubjectID, did$RT_PROG_TOT, useNA = "always")
 
 
-did$RT_PROG_TOT = (did$RT_PROG_NB_V0_M1 + did$RT_PROG_NB_V1_M2 + did$RT_PROG_NB_V2_M3 + did$RT_PROG_NB_V3_M4
-  + did$RT_PROG_NB_V4_M5 + did$RT_PROG_NB_V5_M6 + did$RT_PROG_NB_V6_M7 + did$RT_PROG_NB_V7_M8
-  + did$RT_PROG_NB_V8_M9 #+ did$RT_PROG_NB_V9_M10 
-  + did$RT_PROG_NB_V10_M11 + did$RT_PROG_NB_V11_M12
-  )
-table(did$RT_PROG_TOT)
 
 did$RT_NPROG_TOT <- rowSums(did[,c("RT_NPROG_NB_V0_M1", "RT_NPROG_NB_V1_M2", "RT_NPROG_NB_V2_M3", "RT_NPROG_NB_V3_M4",
                                                    "RT_NPROG_NB_V4_M5", "RT_NPROG_NB_V5_M6", "RT_NPROG_NB_V6_M7", "RT_NPROG_NB_V7_M8",
                                                    "RT_NPROG_NB_V8_M9" #, "RT_NPROG_NB_V9_M10" 
                                                    , "RT_NPROG_NB_V10_M11", "RT_NPROG_NB_V11_M12")], na.rm=TRUE)
 table(did$RT_NPROG_TOT, useNA = "always")
+hist(did$RT_NPROG_TOT)
+table(did$StudySubjectID, did$RT_NPROG_TOT, useNA = "always")
 
 
 # repli programme
@@ -305,3 +302,92 @@ table(did$StudySubjectID, did$RT_NPROG_TOT, useNA = "always")
 #10   0 0 0 0 1  0    0
 #<NA> 0 0 0 0 0  0    0
 
+# repli definitif 
+table(did$StudySubjectID, did$REPL_DEF_V0_M1, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V1_M2, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V2_M3, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V3_M4, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V4_M5, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V5_M6, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V6_M7, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V7_M8, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V8_M9, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V9_M10, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V10_M11, useNA = "always")
+table(did$StudySubjectID, did$REPL_DEF_V11_M12, useNA = "always")
+
+did$REPL_DEF_V0_M1[is.na(did$REPL_DEF_V0_M1)] <- 1
+did$REPL_DEF_V1_M2[is.na(did$REPL_DEF_V1_M2)] <- 1
+did$REPL_DEF_V2_M3[is.na(did$REPL_DEF_V2_M3)] <- 1
+did$REPL_DEF_V3_M4[is.na(did$REPL_DEF_V3_M4)] <- 1
+did$REPL_DEF_V4_M5[is.na(did$REPL_DEF_V4_M5)] <- 1
+did$REPL_DEF_V5_M6[is.na(did$REPL_DEF_V5_M6)] <- 1
+did$REPL_DEF_V6_M7[is.na(did$REPL_DEF_V6_M7)] <- 1
+did$REPL_DEF_V7_M8[is.na(did$REPL_DEF_V7_M8)] <- 1
+did$REPL_DEF_V8_M9[is.na(did$REPL_DEF_V8_M9)] <- 1
+did$REPL_DEF_V9_M10[is.na(did$REPL_DEF_V9_M10)] <- 1
+did$REPL_DEF_V10_M11[is.na(did$REPL_DEF_V10_M11)] <- 1
+did$REPL_DEF_V11_M12[is.na(did$REPL_DEF_V11_M12)] <- 1
+
+
+did <- did %>%
+  mutate(REPL_DEF = case_when(
+    REPL_DEF_V0_M1 != 0 ~ "M1",
+    REPL_DEF_V1_M2 != 0 ~ "M2",
+    REPL_DEF_V2_M3 != 0 ~ "M3",
+    REPL_DEF_V3_M4 != 0 ~ "M4",
+    REPL_DEF_V4_M5 != 0 ~ "M5",
+    REPL_DEF_V5_M6 != 0 ~ "M6",
+    REPL_DEF_V6_M7 != 0 ~ "M7",
+    REPL_DEF_V7_M8 != 0 ~ "M8",
+    REPL_DEF_V8_M9 != 0 ~ "M9",
+    REPL_DEF_V9_M10 != 0 ~ "M10",
+    REPL_DEF_V10_M11 != 0 ~ "M11",
+    REPL_DEF_V11_M12 != 0 ~ "M12"
+  ))
+table(did$REPL_DEF)
+table(did$StudySubjectID, did$REPL_DEF, useNA = "always")
+
+# MED_SEANCE_NB	
+# Nombre de seances d HDD depuis la derniere visite protocolaire
+
+table(did$MED_SEANCE_NB_V0_M1, useNA = "always")
+
+did$MED_SEANCE_NBTOT <- rowSums(did[,c("MED_SEANCE_NB_V0_M1", "MED_SEANCE_NB_V1_M2", "MED_SEANCE_NB_V2_M3", "MED_SEANCE_NB_V3_M4",
+                                   "MED_SEANCE_NB_V4_M5", "MED_SEANCE_NB_V5_M6", "MED_SEANCE_NB_V6_M7", "MED_SEANCE_NB_V7_M8",
+                                   "MED_SEANCE_NB_V8_M9", "MED_SEANCE_NB_V10_M11" 
+                                   , "MED_SEANCE_NB_V11_M12")], na.rm=TRUE)
+
+table(did$StudySubjectID, did$MED_SEANCE_NBTOT, useNA = "always")
+
+# DESCRIPTIF PAR PATIENT ET PAR VISITE 
+# trois variables à inclure dans l'analyse 
+
+table(did$StudySubjectID, did$MED_SEANCE_NB_V0_M1, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V1_M2, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V2_M3, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V3_M4, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V4_M5, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V5_M6, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V6_M7, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V7_M8, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V8_M9, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V9_M10, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V10_M11, useNA = "always")
+table(did$StudySubjectID, did$MED_SEANCE_NB_V11_M12, useNA = "always")
+
+
+# histogramme nb replis
+
+did$repm1s = rowSums(did[,c(did$RT_PROG_V0_M1)], na.rm=TRUE)
+did$repm2s = rowSums(did[,c(did$RT_PROG_V1_M2)], na.rm=TRUE)
+did$repm3s = rowSums(did[,c(did$RT_PROG_V2_M3)], na.rm=TRUE)
+did$repm4s = rowSums(did[,c(did$RT_PROG_V3_M4)], na.rm=TRUE)
+did$repm5s = rowSums(did[,c(did$RT_PROG_V4_M5)], na.rm=TRUE)
+did$repm6s = rowSums(did[,c(did$RT_PROG_V5_M6)], na.rm=TRUE)
+did$repm7s = rowSums(did[,c(did$RT_PROG_V6_M7)], na.rm=TRUE)
+did$repm8s = rowSums(did[,c(did$RT_PROG_V7_M8)], na.rm=TRUE)
+did$repm9s = rowSums(did[,c(did$RT_PROG_V8_M9)], na.rm=TRUE)
+did$repm10s = rowSums(did[,c(did$RT_PROG_V9_M10)], na.rm=TRUE)
+did$repm11s = rowSums(did[,c(did$RT_PROG_V10_M11)], na.rm=TRUE)
+did$repm12s = rowSums(did[,c(did$RT_PROG_V11_M12)], na.rm=TRUE)
