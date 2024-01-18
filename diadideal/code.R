@@ -379,15 +379,104 @@ table(did$StudySubjectID, did$MED_SEANCE_NB_V11_M12, useNA = "always")
 
 # histogramme nb replis
 
-did$repm1s = rowSums(did[,c(did$RT_PROG_V0_M1)], na.rm=TRUE)
-did$repm2s = rowSums(did[,c(did$RT_PROG_V1_M2)], na.rm=TRUE)
-did$repm3s = rowSums(did[,c(did$RT_PROG_V2_M3)], na.rm=TRUE)
-did$repm4s = rowSums(did[,c(did$RT_PROG_V3_M4)], na.rm=TRUE)
-did$repm5s = rowSums(did[,c(did$RT_PROG_V4_M5)], na.rm=TRUE)
-did$repm6s = rowSums(did[,c(did$RT_PROG_V5_M6)], na.rm=TRUE)
-did$repm7s = rowSums(did[,c(did$RT_PROG_V6_M7)], na.rm=TRUE)
-did$repm8s = rowSums(did[,c(did$RT_PROG_V7_M8)], na.rm=TRUE)
-did$repm9s = rowSums(did[,c(did$RT_PROG_V8_M9)], na.rm=TRUE)
-did$repm10s = rowSums(did[,c(did$RT_PROG_V9_M10)], na.rm=TRUE)
-did$repm11s = rowSums(did[,c(did$RT_PROG_V10_M11)], na.rm=TRUE)
-did$repm12s = rowSums(did[,c(did$RT_PROG_V11_M12)], na.rm=TRUE)
+did$RT_PROG_V0_M1[is.na(did$RT_PROG_V0_M1)] <- 0 #1
+did$RT_PROG_V1_M2[is.na(did$RT_PROG_V1_M2)] <- 0 #0
+did$RT_PROG_V2_M3[is.na(did$RT_PROG_V2_M3)] <- 0 #6
+did$RT_PROG_V3_M4[is.na(did$RT_PROG_V3_M4)] <- 0 #1
+did$RT_PROG_V4_M5[is.na(did$RT_PROG_V4_M5)] <- 0 #1
+did$RT_PROG_V5_M6[is.na(did$RT_PROG_V5_M6)] <- 0 #7
+did$RT_PROG_V6_M7[is.na(did$RT_PROG_V6_M7)] <- 0 #1
+did$RT_PROG_V7_M8[is.na(did$RT_PROG_V7_M8)] <- 0 #2
+did$RT_PROG_V8_M9[is.na(did$RT_PROG_V8_M9)] <- 0 #5
+did$RT_PROG_V9_M10[is.na(did$RT_PROG_V9_M10)] <- 0 #0
+did$RT_PROG_V10_M11[is.na(did$RT_PROG_V10_M11)] <- 0 #1
+did$RT_PROG_V11_M12[is.na(did$RT_PROG_V11_M12)] <- 0 #6
+
+histvar <- c(1,0,6,1,1,7,1,2,5,0,1,6)
+hist(histvar)
+
+# Load ggplot2
+library(ggplot2)
+
+# Create data
+data <- data.frame(
+  name=c("M01","M02","M03","M04","M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12") ,  
+  value=c(1,0,6,1,1,7,1,2,5,0,1,6)
+)
+
+# Barplot
+ggplot(data, aes(x=name, y=value)) + 
+  geom_bar(stat = "identity",color="blue", fill=rgb(0.1,0.4,0.5,0.7)) 
+
+
+# FLOW CHART----
+
+library(Gmisc, quietly = TRUE)
+library(glue)
+library(htmlTable)
+library(grid)
+library(magrittr)
+
+org_cohort <- boxGrob(glue("Patients informés",
+                           "n = {pop}",
+                           pop = txtInt(10),
+                           .sep = "\n"))
+eligible <- boxGrob(glue("Inclusion",
+                         "n = {pop}",
+                         pop = txtInt(10),
+                         .sep = "\n"))
+included <- boxGrob(glue("Installation HD assistée",
+                         "n = {incl}",
+                         incl = txtInt(8),
+                         .sep = "\n"))
+grp_a <- boxGrob(glue("HDD à 12 mois",
+                      "n = {recr}",
+                      recr = txtInt(6),
+                      .sep = "\n"))
+
+grp_b <- boxGrob(glue("Décès",
+                      "n = {recr}",
+                      recr = txtInt(1),
+                      .sep = "\n"))
+
+grp_c <- boxGrob(glue("Repli",
+                      "n = {recr}",
+                      recr = txtInt(1),
+                      .sep = "\n"))
+
+excluded <- boxGrob(glue("Excluded (n = {tot}):",
+                         " - thrombose FAV : {uninterested}",
+                         " - échec formation : {contra}",
+                         tot = 10,
+                         uninterested = 1,
+                         contra = 1,
+                         .sep = "\n"),
+                    just = "left")
+
+grid.newpage()
+vert <- spreadVertical(org_cohort,
+                       eligible = eligible,
+                       included = included,
+                       grps = grp_a)
+grps <- alignVertical(reference = vert$grps,
+                      grp_a, grp_b, grp_c) %>%
+  spreadHorizontal()
+vert$grps <- NULL
+
+excluded <- moveBox(excluded,
+                    x = .8,
+                    y = coords(vert$included)$top + distance(vert$eligible, vert$included, half = TRUE, center = FALSE))
+
+for (i in 1:(length(vert) - 1)) {
+  connectGrob(vert[[i]], vert[[i + 1]], type = "vert") %>%
+    print
+}
+connectGrob(vert$included, grps[[1]], type = "N")
+connectGrob(vert$included, grps[[2]], type = "N")
+
+connectGrob(vert$eligible, excluded, type = "L")
+
+# Print boxes
+vert
+grps
+excluded
