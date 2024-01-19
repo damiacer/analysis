@@ -473,6 +473,7 @@ for (i in 1:(length(vert) - 1)) {
 }
 connectGrob(vert$included, grps[[1]], type = "N")
 connectGrob(vert$included, grps[[2]], type = "N")
+connectGrob(vert$included, grps[[3]], type = "N")
 
 connectGrob(vert$eligible, excluded, type = "L")
 
@@ -480,3 +481,54 @@ connectGrob(vert$eligible, excluded, type = "L")
 vert
 grps
 excluded
+
+# qualité de vie 
+table(did$KDQOL_F_V0_M1)
+KDQOL_V0M1 = rowSums(did[,c("KDQOL_Q01_SANTE_V0_M1", "KDQOL_Q02_ANNEE_V0_M1", "KDQOL_Q03A_IMPORTANT_V0_M1", 
+                            "KDQOL_Q03B_MODER_V0_M1", "KDQOL_Q03C_COURSE_V0_M1", "KDQOL_Q03D_PLSRS_ETAGES_V0_M1", "KDQOL_Q03E_ETAGE_V0_M1", 
+                              "KDQOL_Q03F_GENOU_V0_M1", "KDQOL_Q03G_KM_V0_M1", "KDQOL_Q03H_PLSRS_CENTAINES_V0_M1", "KDQOL_Q03I_CENTAINE_V0_M1")], na.rm=TRUE)
+KDQOL_V0M1_2 = rowSums(did[,c("KDQOL_Q03J_DOUCHE_V0_M1", "KDQOL_Q04A_TRAVAIL_V0_M1", "KDQOL_Q04B_ACCOMPLI_V0_M1", "KDQOL_Q04C_ARRET_V0_M1")], na.rm=TRUE)
+KDQOL_V0M1_2 = rowSums(did[,c("KDQOL_Q04D_DIFFIC_V0_M1", "KDQOL_Q05A_TRAVAIL_V0_M1", "KDQOL_Q05B_ACCOMPLI_V0_M1", "KDQOL_Q05C_SOIN_V0_M1")], na.rm=TRUE)
+                              "KDQOL_Q06_GENE_V0_M1", "KDQOL_Q07_INTENS_V0_M1", "KDQOL_Q08_LIMITE_V0_M1", 
+                            #"KDQOL_Q09A_DYNAM_V0_M1", 
+                              )], na.rm=TRUE)
+                              "KDQOL_Q09B_NERV_V0_M1", "KDQOL_Q09C_MORAL_V0_M1", "KDQOL_Q09D_CALME_V0_M1", "KDQOL_Q09E_ENERGIE_V0_M1", 
+                              "KDQOL_Q09F_TRISTE_V0_M1", "KDQOL_Q09G_EPUISE_V0_M1", "KDQOL_Q09H_HEUR_V0_M1", "KDQOL_Q09I_FATIG_V0_M1", 
+                              "KDQOL_Q10_GENE_V0_M1", "KDQOL_Q11A_MALADE_V0_M1", "KDQOL_Q11B_PORTE_BIEN_V0_M1", "KDQOL_Q11C_DEGRADE_V0_M1", 
+                              "KDQOL_Q11D_EXCELL_V0_M1", 
+                             #"KDQOL_Q12A_RENALE_V0_M1", 
+                            "KDQOL_Q12B_TEMPS_V0_M1", "KDQOL_Q12C_SUPPORTE_V0_M1", 
+                              "KDQOL_Q12D_POIDS_V0_M1", "KDQOL_Q13A_ISOLE_V0_M1", "KDQOL_Q13B_REAG_V0_M1", "KDQOL_Q13C_AGRESS_V0_M1", 
+                              "KDQOL_Q13D_CONCENTR_V0_M1", "KDQOL_Q13E_ENTENDU_V0_M1", "KDQOL_Q13F_PERTURBE_V0_M1", "KDQOL_Q14A_COURBAT_V0_M1", 
+                              "KDQOL_Q14B_POITR_V0_M1", "KDQOL_Q14C_CRAMPE_V0_M1", "KDQOL_Q14D_DEMANG_V0_M1", "KDQOL_Q14E_PEAU_V0_M1", 
+                              "KDQOL_Q14F_ESSOUFFL_V0_M1", "KDQOL_Q14G_VERTIGE_V0_M1", "KDQOL_Q14H_APPET_V0_M1", "KDQOL_Q14I_EPUIS_V0_M1", 
+                              "KDQOL_Q14J_ENGOURDI_V0_M1", "KDQOL_Q14K_VOMIR_V0_M1", "KDQOL_Q14M_FISTULE_V0_M1", "KDQOL_Q15A_BOISSON_V0_M1", 
+                              "KDQOL_Q15B_ALIM_V0_M1", "KDQOL_Q15C_MAISON_V0_M1", "KDQOL_Q15D_VOYAGE_V0_M1", "KDQOL_Q15E_MEDECIN_V0_M1", 
+                              "KDQOL_Q15F_STRESS_V0_M1", "KDQOL_Q15G_SEX_VIE_V0_M1", "KDQOL_Q15H_APPAR_V0_M1", "KDQOL_Q16A_SEX_PLAIS_V0_M1", 
+                              "KDQOL_Q16B_SEX_ABS_V0_M1", "KDQOL_Q17_SOMMEIL_V0_M1", "KDQOL_Q18A_REVEIL_V0_M1", "KDQOL_Q18B_SUFFIS_V0_M1", 
+                              "KDQOL_Q18C_SOMNOLE_V0_M1", "KDQOL_Q19A_TEMPS_V0_M1", "KDQOL_Q19B_SOUTIEN_V0_M1", "KDQOL_Q20_REMUNERE_V0_M1", 
+                              "KDQOL_Q21_EMPECHE_V0_M1", "KDQOL_Q22_SANTE_GLOBAL_V0_M1")], na.rm=TRUE)
+
+EQV0M1 = rowSums(did[,c("EQ_Q01_MOBIL_V0_M1","EQ_Q02_AUTON_V0_M1","EQ_Q03_ACT_V0_M1",
+"EQ_Q04_DOUL_V0_M1","EQ_Q05_ANX_V0_M1")], na.rm=TRUE)
+
+EQV1M2 = rowSums(did[,c("EQ_Q01_MOBIL_V1_M2","EQ_Q02_AUTON_V1_M2","EQ_Q03_ACT_V1_M2",
+                        "EQ_Q04_DOUL_V1_M2","EQ_Q05_ANX_V1_M2")], na.rm=TRUE)
+
+EQV2M3 = rowSums(did[,c("EQ_Q01_MOBIL_V2_M3","EQ_Q02_AUTON_V2_M3","EQ_Q03_ACT_V2_M3",
+                        "EQ_Q04_DOUL_V2_M3","EQ_Q05_ANX_V2_M3")], na.rm=TRUE)
+
+EQV3M4 = rowSums(did[,c("EQ_Q01_MOBIL_V3_M4","EQ_Q02_AUTON_V3_M4","EQ_Q03_ACT_V3_M4",
+                        "EQ_Q04_DOUL_V3_M4","EQ_Q05_ANX_V3_M4")], na.rm=TRUE)
+
+EQV4M5 = rowSums(did[,c("EQ_Q01_MOBIL_V4_M5","EQ_Q02_AUTON_V4_M5","EQ_Q03_ACT_V4_M5",
+                        "EQ_Q04_DOUL_V4_M5","EQ_Q05_ANX_V4_M5")], na.rm=TRUE)
+
+EQV5M6 = rowSums(did[,c("EQ_Q01_MOBIL_V5_M6","EQ_Q02_AUTON_V5_M6","EQ_Q03_ACT_V5_M6",
+                        "EQ_Q04_DOUL_V5_M6","EQ_Q05_ANX_V5_M6")], na.rm=TRUE)
+
+EQV6M7 = rowSums(did[,c("EQ_Q01_MOBIL_V6_M7","EQ_Q02_AUTON_V6_M7","EQ_Q03_ACT_V6_M7",
+                        "EQ_Q04_DOUL_V6_M7","EQ_Q05_ANX_V6_M7")], na.rm=TRUE)
+
+EQV7M7 = rowSums(did[,c("EQ_Q01_MOBIL_V6_M7","EQ_Q02_AUTON_V6_M7","EQ_Q03_ACT_V6_M7",
+                        "EQ_Q04_DOUL_V6_M7","EQ_Q05_ANX_V6_M7")], na.rm=TRUE)
