@@ -1,5 +1,6 @@
 getwd()
-setwd("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/LeMapihan_Clarisse") 
+#setwd("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/LeMapihan_Clarisse") 
+setwd("P:/CONSULTATION/Bazille_C/KREIN")
 
 #-PACKAGES-----------------------------------------------------------------------
 
@@ -9,6 +10,7 @@ require("tidyverse")
 require ("survival")
 require("cmprsk")
 require("tidycmprsk")
+require("lmtest")
 
 #-DATABASE "REIN"----------------------------------------------------------------
 rec <- read_excel("clar_db.xlsx", na = "NA")
@@ -68,11 +70,24 @@ str(cecl$ISUP)
 cecl <- cecl %>%
   mutate(ISUP2 = case_when(
     ISUP == "1" | ISUP == "2" ~ "1",
-    ISUP == "2" ~ "2",
-    ISUP == "3" ~ "3",
-    ISUP == "4" ~ "4"
+    ISUP == "3" ~ "2",
+    ISUP == "4" ~ "3"
   ))
 cecl$ISUP2 = as.factor(cecl$ISUP2)
+
+cecl <- cecl %>%
+  mutate(ISUP3 = case_when(
+    ISUP == "1" | ISUP == "2" ~ "1",
+    ISUP == "3" | ISUP == "4" ~ "2"
+  ))
+cecl$ISUP3 = as.factor(cecl$ISUP3)
+
+cecl <- cecl %>%
+  mutate(R2 = case_when(
+    R == 0 ~ "0",
+    R == 1 | R == 2 ~ "1"
+  ))
+table(cecl$R2)
 
 #-DESCRIPTIVE CELL CLAIRES------------------------------------------------------
 
@@ -85,20 +100,15 @@ variables <- c("sexe", "recidive",
                "SSRT2a_c", "PSMA_c")
 
 cvariables <- c("sexe", "recidive", 
-               "metastasis",  
-               "deces", "deces_ccr", 
-               "TNM", "tnm_short", "ISUP", "R", "nbre_spotanalysables",
-               "SSRT2a_c", "PSMA_c")
+                "metastasis",  
+                "deces", "deces_ccr", 
+                "TNM", "tnm_short", "ISUP", "R", "nbre_spotanalysables",
+                "SSRT2a_c", "PSMA_c")
 
 # CREATE THE DESCRIPTIVE TABLE
 tab1 = CreateTableOne(vars = variables, data = cecl, factorVars = cvariables)
 print(tab1, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
-# CREATE THE UNIVARIATE TABLE 
-tab2.APKD = CreateTableOne(vars = variables.APKD, data = apkd.dathap, factorVars = categorical.APKD, 
-                           test = TRUE,
-                           strata = "EVENTUM")
-print(tab2.APKD, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
 
 #-FOLLOW UP TIMES-------------------------------------------------------------
 
@@ -174,6 +184,8 @@ cox_recidive = coxph(Surv(fup_death, deces==1) ~ recidive, data = cecl)
 summary(cox_recidive)
 
 # metastasis
+table(cecl$metastasis, cecl$deces, useNA = "always")
+prop.table(table(cecl$metastasis, cecl$deces), margin = 2)*100
 cox_metastasis = coxph(Surv(fup_death, deces ==1) ~ metastasis, data = cecl)
 summary(cox_metastasis)
 
@@ -182,6 +194,8 @@ cox_TNM = coxph(Surv(fup_death, deces == 1) ~ TNM, data = cecl)
 summary(cox_TNM)
 
 # tnm_short
+table(cecl$tnm_short, cecl$deces, useNA = "always")
+(prop.table(table(cecl$tnm_short, cecl$deces), margin = 2))*100
 cox_tnms = coxph(Surv(fup_death, deces==1) ~ tnm_short, data = cecl)
 summary(cox_tnms)
 
@@ -189,27 +203,50 @@ summary(cox_tnms)
 cox_ISUP = coxph(Surv(fup_death, deces==1) ~ ISUP, data = cecl)
 summary(cox_ISUP)
 
+table(cecl$ISUP2, cecl$deces, useNA = "always")
+(prop.table(table(cecl$ISUP2, cecl$deces), margin = 2))*100
 cox_ISUP2 = coxph(Surv(fup_death, deces==1) ~ ISUP2, data = cecl)
 summary(cox_ISUP2)
+
+table(cecl$ISUP3, cecl$deces, useNA = "always")
+(prop.table(table(cecl$ISUP3, cecl$deces), margin = 2))*100
+cox_ISUP3 = coxph(Surv(fup_death, deces==1) ~ ISUP3, data = cecl)
+summary(cox_ISUP3)
 
 # R
 cox_R = coxph(Surv(fup_death, deces==1) ~ R, data = cecl)
 summary(cox_R)
 
+table(cecl$R2, cecl$deces, useNA = "always")
+(prop.table(table(cecl$R2, cecl$deces), margin = 2))*100
+cox_R2 = coxph(Surv(fup_death, deces==1) ~ R2, data = cecl)
+summary(cox_R2)
+
 # nbre_spotanalysables
+table(cecl$nbre_spotanalysables, cecl$deces, useNA = "always")
+(prop.table(table(cecl$nbre_spotanalysables, cecl$deces), margin = 2))*100
 cox_span = coxph(Surv(fup_death, deces==1) ~ nbre_spotanalysables, data = cecl)
 summary(cox_span)
+
+cox_E = coxph(Surv(fup_death, deces==1) ~ 1, data = cecl)
+lrtest(cox_span, cox_E)
 
 # SSRT2a_c
 cox_ssrt2a = coxph(Surv(fup_death, deces==1) ~ SSRT2a_c, data = cecl)
 summary(cox_ssrt2a)
 
+table(cecl$SSRT2a_c2, cecl$deces, useNA = "always")
+(prop.table(table(cecl$SSRT2a_c2, cecl$deces), margin = 2))*100
 cox_SSRT2ac2 = coxph(Surv(fup_death, deces==1) ~ SSRT2a_c2, data = cecl)
 summary(cox_SSRT2ac2)
 
 # PSMA_c
+table(cecl$PSMA_c, cecl$deces, useNA = "always")
+(prop.table(table(cecl$PSMA_c, cecl$deces), margin = 2))*100
 cox_psma = coxph(Surv(fup_death, deces==1) ~ PSMA_c, data = cecl)
 summary(cox_psma)
+
+lrtest(cox_psma, cox_E)
 
 #-MULTIVARIATE ANALYSIS FOR DEATH---------------------------------------------
 
@@ -399,5 +436,5 @@ summary(cox_psma)
 #-MULTIVARIATE ANALYSIS FOR RELAPSE-------------------------------------------
 
 cox_recidive = coxph(Surv(fup_relapse, recidive==1) ~ sexe + metastasis +
-                    tnm_short + ISUP2 + R + SSRT2a_c2 + PSMA_c, data = cecl)
+                       tnm_short + ISUP2 + R + SSRT2a_c2 + PSMA_c, data = cecl)
 summary(cox_recidive)
