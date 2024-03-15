@@ -1,6 +1,6 @@
 getwd()
-#setwd("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/LeMapihan_Clarisse") 
-setwd("P:/CONSULTATION/Bazille_C/KREIN")
+setwd("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/LeMapihan_Clarisse") 
+#setwd("P:/CONSULTATION/Bazille_C/KREIN")
 
 #-PACKAGES-----------------------------------------------------------------------
 
@@ -11,8 +11,11 @@ require ("survival")
 require("cmprsk")
 require("tidycmprsk")
 require("lmtest")
+require("nnet")
+require("gtsummary")
+require("stargazer")
 
-#-DATABASE "REIN"----------------------------------------------------------------
+#-DATABASE ---------------------------------------------------------------------
 rec <- read_excel("clar_db.xlsx", na = "NA")
 summary(rec)
 dim(rec)
@@ -392,49 +395,309 @@ mean(cecl2$chirrec, na.rm = T)
 #-UNIVARIATE ANALYSIS FOR RELAPSE---------------------------------------------
 
 # sexe
-cox_sex = coxph(Surv(fup_relapse, recidive==1) ~ sexe, data = cecl)
-summary(cox_sex)
+table(cecl$sexe, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$sexe, cecl$recidive), margin = 2))*100
+cox_sexR = coxph(Surv(fup_relapse, recidive==1) ~ sexe, data = cecl)
+summary(cox_sexR)
 
 # metastasis
-cox_metastasis = coxph(Surv(fup_relapse, recidive ==1) ~ metastasis, data = cecl)
-summary(cox_metastasis)
+table(cecl$metastasis, cecl$recidive, useNA = "always")
+prop.table(table(cecl$metastasis, cecl$recidive), margin = 2)*100
+cox_metastasisR = coxph(Surv(fup_relapse, recidive ==1) ~ metastasis, data = cecl)
+summary(cox_metastasisR)
 
 # TNM
-cox_TNM = coxph(Surv(fup_relapse, recidive == 1) ~ TNM, data = cecl)
+cox_TNM = coxph(Surv(fup_death, deces == 1) ~ TNM, data = cecl)
 summary(cox_TNM)
 
 # tnm_short
+table(cecl$tnm_short, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$tnm_short, cecl$recidive), margin = 2))*100
 cox_tnms = coxph(Surv(fup_relapse, recidive==1) ~ tnm_short, data = cecl)
 summary(cox_tnms)
 
+cox_E = coxph(Surv(fup_relapse, recidive == 1) ~ 1, data = cecl)
+lrtest(cox_tnms, cox_E)
+
 # ISUP
-cox_ISUP = coxph(Surv(fup_relapse, recidive==1) ~ ISUP, data = cecl)
+cox_ISUP = coxph(Surv(fup_death, deces==1) ~ ISUP, data = cecl)
 summary(cox_ISUP)
 
-cox_ISUP2 = coxph(Surv(fup_relapse, recidive==1) ~ ISUP2, data = cecl)
+table(cecl$ISUP2, cecl$deces, useNA = "always")
+(prop.table(table(cecl$ISUP2, cecl$deces), margin = 2))*100
+cox_ISUP2 = coxph(Surv(fup_death, deces==1) ~ ISUP2, data = cecl)
 summary(cox_ISUP2)
 
+table(cecl$ISUP3, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$ISUP3, cecl$recidive), margin = 2))*100
+cox_ISUP3R = coxph(Surv(fup_relapse, recidive==1) ~ ISUP3, data = cecl)
+summary(cox_ISUP3R)
+
 # R
-cox_R = coxph(Surv(fup_relapse, recidive==1) ~ R, data = cecl)
+cox_R = coxph(Surv(fup_death, deces==1) ~ R, data = cecl)
 summary(cox_R)
 
+table(cecl$R2, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$R2, cecl$recidive), margin = 2))*100
+cox_R2R = coxph(Surv(fup_relapse, recidive==1) ~ R2, data = cecl)
+summary(cox_R2R)
+
 # nbre_spotanalysables
-cox_span = coxph(Surv(fup_relapse, recidive==1) ~ nbre_spotanalysables, data = cecl)
-summary(cox_span)
+table(cecl$nbre_spotanalysables, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$nbre_spotanalysables, cecl$recidive), margin = 2))*100
+cox_spanR = coxph(Surv(fup_relapse, recidive==1) ~ nbre_spotanalysables, data = cecl)
+summary(cox_spanR)
+
+cox_E = coxph(Surv(fup_relapse, recidive==1) ~ 1, data = cecl)
+lrtest(cox_span, cox_E)
 
 # SSRT2a_c
-cox_ssrt2a = coxph(Surv(fup_relapse, recidive==1) ~ SSRT2a_c, data = cecl)
+cox_ssrt2a = coxph(Surv(fup_death, deces==1) ~ SSRT2a_c, data = cecl)
 summary(cox_ssrt2a)
 
-cox_SSRT2ac2 = coxph(Surv(fup_relapse, recidive==1) ~ SSRT2a_c2, data = cecl)
-summary(cox_SSRT2ac2)
+table(cecl$SSRT2a_c2, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$SSRT2a_c2, cecl$recidive), margin = 2))*100
+cox_SSRT2ac2R = coxph(Surv(fup_relapse, recidive==1) ~ SSRT2a_c2, data = cecl)
+summary(cox_SSRT2ac2R)
 
 # PSMA_c
-cox_psma = coxph(Surv(fup_relapse, recidive==1) ~ PSMA_c, data = cecl)
-summary(cox_psma)
+table(cecl$PSMA_c, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$PSMA_c, cecl$recidive), margin = 2))*100
+cox_psmaR = coxph(Surv(fup_relapse, recidive==1) ~ PSMA_c, data = cecl)
+summary(cox_psmaR)
+
+lrtest(cox_psmaR, cox_E)
 
 #-MULTIVARIATE ANALYSIS FOR RELAPSE-------------------------------------------
 
 cox_recidive = coxph(Surv(fup_relapse, recidive==1) ~ sexe + metastasis +
                        tnm_short + ISUP2 + R + SSRT2a_c2 + PSMA_c, data = cecl)
 summary(cox_recidive)
+
+#-UNIVARIATE ANALYSIS FOR FREE FROM RELAPSE-----------------------------------
+
+table(cecl$recidive)
+
+cecl$recidiveFREE = if_else(cecl$recidive == 0, "1", "0")
+table(cecl$recidive, cecl$recidiveFREE, useNA = "always")
+
+
+# sexe
+table(cecl$sexe, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$sexe, cecl$recidive), margin = 2))*100
+cox_sexR = coxph(Surv(fup_relapse, recidiveFREE==1) ~ sexe, data = cecl)
+summary(cox_sexR)
+
+# metastasis
+table(cecl$metastasis, cecl$recidive, useNA = "always")
+prop.table(table(cecl$metastasis, cecl$recidive), margin = 2)*100
+cox_metastasisR = coxph(Surv(fup_relapse, recidiveFREE ==1) ~ metastasis, data = cecl)
+summary(cox_metastasisR)
+
+# TNM
+cox_TNM = coxph(Surv(fup_death, deces == 1) ~ TNM, data = cecl)
+summary(cox_TNM)
+
+# tnm_short
+table(cecl$tnm_short, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$tnm_short, cecl$recidive), margin = 2))*100
+cox_tnms = coxph(Surv(fup_relapse, recidiveFREE==1) ~ tnm_short, data = cecl)
+summary(cox_tnms)
+
+cox_E = coxph(Surv(fup_relapse, recidiveFREE == 1) ~ 1, data = cecl)
+lrtest(cox_tnms, cox_E)
+
+# ISUP
+cox_ISUP = coxph(Surv(fup_death, deces==1) ~ ISUP, data = cecl)
+summary(cox_ISUP)
+
+table(cecl$ISUP2, cecl$deces, useNA = "always")
+(prop.table(table(cecl$ISUP2, cecl$deces), margin = 2))*100
+cox_ISUP2 = coxph(Surv(fup_death, recidiveFREE==1) ~ ISUP2, data = cecl)
+summary(cox_ISUP2)
+
+table(cecl$ISUP3, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$ISUP3, cecl$recidive), margin = 2))*100
+cox_ISUP3R = coxph(Surv(fup_relapse, recidiveFREE==1) ~ ISUP3, data = cecl)
+summary(cox_ISUP3R)
+
+# R
+cox_R = coxph(Surv(fup_death, deces==1) ~ R, data = cecl)
+summary(cox_R)
+
+table(cecl$R2, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$R2, cecl$recidive), margin = 2))*100
+cox_R2R = coxph(Surv(fup_relapse, recidiveFREE==1) ~ R2, data = cecl)
+summary(cox_R2R)
+
+# nbre_spotanalysables
+table(cecl$nbre_spotanalysables, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$nbre_spotanalysables, cecl$recidive), margin = 2))*100
+cox_spanR = coxph(Surv(fup_relapse, recidiveFREE==1) ~ nbre_spotanalysables, data = cecl)
+summary(cox_spanR)
+
+cox_E = coxph(Surv(fup_relapse, recidiveFREE==1) ~ 1, data = cecl)
+lrtest(cox_spanR, cox_E)
+
+# SSRT2a_c
+cox_ssrt2a = coxph(Surv(fup_death, recidiveFREE==1) ~ SSRT2a_c, data = cecl)
+summary(cox_ssrt2a)
+
+table(cecl$SSRT2a_c2, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$SSRT2a_c2, cecl$recidive), margin = 2))*100
+cox_SSRT2ac2R = coxph(Surv(fup_relapse, recidiveFREE==1) ~ SSRT2a_c2, data = cecl)
+summary(cox_SSRT2ac2R)
+
+# PSMA_c
+table(cecl$PSMA_c, cecl$recidive, useNA = "always")
+(prop.table(table(cecl$PSMA_c, cecl$recidive), margin = 2))*100
+cox_psmaR = coxph(Surv(fup_relapse, recidiveFREE==1) ~ PSMA_c, data = cecl)
+summary(cox_psmaR)
+
+lrtest(cox_psmaR, cox_E)
+
+#-REC DATABASE------------------------------------------------------------
+
+dim(rec)
+names(rec)
+
+table(rec$type_histo, useNA = "always")
+# cellule claire    chromophobe     oncocytome     papillaire           <NA> 
+# 120             20             10             20              0 
+
+rec$SSRT2a_Hscore = as.numeric(as.character(rec$SSRT2a_Hscore))
+rec <- rec %>%
+  mutate(SSRT2a = case_when(
+    SSRT2a_Hscore >= 0 & SSRT2a_Hscore < 20 ~ "1", 
+    SSRT2a_Hscore >= 20 & SSRT2a_Hscore <= 100 ~ "2",
+    SSRT2a_Hscore > 100 ~ "3"))
+table(rec$SSRT2a, useNA = "always")
+
+chisq.test(rec$SSRT2a, rec$type_histo, simulate.p.value = T)
+
+rec$PSMA_Hscore = as.numeric(as.character(rec$PSMA_Hscore))
+rec <- rec %>%
+  mutate(PSMA_c = case_when(
+    PSMA_Hscore >= 0 & PSMA_Hscore < 20 ~ "1",
+    PSMA_Hscore >= 20 & PSMA_Hscore <= 100 ~ "2",
+    PSMA_Hscore > 100 ~ "3"))
+table(rec$PSMA_c, useNA = "always")
+
+chisq.test(rec$PSMA_c, rec$type_histo, simulate.p.value = T)
+
+str(rec$type_histo)
+rec$type_histo = as.factor(rec$type_histo)
+rec$type_histo2 <- relevel(rec$type_histo, ref = "cellule claire")
+fit <- multinom(SSRT2a ~ type_histo, data = rec)
+summary(fit)
+
+str(rec$type_histo)
+rec$type_histo2 <- relevel(rec$type_histo, ref = "cellule claire")
+fit2 <- multinom(PSMA_c ~ type_histo, data = rec)
+
+#z <- summary(fit)$coefficients/summary(fit)$standard.errors
+#z
+#
+#p <- (1- pnorm(abs(z), 0, 1)) *2
+#p
+#
+#exp(coef(fit))
+#
+#fit %>%
+#tbl_regression(exponenitate = T)
+
+#-fit (stargazer package)-------------------------------------------------
+# avec fit = SSRT2a ~ type_histo
+stargazer(fit, type = "text")
+#==================================================
+#  Dependent variable:     
+#  ----------------------------
+#  2              3      
+#(1)            (2)     
+#--------------------------------------------------
+#  type_histochromophobe    -2.591**      -5.621***  
+#  (1.156)        (1.505)   
+#
+#type_histooncocytome      5.398          4.671    
+#(42.942)      (42.943)   
+#
+#type_histopapillaire    -3.912***      -4.235***  
+#  (1.164)        (1.161)   
+#
+#Constant                 3.913***      4.235***   
+#  (1.010)        (1.007)   
+#
+#--------------------------------------------------
+#  Akaike Inf. Crit.        269.998        269.998   
+#==================================================
+#  Note:                  *p<0.1; **p<0.05; ***p<0.01
+
+
+# avec fit2 = PSMA_c ~ type_histo
+stargazer(fit2, type = "text")
+
+#==================================================
+#  Dependent variable:     
+#  ----------------------------
+#  2              3      
+#(1)            (2)     
+#--------------------------------------------------
+#  type_histochromophobe   -1.552***       -2.013*   
+#  (0.522)        (1.102)   
+#
+#type_histooncocytome    -2.701***       -9.240    
+#(0.840)       (44.312)   
+#
+#type_histopapillaire    -1.898***       -9.068    
+#(0.544)       (32.440)   
+#
+#Constant                 1.447***       -0.288    
+#(0.249)        (0.342)   
+#
+#--------------------------------------------------
+#  Akaike Inf. Crit.        276.499        276.499   
+#==================================================
+#  Note:                  *p<0.1; **p<0.05; ***p<0.
+
+#-analyse metastasis------------------------------------------------------
+
+table(rec$metastasis)
+str(rec$metastasis)
+
+rec$metastasisF = as.factor(rec$metastasis)
+#                 0  1
+# cellule claire 63 57
+# chromophobe     0  0
+# oncocytome      0  0
+# papillaire      0  0
+
+table(rec$type_histo, rec$metastasis)
+
+met_reglog = glm(metastasis ~ sexe + recidive + SSRT2a + PSMA_c, 
+                 data = rec, family = "binomial")
+summary(met_reglog)
+#Coefficients:
+#        Estimate Std. Error z value Pr(>|z|)   
+#(Intercept)  -16.1371  1455.3976  -0.011  0.99115   
+#sexeM          0.5711     0.4602   1.241  0.21463   
+#recidive       2.9452     1.1082   2.658  0.00787 **
+#SSRT2a2       14.8793  1455.3977   0.010  0.99184   
+#SSRT2a3       13.8768  1455.3977   0.010  0.99239   
+#PSMA_c2        1.2684     0.6563   1.933  0.05329 . 
+#PSMA_c3        1.7922     0.8528   2.102  0.03559 * 
+
+#Null deviance: 166.06  on 119  degrees of freedom
+#Residual deviance: 137.58  on 113  degrees of freedom
+#(50 observations deleted due to missingness)
+#AIC: 151.58
+#Number of Fisher Scoring iterations: 14
+
+exp(cbind(OR = coef(met_reglog), confint(met_reglog)))
+#OR         2.5 %        97.5 %
+#  (Intercept) 9.811535e-08            NA 5.146789e+121
+#sexeM       1.770131e+00  7.290390e-01  4.483498e+00
+#recidive    1.901541e+01  3.130480e+00  3.716250e+02
+#SSRT2a2     2.897391e+06 7.561455e-123            NA
+#SSRT2a3     1.063241e+06 2.859709e-123            NA
+#PSMA_c2     3.555077e+00  1.067215e+00  1.476047e+01
+#PSMA_c3     6.002538e+00  1.204574e+00  3.569262e+01
