@@ -42,12 +42,12 @@ Low Correlation
 
 **pseudo-R2**
 
-_mod.null = glm(TRe01 ~ 1, data = rp, family = binomial)_
-_1-logLik(mod1)/logLik(mod.null)_
+_mod.null = glm(TRe01 ~ 1, data = rp, family = binomial)_ \
+_1-logLik(mod1)/logLik(mod.null)_ \
 **'log Lik.' 0.1686141 (df=7)**
 
 
 **Accuracy of Model Predictions (Bootstrap)**
 
-Accuracy (95% CI): 77.44% [71.38%, 83.14%]
+Accuracy (95% CI): 77.44% [71.38%, 83.14%] \
 Method: Area under Curve
