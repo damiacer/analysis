@@ -1,4 +1,4 @@
-**logistic regression**
+**Logistic Regression**
 
 |                   | N = 383    | OR [95%CI]    |  p-value     |
 | :------------     | :--     |  :--          | :--          |
@@ -19,7 +19,7 @@
 
 ----
 
-**collinearity**
+**Collinearity**
 
 Low Correlation
 
@@ -29,3 +29,11 @@ Low Correlation
 |   Age.F | 1.12 [1.04, 1.33]     |    1.06    |  0.89     [0.75, 0.96] |
 |    FC.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
 |  Spo2.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
+
+**Hosmer-Lemeshow goodness-of-fit test**
+
+| | value |
+| :-: | :-: |
+| Statistic | 6.88921 |
+| degrees of freedom | 7 |
+| p-value | 0.44051 |
