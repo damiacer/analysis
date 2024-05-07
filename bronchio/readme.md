@@ -1,6 +1,6 @@
 **logistic regression**
 
-|                   | N =     | OR [95%CI]    |  p-value     |
+|                   | N = 383    | OR [95%CI]    |  p-value     |
 | :------------     | :--     |  :--          | :--          |
 | **Terme**         |         |               | 0.0015       |
 | < 37              | 49 (12.8)  | *Reference*   | |  
