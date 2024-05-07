@@ -59,10 +59,10 @@ Method: Area under Curve
 *Missclassification error on train data*
 
 | | **Actual** | |
-| :- | :- | :- |
+| :- | :-- | :-- |
 | **Predicted** |  _0_  | _1_ |
 | _0_ | 236 | 44 |
 | _1_  | 3  |12 |
 
-_1-sum(diag(tab1))/sum(tab1)_
+_1-sum(diag(tab1))/sum(tab1)_ \
 **0.159322 -> 15.9 missclassification error rate on train data**
