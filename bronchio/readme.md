@@ -77,7 +77,7 @@ _1-sum(diag(tab1))/sum(tab1)_ \
 
 **17+2 = 19 missclassifications**
 
-*Goodness-of-fit of the model by machine learning* \
+**Goodness-of-fit of the model by machine learning** \
 _Null deviance: 381.64  on 381  degrees of freedom_ \
 _Residual deviance: 317.29  on 375  degrees of freedom_ \
 \
