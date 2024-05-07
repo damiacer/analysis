@@ -30,10 +30,12 @@ Low Correlation
 |    FC.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
 |  Spo2.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
 
+<br>
+
 **Hosmer-Lemeshow goodness-of-fit test**
 
 | | value |
-| :-: | :-: |
+| -: | :- |
 | Statistic | 6.88921 |
 | degrees of freedom | 7 |
 | p-value | 0.44051 |
