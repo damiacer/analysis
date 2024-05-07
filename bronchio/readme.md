@@ -58,11 +58,28 @@ Method: Area under Curve
 
 *Missclassification error on train data*
 
-| | **Actual** | |
-| :- | :-- | :-- |
+| **Actual** | | |
+| :- | :--: | :--: |
 | **Predicted** |  _0_  | _1_ |
 | _0_ | 236 | 44 |
 | _1_  | 3  |12 |
 
 _1-sum(diag(tab1))/sum(tab1)_ \
 **0.159322 -> 15.9 missclassification error rate on train data**
+
+*Misclassification error on test data*
+
+| **Actual** | | |
+| :- | :--: | :--: |
+| **Predicted** |  _0_ | _1_ |
+| _0_ | 66 | 17 |
+| _1_ | 2 | 3 |
+
+**17+2 = 19 missclassifications**
+
+*Goodness-of-fit of the model by machine learning* \
+_Null deviance: 381.64  on 381  degrees of freedom_ \
+_Residual deviance: 317.29  on 375  degrees of freedom_ \
+\
+_pvalue = 1-pchisq(381.64-317.29, df=(382-317.29))_ \
+**pvalue = 0.4892427**
