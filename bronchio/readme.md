@@ -1,4 +1,4 @@
-**Logistic Regression**
+**Logistic Regression** (Model selection by likelihood test)
 
 |                   | N = 383    | OR [95%CI]    |  p-value     |
 | :------------     | :--     |  :--          | :--          |
