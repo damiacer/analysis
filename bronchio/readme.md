@@ -40,7 +40,7 @@ Low Correlation
 | p-value | 0.44051 |
 
 
-**pseudo-R2**
+**McFadden's Pseudo-R2**
 
 _mod.null = glm(TRe01 ~ 1, data = rp, family = binomial)_ \
 _1-logLik(mod1)/logLik(mod.null)_ \
@@ -51,3 +51,18 @@ _1-logLik(mod1)/logLik(mod.null)_ \
 
 Accuracy (95% CI): 77.44% [71.38%, 83.14%] \
 Method: Area under Curve
+
+---
+
+**Machine learning evaluation of the model**
+
+*Missclassification error on train data*
+
+| | **Actual** | |
+| :- | :- | :- |
+| **Predicted** |  _0_  | _1_ |
+| _0_ | 236 | 44 |
+| _1_  | 3  |12 |
+
+_1-sum(diag(tab1))/sum(tab1)_
+**0.159322 -> 15.9 missclassification error rate on train data**
