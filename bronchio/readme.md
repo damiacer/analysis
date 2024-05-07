@@ -30,7 +30,6 @@ Low Correlation
 |    FC.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
 |  Spo2.F | 1.07 [1.02, 1.34]      |   1.04    |  0.93     [0.75, 0.98] |
 
-<br>
 
 **Hosmer-Lemeshow goodness-of-fit test**
 
@@ -39,3 +38,16 @@ Low Correlation
 | Statistic | 6.88921 |
 | degrees of freedom | 7 |
 | p-value | 0.44051 |
+
+
+**pseudo-R2**
+
+_mod.null = glm(TRe01 ~ 1, data = rp, family = binomial)_
+_1-logLik(mod1)/logLik(mod.null)_
+**'log Lik.' 0.1686141 (df=7)**
+
+
+**Accuracy of Model Predictions (Bootstrap)**
+
+Accuracy (95% CI): 77.44% [71.38%, 83.14%]
+Method: Area under Curve
