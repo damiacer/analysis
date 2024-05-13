@@ -8,6 +8,10 @@
 - ROC2
 - ROC3
 
+---
+
+## Synthèse résultats 
+
 ### TRe
 
 **Logistic Regression** (Model selection by likelihood test)
