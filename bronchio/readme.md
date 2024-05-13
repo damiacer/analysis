@@ -10,9 +10,9 @@
 
 ---
 
-## Synthèse résultats 
+## Synthèse résultats des modèles
 
-### TRe
+### (1) TRe
 
 **Logistic Regression** (Model selection by likelihood test)
 
@@ -102,7 +102,7 @@ _pvalue = 1-pchisq(381.64-317.29, df=(382-375))_ \
 
 ---
 
-### Transf en réa 
+### (2) Transf en réa 
 
 **Logistic Regression** (Model selection by likelihood test)
 
