@@ -1,3 +1,5 @@
+# TRe
+
 **Logistic Regression** (Model selection by likelihood test)
 
 |                   | N = 383    | OR [95%CI]    |  p-value     |
@@ -83,3 +85,9 @@ _Residual deviance: 317.29  on 375  degrees of freedom_ \
 \
 _pvalue = 1-pchisq(381.64-317.29, df=(382-317.29))_ \
 **pvalue = 0.4892427**
+
+---
+
+# ROXI
+
+
