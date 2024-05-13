@@ -1,8 +1,3 @@
----
-title: "readme"
-format: html
----
-
 ### TRe
 
 **Logistic Regression** (Model selection by likelihood test)
