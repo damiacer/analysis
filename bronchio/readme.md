@@ -88,6 +88,6 @@ _pvalue = 1-pchisq(381.64-317.29, df=(382-317.29))_ \
 
 ---
 
-# ROXI
+# Transf en réa 
 
 
