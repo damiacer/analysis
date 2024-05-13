@@ -1,3 +1,13 @@
+### Codes et images à retenir
+
+- code_ROC
+- code_ROXI
+- code_transf
+
+- ROC1
+- ROC2
+- ROC3
+
 ### TRe
 
 **Logistic Regression** (Model selection by likelihood test)
