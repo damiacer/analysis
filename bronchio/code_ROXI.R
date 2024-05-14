@@ -15,13 +15,13 @@ table(reaped$OHb, useNA = "always")
 
 #-DATA----
 
-re2 = subset(reaped, select = c("OHb", "FR.1", "Spo2b", "SDLb", "WangB", 
+re2 = subset(reaped, select = c("VNI", "FR.1", "Spo2b", "SDLb", "WangB", 
                                 "Woodb", "apneeb", "AEGb", "malaiseb", "ROXI"))
 
 #-VARIABLE RECODING---
 
-#OHb
-re2$OHb = as.factor(re2$OHb)
+#VNI
+re2$VNI = as.factor(if_else(re2$VNI == "Oui", "1", "0"))
 
 #FR.1
 table(re2$FR.1)
@@ -102,208 +102,196 @@ table(re2$ROXI)
 str(re2$ROXI)
 
 # new dataset----
-re2s = subset(re2, select = c("OHb", "FR", "SpO2", "SDL", 
+re2s = subset(re2, select = c("VNI", "FR", "SpO2", "SDL", 
                                 "Wang", "Wood", "apnee", "AEG", "malaise",
                               "ROXI"))
 
 # reg log test----
-glm.fulloh = glm(as.numeric(OHb) ~ FR + SpO2 + SDL + Wang + Wood + apnee + AEG + malaise
+glm.fullv = glm(as.numeric(VNI) ~ FR + SpO2 + SDL + Wang + Wood + apnee + AEG + malaise
                + ROXI,
                data = re2s)
-glm.nulloh = glm(as.numeric(OHb) ~ 1, data = re2s)
+glm.nullv = glm(as.numeric(VNI) ~ 1, data = re2s)
 
 # step function----
-
-sglm1 <- step(glm.fulloh)
-summary(sglm1)
-
+#
+#sglm1 <- step(glm.fulloh)
+#summary(sglm1)
+#
 # LRT SELECTION----
 # manual likelihood-ratio-test-based backward selection
-drop1(glm.fulloh, test = "LRT")
+drop1(glm.fullv, test = "LRT")
 
-#        Df Deviance     AIC scaled dev. Pr(>Chi)
-#<none>       5.5216 -306.57                     
-#FR       4   5.5600 -312.52     2.04711   0.7271
-#SpO2     1   5.5232 -308.48     0.08536   0.7702
-#SDL      2   5.5785 -307.53     3.03404   0.2194
-#Wang     2   5.5804 -307.44     3.13134   0.2089
-#Wood     1   5.5355 -307.82     0.74298   0.3887
-#apnee    1   5.5401 -307.58     0.98772   0.3203
-#AEG      1   5.5261 -308.33     0.23982   0.6243
-#malaise  1   5.5387 -307.65     0.91349   0.3392
-#ROXI     1   5.5465 -307.24     1.32865   0.2490
+#        Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       39.768 277.85                        
+#FR       4   40.672 276.51      6.6561 0.155215   
+#SpO2     1   39.889 276.75      0.9007 0.342586   
+#SDL      2   40.122 276.47      2.6224 0.269502   
+#Wang     2   39.887 274.73      0.8816 0.643525   
+#Wood     1   40.171 278.84      2.9859 0.083994 . 
+#apnee    1   40.136 278.58      2.7281 0.098600 . 
+#AEG      1   39.900 276.83      0.9806 0.322054   
+#malaise  1   40.691 282.64      6.7942 0.009146 **
+#ROXI     1   40.568 281.74      5.8931 0.015201 * 
 
 # drop1 
-drop1(update(glm.fulloh, ~ . -SpO2), test = "LRT")
-#        Df Deviance     AIC scaled dev. Pr(>Chi)
-#<none>       5.5232 -308.48                     
-#FR       4   5.5600 -314.52     1.96181   0.7428
-#SDL      2   5.5792 -309.50     2.98259   0.2251
-#Wang     2   5.5805 -309.43     3.05526   0.2170
-#Wood     1   5.5386 -309.66     0.82310   0.3643
-#apnee    1   5.5418 -309.49     0.99475   0.3186
-#AEG      1   5.5278 -310.24     0.24446   0.6210
-#malaise  1   5.5399 -309.59     0.89293   0.3447
-#ROXI     1   5.5504 -309.03     1.45250   0.2281
+drop1(update(glm.fullv, ~ . -Wang), test = "LRT")
+#         Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       39.887 274.73                        
+#FR       4   40.763 273.17      6.4349 0.168938   
+#SpO2     1   40.017 273.70      0.9671 0.325407   
+#SDL      2   40.149 272.68      1.9432 0.378474   
+#Wood     1   40.219 275.19      2.4564 0.117043   
+#apnee    1   40.238 275.33      2.5997 0.106885   
+#AEG      1   40.006 273.62      0.8850 0.346833   
+#malaise  1   40.868 279.93      7.1939 0.007315 **
+#ROXI     1   40.636 278.24      5.5106 0.018901 * 
 
 # drop2
-drop1(update(glm.fulloh, ~ . -FR -SpO2), test = "LRT")
-#        Df Deviance     AIC scaled dev. Pr(>Chi)  
-#<none>       5.5600 -314.52                       
-#SDL      2   5.6282 -314.91      3.6105  0.16444  
-#Wang     2   5.6202 -315.33      3.1887  0.20304  
-#Wood     1   5.5746 -315.74      0.7783  0.37766  
-#apnee    1   5.5752 -315.71      0.8124  0.36741  
-#AEG      1   5.5648 -316.26      0.2588  0.61093  
-#malaise  1   5.5806 -315.42      1.0951  0.29535  
-#ROXI     1   5.6445 -312.05      4.4673  0.03455 *
+drop1(update(glm.fullv, ~ . -Wang -AEG), test = "LRT")
+#        Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       40.006 273.62                        
+#FR       4   40.856 271.84      6.2245 0.182997   
+#SpO2     1   40.130 272.53      0.9140 0.339059   
+#SDL      2   40.271 271.57      1.9555 0.376148   
+#Wood     1   40.327 273.99      2.3677 0.123872   
+#apnee    1   40.414 274.62      3.0027 0.083125 . 
+#malaise  1   41.174 280.13      8.5173 0.003518 **
+#ROXI     1   40.740 277.00      5.3840 0.020322 * 
 
 # drop3
-drop1(update(glm.fulloh, ~ . -FR -SpO2 -AEG), test = "LRT")
-#        Df Deviance     AIC scaled dev. Pr(>Chi)  
-#<none>       5.5648 -316.26                       
-#SDL      2   5.6337 -316.62      3.6395  0.16207  
-#Wang     2   5.6225 -317.21      3.0534  0.21725  
-#Wood     1   5.5787 -317.53      0.7350  0.39126  
-#apnee    1   5.5828 -317.31      0.9546  0.32855  
-#malaise  1   5.5827 -317.31      0.9501  0.32969  
-#ROXI     1   5.6491 -313.81      4.4512  0.03488 *
+drop1(update(glm.fullv, ~ . -Wang -AEG -SDL), test = "LRT")
+#        Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       40.339 271.92                        
+#FR       4   41.084 269.35      5.4333 0.245658   
+#SpO2     1   40.520 271.24      1.3264 0.249450   
+#Wood     1   40.898 274.00      4.0838 0.043296 * 
+#apnee    1   40.647 272.17      2.2568 0.133028   
+#malaise  1   41.474 278.15      8.2398 0.004098 **
+#ROXI     1   41.051 275.11      5.1928 0.022681 * 
 
 # drop4
-drop1(update(glm.fulloh, ~ . -FR -SpO2 -AEG -Wood), test = "LRT")
-#        Df Deviance     AIC scaled dev. Pr(>Chi)  
-#<none>       5.5787 -317.53                       
-#SDL      2   5.6363 -318.48      3.0451  0.21815  
-#Wang     2   5.6285 -318.89      2.6321  0.26819  
-#apnee    1   5.5952 -318.65      0.8788  0.34853  
-#malaise  1   5.5954 -318.64      0.8847  0.34693  
-#ROXI     1   5.6652 -314.97      4.5579  0.03277 *
+drop1(update(glm.fullv, ~ . -Wang -AEG -SDL -SpO2), test = "LRT")
+#        Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       40.520 271.24                        
+#FR       4   41.127 267.66      4.4216 0.351949   
+#Wood     1   41.000 272.74      3.5018 0.061304 . 
+#apnee    1   40.823 271.45      2.2135 0.136807   
+#malaise  1   41.588 276.97      7.7299 0.005431 **
+#ROXI     1   41.145 273.79      4.5499 0.032920 * 
 
 # drop5
-drop1(update(glm.fulloh, ~ . -FR -SpO2 -AEG -Wood -apnee), test = "LRT")
-#        Df Deviance     AIC scaled dev. Pr(>Chi)  
-#<none>       5.5952 -318.65                       
-#SDL      2   5.6420 -320.18      2.4622  0.29197  
-#Wang     2   5.6523 -319.64      3.0045  0.22263  
-#malaise  1   5.6065 -320.05      0.5922  0.44155  
-#ROXI     1   5.6676 -316.85      3.8008  0.05123 .
+drop1(update(glm.fullv, ~ . -Wang -AEG -SDL -SpO2 -FR), test = "LRT")
+#        Df Deviance    AIC scaled dev. Pr(>Chi)   
+#<none>       41.127 267.66                        
+#Wood     1   41.638 269.33      3.6651 0.055562 . 
+#apnee    1   41.785 270.38      4.7142 0.029915 * 
+#malaise  1   42.627 276.30     10.6392 0.001107 **
+#ROXI     1   41.574 268.87      3.2062 0.073359 . 
 
-# drop6
-drop1(update(glm.fulloh, ~ . -FR -SpO2 -AEG -Wood -apnee -malaise), test = "LRT")
-#       Df Deviance     AIC scaled dev. Pr(>Chi)  
-#<none>      5.6065 -320.05                       
-#SDL     2   5.6639 -321.04      3.0150  0.22147  
-#Wang    2   5.6819 -320.10      3.9565  0.13831  
-#ROXI    1   5.6831 -318.03      4.0206  0.04495 *
 
 # AUTOMATED SELECTION----
 
-lrm.fulloh <- rms::lrm(OHb ~ FR + SpO2 + SDL + Wang + Wood + apnee + AEG + malaise
+lrm.fullv <- rms::lrm(VNI ~ FR + SpO2 + SDL + Wang + Wood + apnee + AEG + malaise
                      + ROXI, data = re2s)
-fastbw(lrm.fulloh, rule = "p", sls = 0.1)
+fastbw(lrm.fullv, rule = "p", sls = 0.5)
 
 # MODEL AND MODEL PERFORMANCE----
 # MODEL----
 
 table(re2s$OHb)
 
-modoh1 = glm(OHb ~ SDL + Wang + ROXI, family = binomial, data = re2s)
-summary(modoh1)
-exp(cbind(OR = coef(modoh1), confint(modoh1)))
-
-modoh1SDL = glm(OHb ~ Wang + ROXI, family = binomial, data = re2s)
-lrtest(modoh1, modoh1SDL)
-modoh1W = glm(OHb ~ SDL + ROXI, family = binomial, data = re2s)
-lrtest(modoh1, modoh1W)
-
+modv1 = glm(VNI ~ Wood + apnee + malaise + ROXI, family = binomial, data = re2s)
+summary(modv1)
+exp(cbind(OR = coef(modv1), confint(modv1)))
 
 #Call:
-#glm(formula = OHb ~ SDL + Wang + ROXI, family = binomial, data = re2s)
+#glm(formula = VNI ~ Wood + apnee + malaise + ROXI, family = binomial, 
+#    data = re2s)
 #
 #Coefficients:
 #            Estimate Std. Error z value Pr(>|z|)   
-#(Intercept)  -4.4591     1.6696  -2.671  0.00757 **
-#SDL1         -1.4446     1.3476  -1.072  0.28374   
-#SDL2          0.4461     1.9363   0.230  0.81779   
-#Wang1        -1.8445     1.8008  -1.024  0.30572   
-#Wang2         0.3462     2.0172   0.172  0.86372   
-#ROXI          0.1401     0.0861   1.628  0.10362   
+#(Intercept)  0.76252    0.76646   0.995  0.31980   
+#Wood2        0.63603    0.33596   1.893  0.05833 . 
+#apnee2      -0.97886    0.46607  -2.100  0.03571 * 
+#malaise2    -1.17437    0.41728  -2.814  0.00489 **
+#ROXI        -0.07511    0.04683  -1.604  0.10872   
 #---
 #Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #
 #(Dispersion parameter for binomial family taken to be 1)
 #
-#    Null deviance: 58.661  on 295  degrees of freedom
-#Residual deviance: 47.843  on 290  degrees of freedom
-#  (87 observations deleted due to missingness)
-#AIC: 59.843
+#    Null deviance: 287.57  on 296  degrees of freedom
+#Residual deviance: 262.53  on 292  degrees of freedom
+#  (86 observations deleted due to missingness)
+#AIC: 272.53
 #
-#Number of Fisher Scoring iterations: 8
+#Number of Fisher Scoring iterations: 4
 #
-#
-#                    OR        2.5 %      97.5 %
-#(Intercept) 0.01157297 0.0003177449   0.2424934
-#SDL1        0.23584414 0.0094876905   3.2172178
-#SDL2        1.56221978 0.0278244133  55.8239252
-#Wang1       0.15810953 0.0033325281   3.7631966
-#Wang2       1.41373867 0.0376294035 111.0583767
-#ROXI        1.15042432 0.9561932138   1.3579739
+#                   OR     2.5 %    97.5 %
+#(Intercept) 2.1436821 0.4771929 9.8076622
+#Wood2       1.8889759 0.9753864 3.6617169
+#apnee2      0.3757393 0.1521984 0.9617403
+#malaise2    0.3090132 0.1365927 0.7084148
+#ROXI        0.9276375 0.8415192 1.0136974
+
 
 # Correlation----
-performance::check_collinearity(modoh1)
+performance::check_collinearity(modv1)
 
 #Low Correlation
 #
-# Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
-#  SDL 4.70 [3.88, 5.75]         2.17      0.21     [0.17, 0.26]
-# Wang 4.65 [3.84, 5.69]         2.16      0.22     [0.18, 0.26]
-# ROXI 1.78 [1.54, 2.12]         1.33      0.56     [0.47, 0.65]
+#    Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+#    Wood 1.16 [1.06, 1.40]         1.08      0.86     [0.72, 0.94]
+#   apnee 1.16 [1.06, 1.40]         1.07      0.87     [0.72, 0.94]
+# malaise 1.07 [1.01, 1.42]         1.04      0.93     [0.70, 0.99]
+#    ROXI 1.23 [1.11, 1.46]         1.11      0.81     [0.68, 0.90]
 
 # Hosmer-Lemeshow----
-glmtoolbox::hltest(modoh1)
+glmtoolbox::hltest(modv1)
 
 #   The Hosmer-Lemeshow goodness-of-fit test
 #
-# Group Size Observed   Expected
-#     1   30        0 0.03140408
-#     2   30        0 0.03951214
-#     3   31        0 0.05514915
-#     4   30        0 0.15446050
-#     5   31        0 0.23382698
-#     6   31        1 0.28759740
-#     7   31        0 0.37019827
-#     8   30        1 0.68538961
-#     9   31        2 1.68159338
-#    10   21        2 2.46086849
-
-#         Statistic =  2.9823 
+# Group Size Observed  Expected
+#     1   32        3  2.659418
+#     2   30        5  3.025879
+#     3   30        2  3.299188
+#     4   30        2  3.540322
+#     5   30        3  3.877641
+#     6   30        3  4.957344
+#     7   30        6  6.338880
+#     8   30       10  6.834480
+#     9   30       11  8.379605
+#    10   25       11 13.087242
+#
+#         Statistic =  7.7259 
 #degrees of freedom =  8 
-#           p-value =  0.93546 
+#           p-value =  0.46069 
+
 
 # pseudo-R2----
 
-mod.null = glm(OHb ~ 1, data = re2s, family = binomial)
+mod.null = glm(VNI ~ 1, data = re2s, family = binomial)
 
-1-logLik(modoh1)/logLik(mod.null)
-# 'log Lik.' 0.3838226 (df=6)
+1-logLik(modv1)/logLik(mod.null)
+# 'log Lik.' 0.2963833 (df=5)
 
 # Accuracy of the full mod by bootstrapping 
 
 
 performance::performance_accuracy(
-  modoh1, 
+  modv1, 
   method = c(#cv, CROSS VALIDATION
     "boot"),
   k = 5,
   n = 1000,
   verbose = TRUE)
 
-#Accuracy (95% CI): 90.18% [81.30%, 98.46%]
-#          Method: Area under Curve
+#Accuracy (95% CI): 71.95% [64.36%, 79.55%]
+#Method: Area under Curve
 
 # MACHINE LEARNING----
 
-xtabs(~ SDL + Wang + ROXI, data = re2s)
+xtabs(~ Wood + apnee + malaise + ROXI, data = re2s)
 # no zero for nominal variables 
 # zero are present for quantitative variables 
 
@@ -315,43 +303,44 @@ test <- re2s[ind==2,]
 
 # Prediction----
 
-p1 <- predict(modoh1, train, type = "response")
+p1 <- predict(modv1, train, type = "response")
 head(p1, n = 30)
 
 # Missclassification error on train data----
 
 pred1 <- ifelse(p1>0.5, 1, 0)
-tab1 <- table(Predicted = pred1, Actual = train$OHb)
+tab1 <- table(Predicted = pred1, Actual = train$VNI)
 tab1
 
 #         Actual
 #Predicted   0   1
-#        0 225   6
+#        0 185  36
+#        1   5   6
 
 # Missclassification error rate----
 1-sum(diag(tab1))/sum(tab1)
-# [1] 0.02597403 -> 2.6 error rate
+# [1] 0.1767241 -> 17.67 misclassification rate
 
 # Misclassification error on test data-----
 
-p2 <- predict(modoh1, test, type = "response")
-pred2 <- ifelse(p2>0.1, 1, 0)
-tab2 <- table(Predicted = pred2, Actual = test$OHb)
+p2 <- predict(modv1, test, type = "response")
+pred2 <- ifelse(p2>0.5, 1, 0)
+tab2 <- table(Predicted = pred2, Actual = test$VNI)
 tab2
 
 #         Actual
 #Predicted  0  1
-#        0 63  0
-#        1  2  0
+#        0 50 11
+#        1  1  3
 
 # 2 misclassifications
 
 # GOODNESS-OF-FIT of the model----
-#    Null deviance: 58.661  on 295  degrees of freedom
-#Residual deviance: 47.843  on 375  degrees of freedom
-pvalue = 1-pchisq(58.661-47.843, df=(295-290)#, lower.tail = F #specify lower tail to 
+#    Null deviance: 287.57  on 296 degrees of freedom
+#Residual deviance: 262.53  on 292  degrees of freedom
+pvalue = 1-pchisq(287.57-262.53, df=(296-292)#, lower.tail = F #specify lower tail to 
                   #get extreme values or substract -1 
 )
 # pvalue
-#[1] 0.05511033
-# => model is ALMOST valid
+#[1] 4.938667e-05
+# => model is valid
