@@ -102,7 +102,7 @@ _pvalue = 1-pchisq(381.64-317.29, df=(382-375))_ \
 
 ---
 
-### (2) Transf en réa 
+### (2) Mise sous OHD 
 
 **Logistic Regression** (Model selection by likelihood test)
 
