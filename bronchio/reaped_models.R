@@ -13,7 +13,7 @@ require(lmtest)
 
 # DATA-----
 
-reaped <- read.csv2("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/Brossier_David/StatistiquesReaPed/BronchioOHD.csv")
+reaped <- read.csv2(" ")
 dim(reaped)
 # 383 175
 
@@ -34,8 +34,8 @@ reaped$TRe = as.factor(if_else(reaped$TransfertREA == "oui", "2", "1"))
 # Terme
 reaped <- reaped %>%
   mutate(Terme.F = case_when(
-    Terme == "<28" | Terme == "28-32" | Terme == "32-37" ~ "0",
-    Terme == ">37" ~ "1" #ref 
+    Terme == "<28" | Terme == "28-32" | Terme == "32-37" ~ "1",
+    Terme == ">37" ~ "0" #ref 
   ))
 reaped$Terme.F = as.factor(reaped$Terme.F)
 table(reaped$Terme.F)
@@ -220,4 +220,3 @@ performance::performance_accuracy(
   k = 5,
   n = 1000,
   verbose = TRUE)
-
