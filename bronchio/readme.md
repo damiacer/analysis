@@ -9,8 +9,8 @@
 |                   | (N = 383)  | Events (n = 76)  | OR [95%CI]    |  _p-value_     |
 | :---------        | :-------        |  :-------    |:---------            | -----:          |
 | **Terme**         |            |          |               | _<0.001_     | 
-| > 37              | 49 (12.8)  | 17       | _Reference_   |              | 
-| ≤ 37              | 334 (87.2) | 59       |0.24 [0.10 ; 0.54]    |      |
+| > 37              | 334 (87.2) | 59       | _Reference_   |              | 
+| ≤ 37              | 49 (12.8)  | 17       | 4.25 [1.84 ; 9.95]    |      |
 | **Age**           |            |          |               | _<0.001_     | 
 | > 3 mois          | 128 (33.4) | 10       | _Reference_   |              |
 | [1-3] mois        | 175 (45.7) | 34       | 3.88 [1.60 ; 10.64]    |     |           
@@ -36,7 +36,7 @@
 
 #### Model check
 
-###### Multicollinearity
+##### Multicollinearity
 
 | Term | VIF [95% CI] | Increased SE | Tolerance [95%CI] |
 | :----| :----        | :----        | :----             |
@@ -49,7 +49,7 @@
 | Malaise | 1.18 [1.08, 1.41] | 1.09 | 0.84 [0.71, 0.92] | 
 | ROXI | 1.30 [1.17, 1.54] | 1.14 | 0.77 [0.65, 0.85] |
 
-###### Hosmer-Lemeshow goodness-of-fit 
+##### Hosmer-Lemeshow goodness-of-fit 
 
 |           |           |
 | :---      | :---      |
@@ -57,11 +57,11 @@
 | degrees of freedom | 8 |
 |  p-value | 0.032915 |
 
-###### Pseudo-R2 de McFadden
+##### Pseudo-R2 de McFadden
 
 _R2 = 0.3633187 (df=10)_
 
-###### Accuracy of Model Predictions (bootstrap)
+##### Accuracy of Model Predictions (bootstrap)
 
 _Accuracy (95% CI): 82.00% [75.92%, 87.63%]_ \
 _(Method: Area under Curve)_
@@ -77,8 +77,8 @@ _(Method: Area under Curve)_
 |                   | (N = 383)  | Events (n = 73)  | OR [95%CI]    |  _p-value_     |
 | :---------        | :-------        |  :-------    |:---------            | -----:          |
 | **Terme**         |            |          |               | _0.009_      | 
-| > 37              | 49 (12.8)  | 14       | _Reference_   |              | 
-| ≤ 37              | 334 (87.2) | 59       | 0.31 [0.13 ; 0.76]    |      |
+| > 37              | 334 (87.2) | 59       | _Reference_   |              | 
+| ≤ 37              | 49 (12.8)  | 14       | 3.21 [1.31 ; 7.82]    |      |
 | **Age**           |            |          |               | _<0.001_     | 
 | > 3 mois          | 128 (33.4) | 5        | _Reference_   |              |
 | [1-3] mois        | 175 (45.7) | 37       | 12.2 [3.70 ; 58.8]    |      |           
@@ -104,7 +104,7 @@ _(Method: Area under Curve)_
 
 #### Model check 
 
-###### Multicollinearity
+##### Multicollinearity
 
 | Term | VIF [95%CI] | Increased SE | Tolerance [95%CI] |
 | :---- | :---- | :---- | :---- | 
@@ -117,7 +117,7 @@ _(Method: Area under Curve)_
 | Malaise | 1.20 [1.09, 1.43] | 1.10 | 0.83 [0.70, 0.91] |
 | ROXI | 1.31 [1.17, 1.55] | 1.14 | 0.76 [0.65, 0.85] |
 
-###### Hosmer-Lemeshow goodness-of-fit test
+##### Hosmer-Lemeshow goodness-of-fit test
 
 |           |       |
 | :-        | :-    |
@@ -125,11 +125,11 @@ _(Method: Area under Curve)_
 | degrees of freedom | 8 |
 | p-value | 0.1958 |
 
-###### Pseudo-R2 de McFadden
+##### Pseudo-R2 de McFadden
 
 _R2 = 0.3929356 (df=10)_
 
-###### Accuracy of Model Predictions (bootstrap)
+##### Accuracy of Model Predictions (bootstrap)
 
 _Accuracy (95% CI): 82.08% [75.45%, 88.41%]_ \
 _(Method: Area under Curve)_
