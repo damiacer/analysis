@@ -134,3 +134,19 @@ _R2 = 0.3929356 (df=10)_
 
 _Accuracy (95% CI): 82.08% [75.45%, 88.41%]_ \
 _(Method: Area under Curve)_
+
+---
+
+### ROC CURVES and YOUDEN
+
+##### VNI
+
+- ROC AUC = 0.6467101
+- optimal threshold / slope = 0.2045
+- optimal point in the distribution (ROX Index) = 7.6
+
+##### TRANSFER
+
+- ROC AUC = 0.6597371
+- optimal threshold / slope = 0.2387867
+- optimal point in the distribution (ROX Index) = 6.86
