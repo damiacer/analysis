@@ -24,7 +24,7 @@ par(pty = "m") #reset parameter
 
 coords(roccurve, "best")
 #  threshold specificity sensitivity
-#1 0.03023995   0.9003436         0.5
+#1 0.2046285   0.6680498       0.625
 
 reaped$ROXIb = if_else(reaped$ROXI <= 0.03023995, "0", "1")
 table(reaped$ROXIb, useNA = "always")
@@ -71,6 +71,8 @@ plot_metric(opt_cut)
 
 # optimal cutpoint : https://rpubs.com/LIMKYUSON/681052
 
+# for VNI
+
 install.packages("Epi")
 require("Epi")
 
@@ -96,7 +98,7 @@ optimal_lr.eta=function(x){
   result
 }
 optimal_lr.eta(a1) 
-#  0.02974967
+# 0.2045557
 
 # optimal point in distribution
 optimal_cutpoint=function(x){
@@ -109,8 +111,56 @@ optimal_cutpoint=function(x){
 optimal_cutpoint(a1)
 # 7.6
 
-re2s$ROXIb2 = if_else(re2s$ROXI <= 13.1, "0", "1")
-table(re2s$ROXIb2, useNA = "always")
+reaped$ROXIb2 = if_else(reaped$ROXI <= 7.6, "0", "1")
+table(reaped$ROXIb2, useNA = "always")
+#   0    1 <NA> 
+# 116  181   86 
+
+# for TRe
+
+reaped$TRe01 = as.factor(if_else(reaped$TRe == "2", "1", "0"))
+
+a2 = ROC(form=TRe01 ~ ROXI, data = reaped, plot="ROC")
+plot(a2)
+
+a2$AUC
+# 0.6597371
+
+head(a2$res)
+#                       sens        spec pvp       pvn     lr.eta
+#                   1.000000 0.000000000 NaN 0.7845118       -Inf
+#0.065620219637784  1.000000 0.004291845 0.0 0.7837838 0.06562022
+#0.0826400860164332 0.984375 0.004291845 0.5 0.7864407 0.08264009
+#0.092638591702785  0.968750 0.008583691 0.5 0.7883959 0.09263859
+#0.0997743538942264 0.953125 0.008583691 0.6 0.7910959 0.09977435
+#0.101971556666741  0.953125 0.012875536 0.5 0.7903780 0.10197156
+
+# optimal threshold, slope
+optimal_lr.eta=function(x){
+  no=which.max(x$res$sens+x$res$spec)[1]
+  result=x$res$lr.eta[no]
+  result
+}
+optimal_lr.eta(a2) 
+# 0.2387867
+
+# optimal point in distribution
+optimal_cutpoint=function(x){
+  y=optimal_lr.eta(x)
+  b0=unname(x$lr$coeff[1])
+  b1=unname(x$lr$coeff[2])
+  result=(-log(1/y-1)-b0)/b1
+  result
+} 
+optimal_cutpoint(a2)
+# 6.86
+
+reaped$ROXIb2 = if_else(reaped$ROXI <= 7.6, "0", "1")
+table(reaped$ROXIb2, useNA = "always")
+#   0    1 <NA> 
+# 116  181   86 
+
+
 
 #---
 
