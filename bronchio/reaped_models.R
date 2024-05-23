@@ -13,7 +13,7 @@ require(lmtest)
 
 # DATA-----
 
-reaped <- read.csv2(" ")
+reaped <- read.csv2("/Users/damianocerasuolo/Desktop/UBRC/UBRS_CONSULT_MAC/Brossier_David/StatistiquesReaPed/BronchioOHD.csv")
 dim(reaped)
 # 383 175
 
@@ -220,3 +220,4 @@ performance::performance_accuracy(
   k = 5,
   n = 1000,
   verbose = TRUE)
+
