@@ -207,6 +207,29 @@ tab1
 
 # deltaNIHSS (24h - pret)
 
-mod.delta = ln(delta ~ Age + Sexe + Vasospasme2CL + TICI2 + trombo + Diabete + HTA, data = )
+mod.delta = ln(delta ~ Age + Sexe + Vasospasme2CL + TICI2 + Thrombolyse + Diabete + HTA, data = )
 summary(mod.delta)
 exp(cbind(OR = coef(mod.delta), confint(mod.delta)))
+
+# descriptive for the delta 
+
+vars <- c("Age", "Sexe", "NIHSS_preT", "Thrombolyse", "DeltaNIHSS",
+          "KT_Ballon", "Nbre_passageCL", "Vasospasme2CL", 
+          "Hemorragie_parehymateusePH", "Rapport_CI_KT", 
+         # verify
+         "Diab", "HTA")
+
+fvars <- c("Sexe", "Thrombolyse", "Nbre_passageCL",
+          "KT_Ballon", "Vasospasme2CL", "Hemorragie_parehymateusePH"
+          "Diab", "HTA")
+          
+
+descriptiveS = CreateTableOne(vars = vars, factorVars = fvars, data = lp)
+
+print(descriptiveS, showAllLevels = TRUE,
+                  quote = TRUE,
+                  noSpaces = TRUE)
+
+bivariateS = CreateTableOne(vars = vars, factorVars = fvars, data = lp,
+                           test = TRUE, strata = "delta")
+print(bivariateS, showAllLevels = TRUE, quote = TRUE, nospaces = TRUE)
